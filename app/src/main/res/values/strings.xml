@@ -10,4 +10,19 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="namaz_vakit">-</string>
+    <string name="no_Internet">İnternet bağlantınızı kontrol edin</string>
+    <string name="konumMevcutDegil">Son konum bilgisi mevcut değil, konum güncellemeleri başlatılıyor…</string>
+    <string name="checkLocationAndInternet">internet ve konum bilgilerinizi açıktan sonra tekrar deneyiniz</string>
+    <string name="no_Location">Bu şehir için URL bulunamadı</string>
+    <string name="no_permit_location">Konum izni reddedildi</string>
+    <string name="suggestion_location_permit">Namaz vakitleri ve diğer duyurular için bildirimleri açmanızı öneriyoruz</string>
+    <string name="imsak">İmsak</string>
+    <string name="gunes">Güneş</string>
+    <string name="ogle">Öğle</string>
+    <string name="ikindi">İkindi</string>
+    <string name="aksam">Akşam</string>
+    <string name="yatsi">Yatsı</string>
+    <string name="konum">Konum</string>
+    <string name="refresh_img">yenileme simgesi</string>
 </resources>
