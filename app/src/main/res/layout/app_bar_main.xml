@@ -18,11 +18,38 @@
             android:background="?attr/colorPrimary"
             android:textColor="@color/white" />
 
+        <!-- Sonraki vakite kalan -->
+        <LinearLayout
+            android:id="@+id/remain_time_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/remain_namaz_time_1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/toolbarKalanSureLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/namaz_vakit"
+                android:textSize="12sp"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/toolbarKalanSure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/tomorrow_b"
+                android:text="@string/namaz_vakit"
+                android:textColor="@color/white"
+                android:textSize="28sp" />
+        </LinearLayout>
         <!-- Namaz vakitleri düzeni -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@color/remain_namaz_time_1"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -64,6 +91,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:textStyle="bold"
                     android:text="@string/gunes"
                     android:textColor="@color/white" />
 
@@ -72,6 +100,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:textStyle="bold"
                     android:text="@string/namaz_vakit"
                     android:textColor="@color/white" />
             </LinearLayout>
@@ -90,6 +119,7 @@
                     android:id="@+id/ogle_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textStyle="bold"
                     android:text="@string/ogle"
                     android:textColor="@color/white" />
 
@@ -97,6 +127,7 @@
                     android:id="@+id/ogle_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textStyle="bold"
                     android:text="@string/namaz_vakit"
                     android:textColor="@color/white" />
             </LinearLayout>
@@ -114,6 +145,7 @@
                     android:id="@+id/ikindi_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textStyle="bold"
                     android:text="@string/ikindi"
                     android:textColor="@color/white" />
 
@@ -121,6 +153,7 @@
                     android:id="@+id/ikindi_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textStyle="bold"
                     android:text="@string/namaz_vakit"
                     android:textColor="@color/white" />
             </LinearLayout>
@@ -138,6 +171,7 @@
                     android:id="@+id/aksam_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textStyle="bold"
                     android:text="@string/aksam"
                     android:textColor="@color/white" />
 
@@ -145,6 +179,7 @@
                     android:id="@+id/aksam_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textStyle="bold"
                     android:text="@string/namaz_vakit"
                     android:textColor="@color/white" />
             </LinearLayout>
@@ -162,6 +197,7 @@
                     android:id="@+id/yatsi_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textStyle="bold"
                     android:text="@string/yatsi"
                     android:textColor="@color/white" />
 
@@ -170,6 +206,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/namaz_vakit"
+                    android:textStyle="bold"
                     android:textColor="@color/white" />
             </LinearLayout>
 
@@ -178,7 +215,7 @@
                 android:id="@+id/location_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/location_shape"
+                android:background="@color/location_bg"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="3dp">

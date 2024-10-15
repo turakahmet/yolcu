@@ -2,6 +2,7 @@ package com.myapp.yolcu.ui.main;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
@@ -12,15 +13,20 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -36,6 +42,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.Priority;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.myapp.yolcu.NetworkCheckActivity;
@@ -48,12 +55,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ProfilePictureDialogFragment.ProfilePictureDialogListener{
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-    private TextView imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, locationTextView;
-    private LinearLayout imsakTimeLayout, gunesTimeLayout, ogleTimeLayout, ikindiTimeLayout, aksamTimeLayout, yatsiTimeLayout, locationRefreshLayout ;
+    private TextView imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, locationTextView, usernameTextView, kalanSureTextView, toolbarKalanSureLabel ;
+    private LinearLayout imsakTimeLayout, gunesTimeLayout, ogleTimeLayout, ikindiTimeLayout, aksamTimeLayout, yatsiTimeLayout, locationRefreshLayout,remain_time_layout ;
 
     private FusedLocationProviderClient fusedLocationClient;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
@@ -61,12 +68,17 @@ public class MainActivity extends AppCompatActivity {
     private boolean isLocationFetching = false; // Konum alınıp alınmadığını kontrol etmek için
 
     // SharedPreferences için tanımlar
-    private SharedPreferences sharedPreferences;
-    private static final String PREFS_NAME = "LocationPrefs";
+    private SharedPreferences locationPrefs;
+    private SharedPreferences userPrefs;
+    private static final String PREFS_LOCATION_NAME = "location_prefs";
+    private static final String PREFS_USER_NAME = "user_prefs";
+    private static final String USERNAME_KEY = "username";
     private static final String LAST_KNOWN_LAT_KEY = "last_known_latitude";
     private static final String LAST_KNOWN_LON_KEY = "last_known_longitude";
     private ImageButton refreshButton;
+    private ImageView editIcon;
     private static final int REQUEST_NOTIFICATION_PERMISSION = 123;
+    private ShapeableImageView userAvatar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +87,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         // SharedPreferences başlatma
-        sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        //location
+        locationPrefs = getSharedPreferences(PREFS_LOCATION_NAME, Context.MODE_PRIVATE);
+        //user
+        userPrefs = getSharedPreferences(PREFS_USER_NAME, Context.MODE_PRIVATE);
 
         // FusedLocationProviderClient başlatma
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -108,7 +123,11 @@ public class MainActivity extends AppCompatActivity {
         ikindiTimeLayout=findViewById(R.id.ikindi_layout);
         aksamTimeLayout=findViewById(R.id.aksam_layout);
         yatsiTimeLayout=findViewById(R.id.yatsi_layout);
+        kalanSureTextView=findViewById(R.id.toolbarKalanSure);
         locationRefreshLayout=findViewById(R.id.location_refresh_Layout);
+        remain_time_layout=findViewById(R.id.remain_time_layout);
+        toolbarKalanSureLabel=findViewById(R.id.toolbarKalanSureLabel);
+
 
         // Toolbar ve Navigation ayarları
         setSupportActionBar(binding.appBarMain.toolbar);
@@ -139,6 +158,44 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
         checkInternetConnection();
 
+        // NavigationView'in header'ından View'leri bulma
+        View headerView = navigationView.getHeaderView(0); // Header layout'a erişim
+        usernameTextView = headerView.findViewById(R.id.username); // Username TextView
+        editIcon = headerView.findViewById(R.id.editIcon);
+        userAvatar=headerView.findViewById(R.id.user_avatar);
+
+
+        // Edit icon click listener
+        String savedUsername = userPrefs.getString(USERNAME_KEY, getString(R.string.defaultUserName));
+        // Kaydedilen kullanıcı adını TextView'e ata
+        usernameTextView.setText(savedUsername);
+        // Daha önce kaydedilmiş resmi yükle
+        int savedPicture = userPrefs.getInt("profile_picture", R.drawable.man_1); // default_avatar varsayılan resim
+        userAvatar.setImageResource(savedPicture);
+
+//        // SharedPreferences içindeki tüm verileri temizle
+//        SharedPreferences.Editor editor = userPrefs.edit();
+//        editor.clear(); // Tüm verileri temizle
+//        editor.apply(); // Değişiklikleri kaydet
+        editIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(savedUsername.equals(getString(R.string.defaultUserName))){
+                    usernameTextView.setText("");
+                }
+                showEditDialog();
+            }
+        });
+
+        userAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProfilePictureDialogFragment dialogFragment = new ProfilePictureDialogFragment();
+                dialogFragment.show(getSupportFragmentManager(), "profilePictureDialog");
+            }
+        });
+
+
     }
 
 
@@ -166,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
                     handleNewLocation(savedLocation);
                 } else {
                     // Son konum yok, konum güncellemelerini başlat
+                    locationRefreshLayout.setVisibility(View.VISIBLE);
                     Toast.makeText(MainActivity.this, R.string.konumMevcutDegil, Toast.LENGTH_SHORT).show();
                     startLocationUpdates();
                 }
@@ -240,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
         String url = cityUrlMapping.getUrlForCity(city);
         if (url != null) {
             locationTextView.setText(city);
-            PrayerTimesFetcher prayerTimesFetcher = new PrayerTimesFetcher(this, imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, imsakTimeLayout,gunesTimeLayout,ogleTimeLayout,ikindiTimeLayout,aksamTimeLayout,yatsiTimeLayout,locationRefreshLayout);
+            PrayerTimesFetcher prayerTimesFetcher = new PrayerTimesFetcher(this, imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, imsakTimeLayout,gunesTimeLayout,ogleTimeLayout,ikindiTimeLayout,aksamTimeLayout,yatsiTimeLayout,locationRefreshLayout,kalanSureTextView,remain_time_layout,toolbarKalanSureLabel);
             prayerTimesFetcher.fetchPrayerTimes(url);
         } else {
             Toast.makeText(this, R.string.no_Location, Toast.LENGTH_SHORT).show();
@@ -249,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Son bilinen konumu SharedPreferences'a kaydet
     private void saveLastKnownLocation(Location location) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        SharedPreferences.Editor editor = locationPrefs.edit();
         editor.putFloat(LAST_KNOWN_LAT_KEY, (float) location.getLatitude());
         editor.putFloat(LAST_KNOWN_LON_KEY, (float) location.getLongitude());
         editor.apply();
@@ -257,8 +315,8 @@ public class MainActivity extends AppCompatActivity {
 
     // Son bilinen konumu SharedPreferences'dan yükle
     private Location loadLastKnownLocation() {
-        float lat = sharedPreferences.getFloat(LAST_KNOWN_LAT_KEY, Float.NaN);
-        float lon = sharedPreferences.getFloat(LAST_KNOWN_LON_KEY, Float.NaN);
+        float lat = locationPrefs.getFloat(LAST_KNOWN_LAT_KEY, Float.NaN);
+        float lon = locationPrefs.getFloat(LAST_KNOWN_LON_KEY, Float.NaN);
         if (!Float.isNaN(lat) && !Float.isNaN(lon)) {
             Location location = new Location("");
             location.setLatitude(lat);
@@ -277,6 +335,7 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLastLocation();
             } else {
+                locationRefreshLayout.setVisibility(View.VISIBLE);
                 Toast.makeText(this, R.string.no_permit_location, Toast.LENGTH_SHORT).show();
             }
         }
@@ -304,6 +363,67 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void showEditDialog() {
+        final EditText editText = new EditText(this);
+        editText.setText(usernameTextView.getText().toString());
+
+        // Tek satırda yazma ve maksimum karakter sayısını ayarlama
+        editText.setSingleLine(true); // Tek satırda yazılmasını sağlar
+        editText.setInputType(InputType.TYPE_CLASS_TEXT); // Metin girişi için uygun tür
+        editText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(50) }); // Maksimum 50 karakter
+
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.username_edit))
+                .setView(editText)
+                .setPositiveButton(getString(R.string.save), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String newUsername = editText.getText().toString().trim(); // Boşlukları temizle
+                        if (newUsername.isEmpty()) {
+                            Toast.makeText(MainActivity.this, R.string.unvalid_username, Toast.LENGTH_SHORT).show();
+                            return;
+                        } else {
+                            usernameTextView.setText(newUsername);
+
+                            // SharedPreferences'a kaydet
+                            SharedPreferences.Editor editor = userPrefs.edit();
+                            editor.putString(USERNAME_KEY, newUsername);
+                            editor.apply();
+
+                            // Kullanıcıya bilgi ver
+                            Toast.makeText(MainActivity.this, getString(R.string.valid_username_1) + " " + newUsername, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, getString(R.string.valid_username_2), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel), null)
+                .show();
+    }
+    private void showProfilePictureDialog() {
+        // Resim seçeneklerini tanımla
+        final int[] imageOptions = {R.drawable.man_1, R.drawable.man_2, R.drawable.women_1, R.drawable.women_2};
+        final String[] imageNames = {"Man 1", "Man 2", "Woman 1", "Woman 2"};
+
+        // Görsel seçeneklerini gösteren bir AlertDialog oluştur
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Profile Picture")
+                .setItems(imageNames, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Seçilen resmi al
+                        int selectedImage = imageOptions[which];
+
+                        // Resmi ShapeableImageView'e ayarla
+                        userAvatar.setImageResource(selectedImage);
+
+                        // SharedPreferences'a kaydet
+                        SharedPreferences.Editor editor = userPrefs.edit();
+                        editor.putInt("profile_picture", selectedImage);
+                        editor.apply();
+                    }
+                })
+                .show();
+    }
     // Menü oluşturma
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -330,5 +450,16 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.no_Internet, Toast.LENGTH_SHORT).show();
             finish();
         }
+    }
+
+    @Override
+    public void onProfilePictureSelected(int resourceId) {
+        // Seçilen resmi ayarla
+        userAvatar.setImageResource(resourceId);
+
+        // SharedPreferences'a kaydet
+        SharedPreferences.Editor editor = userPrefs.edit();
+        editor.putInt("profile_picture", resourceId);
+        editor.apply();
     }
 }
