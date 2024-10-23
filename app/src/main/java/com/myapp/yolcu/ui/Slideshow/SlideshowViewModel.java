@@ -1,4 +1,4 @@
-package com.myapp.yolcu.ui.slideshow;
+package com.myapp.yolcu.ui.Slideshow;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

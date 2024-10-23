@@ -10,7 +10,7 @@
     <string name="menu_yarisma">Yarışma</string>
     <string name="menu_ibadet">İbadet</string>
     <string name="menu_basari">Rozetler</string>
-    <string name="namaz_vakit">-</string>
+    <string name="empty_text">-</string>
     <string name="no_Internet">İnternet bağlantınızı kontrol edin</string>
     <string name="konumMevcutDegil">Konum Alınamadı. Namaz vakitleri için konum açınız</string>
     <string name="checkLocationAndInternet">internet ve konum bilgilerinizi açıktan sonra tekrar deneyiniz</string>
@@ -47,4 +47,13 @@
     <string name="aksam_vakit_notification_body">Akşam namazına 10 dakika kaldı!</string>
     <string name="yatsi_vakit_notification_body">Yatsı namazına 10 dakika kaldı!</string>
     <string name="imsak_vakit_notification_body">İmsak vaktine 10 dakika kaldı!</string>
+    <string name="play">Oyna</string>
+    <string name="default_cost_coin">000</string>
+    <string name="soru_yukleniyor">Soru yükleniyor</string>
+    <string name="tamam">TAMAM</string>
+    <string name="close">KAPAT</string>
+    <string name="correctAnswerEndgameLabel">DOĞRU YANIT</string>
+    <string name="timeupLabel">Maalesef süreniz doldu. Daha hızlı olmalısın</string>
+    <string name="levelLabel">SEVİYE</string>
+    <string name="winnerLabel">TEBRİKLER KAZANDINIZ</string>
 </resources>

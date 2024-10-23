@@ -11,7 +11,7 @@
     <string name="menu_yarisma">Competition</string>
     <string name="menu_ibadet">Prayer</string>
     <string name="menu_basari">Badges</string>
-    <string name="namaz_vakit">-</string>
+    <string name="empty_text">-</string>
     <string name="no_Internet">Check your internet connection</string>
     <string name="konumMevcutDegil">Latest location information is not available, location updates are being initiated…</string>
     <string name="checkLocationAndInternet">Try again after clearing your internet and location information.</string>
@@ -47,4 +47,13 @@
     <string name="aksam_vakit_notification_body">10 minutes left until Maghrib!</string>
     <string name="yatsi_vakit_notification_body">10 minutes left until Isha!</string>
     <string name="imsak_vakit_notification_body">10 minutes left until Fajr time!</string>
+    <string name="play">Play</string>
+    <string name="default_cost_coin">000</string>
+    <string name="soru_yukleniyor">Question is loading</string>
+    <string name="tamam">OK</string>
+    <string name="close">CLOSE</string>
+    <string name="correctAnswerEndgameLabel">CORRECT ANSWER</string>
+    <string name="timeupLabel">Sorry, your time has expired. You should be faster</string>
+    <string name="levelLabel">LEVEL</string>
+    <string name="winnerLabel">CONGRATULATIONS YOU WON</string>
 </resources>

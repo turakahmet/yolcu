@@ -1,4 +1,4 @@
-package com.myapp.yolcu.ui.slideshow;
+package com.myapp.yolcu.ui.Slideshow;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

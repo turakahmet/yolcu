@@ -33,6 +33,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -149,7 +150,20 @@ public class PrayerTimesFetcher extends Service {
             }
         });
     }
-
+    public void fetchPrayerTimesNoAPI(String city) {
+        LocalTime currentTime = LocalTime.now();
+        VakitNoApi vakitNoApi=new VakitNoApi();
+        HashMap<String, String> vakitList= vakitNoApi.localPrayerTimesByCityName(city);
+        imsakTime.setText(vakitList.get("imsakTime"));
+        gunesTime.setText(vakitList.get("gunesTime"));
+        ogleTime.setText(vakitList.get("ogleTime"));
+        ikindiTime.setText(vakitList.get("ikindiTime"));
+        aksamTime.setText(vakitList.get("aksamTime"));
+        yatsiTime.setText(vakitList.get("yatsiTime"));
+        updateBackgroundColor(currentTime);
+        assert locationRefreshLayout != null;
+        locationRefreshLayout.setVisibility(View.GONE);
+    }
     private void updateBackgroundColor(LocalTime currentTime) {
         LocalTime namazVakti = null;
         LinearLayout remainTimeLayout =null;
@@ -285,8 +299,9 @@ public class PrayerTimesFetcher extends Service {
                 .atZone(ZoneId.systemDefault()) // Zaman dilimine göre dönüştür
                 .toInstant()
                 .toEpochMilli(); // Milisaniye cinsine çevirme
-//         triggerTime = System.currentTimeMillis() + 5000; // 5 saniye sonrası
+//         long triggerTime2 = System.currentTimeMillis() + 5000; // 5 saniye sonrası
 
+        LocalDate today = LocalDate.now();
         // Şu anki zamandan daha ilerideki bir zamana ayarlayın
         if (triggerTime > System.currentTimeMillis()) {
             Log.d("AlarmReceiver", "Alarm tetiklendi!");
@@ -319,5 +334,6 @@ public class PrayerTimesFetcher extends Service {
         super.onDestroy();
         handler.removeCallbacks(runnable); // Fetch işlemini durdur
     }
+
 
 }

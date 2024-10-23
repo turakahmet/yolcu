@@ -1,0 +1,44 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutPopUp"
+    android:layout_width="match_parent"
+    android:layout_height="350dp"
+    android:layout_gravity="center"
+    android:layout_margin="10dp"
+    android:theme="@style/Theme.Yolcu"
+    android:background="@drawable/ic_popup_background"
+    tools:context=".ui.main.MainActivity">
+
+    <ImageView
+        android:id="@+id/imagePopUp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp"
+        android:src="@drawable/baseline_info_24" />
+
+    <TextView
+        android:id="@+id/hintPopUpText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/closeButton"
+        android:layout_below="@id/imagePopUp"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <!-- Kapat butonu -->
+    <Button
+        android:id="@+id/closeButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="15dp"
+        android:textStyle="bold"
+        android:text="@string/tamam" />
+</RelativeLayout>

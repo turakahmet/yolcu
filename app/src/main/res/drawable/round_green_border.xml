@@ -1,0 +1,13 @@
+<!-- res/drawable/round_green_border.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <corners android:radius="50dp" /> <!-- Yuvarlak köşeler için -->
+
+    <stroke
+        android:width="3dp"
+        android:color="#9CCC65" /> <!-- Yeşil border için -->
+
+    <solid android:color="@android:color/white" /> <!-- İç kısmı şeffaf yapar -->
+
+</shape>

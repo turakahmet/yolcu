@@ -4,8 +4,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -39,8 +39,8 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
@@ -50,17 +50,19 @@ import com.myapp.yolcu.R;
 import com.myapp.yolcu.databinding.ActivityMainBinding;
 import com.myapp.yolcu.ui.VakitApi.CityUrlMapping;
 import com.myapp.yolcu.ui.VakitApi.PrayerTimesFetcher;
+import com.myapp.yolcu.ui.VakitApi.VakitNoApi;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements ProfilePictureDialogFragment.ProfilePictureDialogListener{
+public class MainActivity extends AppCompatActivity implements ProfilePictureDialogFragment.ProfilePictureDialogListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-    private TextView imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, locationTextView, usernameTextView, kalanSureTextView, toolbarKalanSureLabel ;
-    private LinearLayout imsakTimeLayout, gunesTimeLayout, ogleTimeLayout, ikindiTimeLayout, aksamTimeLayout, yatsiTimeLayout, locationRefreshLayout,remain_time_layout ;
+    private TextView imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, locationTextView, usernameTextView, kalanSureTextView, toolbarKalanSureLabel;
+    private LinearLayout imsakTimeLayout, gunesTimeLayout, ogleTimeLayout, ikindiTimeLayout, aksamTimeLayout, yatsiTimeLayout, locationRefreshLayout, remain_time_layout;
 
     private FusedLocationProviderClient fusedLocationClient;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
@@ -79,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
     private ImageView editIcon;
     private static final int REQUEST_NOTIFICATION_PERMISSION = 123;
     private ShapeableImageView userAvatar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         locationPrefs = getSharedPreferences(PREFS_LOCATION_NAME, Context.MODE_PRIVATE);
         //user
         userPrefs = getSharedPreferences(PREFS_USER_NAME, Context.MODE_PRIVATE);
+        // Kullanıcının altın miktarını SharedPreferences ile ayarlama
+        setInitialGoldAmount();
 
         // FusedLocationProviderClient başlatma
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -115,18 +120,18 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         aksamTime = findViewById(R.id.aksam_time);
         yatsiTime = findViewById(R.id.yatsi_time);
         locationTextView = findViewById(R.id.location_time);
-        refreshButton=findViewById(R.id.refresh_button);
+        refreshButton = findViewById(R.id.refresh_button);
 
-        imsakTimeLayout=findViewById(R.id.imsak_layout);
-        gunesTimeLayout=findViewById(R.id.gunes_layout);
-        ogleTimeLayout=findViewById(R.id.ogle_layout);
-        ikindiTimeLayout=findViewById(R.id.ikindi_layout);
-        aksamTimeLayout=findViewById(R.id.aksam_layout);
-        yatsiTimeLayout=findViewById(R.id.yatsi_layout);
-        kalanSureTextView=findViewById(R.id.toolbarKalanSure);
-        locationRefreshLayout=findViewById(R.id.location_refresh_Layout);
-        remain_time_layout=findViewById(R.id.remain_time_layout);
-        toolbarKalanSureLabel=findViewById(R.id.toolbarKalanSureLabel);
+        imsakTimeLayout = findViewById(R.id.imsak_layout);
+        gunesTimeLayout = findViewById(R.id.gunes_layout);
+        ogleTimeLayout = findViewById(R.id.ogle_layout);
+        ikindiTimeLayout = findViewById(R.id.ikindi_layout);
+        aksamTimeLayout = findViewById(R.id.aksam_layout);
+        yatsiTimeLayout = findViewById(R.id.yatsi_layout);
+        kalanSureTextView = findViewById(R.id.toolbarKalanSure);
+        locationRefreshLayout = findViewById(R.id.location_refresh_Layout);
+        remain_time_layout = findViewById(R.id.remain_time_layout);
+        toolbarKalanSureLabel = findViewById(R.id.toolbarKalanSureLabel);
 
 
         // Toolbar ve Navigation ayarları
@@ -162,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         View headerView = navigationView.getHeaderView(0); // Header layout'a erişim
         usernameTextView = headerView.findViewById(R.id.username); // Username TextView
         editIcon = headerView.findViewById(R.id.editIcon);
-        userAvatar=headerView.findViewById(R.id.user_avatar);
+        userAvatar = headerView.findViewById(R.id.user_avatar);
 
 
         // Edit icon click listener
@@ -180,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         editIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(savedUsername.equals(getString(R.string.defaultUserName))){
+                if (savedUsername.equals(getString(R.string.defaultUserName))) {
                     usernameTextView.setText("");
                 }
                 showEditDialog();
@@ -196,6 +201,17 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         });
 
 
+    }
+
+    private void setInitialGoldAmount() {
+        SharedPreferences sharedPreferences = getSharedPreferences("GamePreferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Eğer daha önce altın miktarı ayarlanmamışsa 500 altın ver
+        if (sharedPreferences.getInt("userGold", -1) == -1) {
+            editor.putInt("userGold", 5000);
+            editor.apply();
+        }
     }
 
 
@@ -283,7 +299,8 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
             assert addresses != null;
             if (addresses.size() > 0) {
                 String city = addresses.get(0).getAdminArea();
-                fetchPrayerTimes(city);
+//                fetchPrayerTimes(city); //diyanetten alırsan burası acilacak aşağıdaki kapanacak
+                fetchPrayerTimesNoAPI(city);// kendin hesaplarsan burası acilacak yukardaki kapanak
                 locationTextView.setText(city); // Şehir adını göster
             }
         } catch (IOException e) {
@@ -292,13 +309,17 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         }
     }
 
+    private void fetchPrayerTimesNoAPI(String city) {
+        PrayerTimesFetcher prayerTimesFetcher = new PrayerTimesFetcher(this, imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, imsakTimeLayout, gunesTimeLayout, ogleTimeLayout, ikindiTimeLayout, aksamTimeLayout, yatsiTimeLayout, locationRefreshLayout, kalanSureTextView, remain_time_layout, toolbarKalanSureLabel);
+        prayerTimesFetcher.fetchPrayerTimesNoAPI(city);
+    }
+
     // Namaz vakitlerini çekme
     private void fetchPrayerTimes(String city) {
         CityUrlMapping cityUrlMapping = new CityUrlMapping();
         String url = cityUrlMapping.getUrlForCity(city);
         if (url != null) {
-            locationTextView.setText(city);
-            PrayerTimesFetcher prayerTimesFetcher = new PrayerTimesFetcher(this, imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, imsakTimeLayout,gunesTimeLayout,ogleTimeLayout,ikindiTimeLayout,aksamTimeLayout,yatsiTimeLayout,locationRefreshLayout,kalanSureTextView,remain_time_layout,toolbarKalanSureLabel);
+            PrayerTimesFetcher prayerTimesFetcher = new PrayerTimesFetcher(this, imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, imsakTimeLayout, gunesTimeLayout, ogleTimeLayout, ikindiTimeLayout, aksamTimeLayout, yatsiTimeLayout, locationRefreshLayout, kalanSureTextView, remain_time_layout, toolbarKalanSureLabel);
             prayerTimesFetcher.fetchPrayerTimes(url);
         } else {
             Toast.makeText(this, R.string.no_Location, Toast.LENGTH_SHORT).show();
@@ -370,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         // Tek satırda yazma ve maksimum karakter sayısını ayarlama
         editText.setSingleLine(true); // Tek satırda yazılmasını sağlar
         editText.setInputType(InputType.TYPE_CLASS_TEXT); // Metin girişi için uygun tür
-        editText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(50) }); // Maksimum 50 karakter
+        editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)}); // Maksimum 50 karakter
 
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.username_edit))
@@ -399,6 +420,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
                 .setNegativeButton(getString(R.string.cancel), null)
                 .show();
     }
+
     private void showProfilePictureDialog() {
         // Resim seçeneklerini tanımla
         final int[] imageOptions = {R.drawable.man_1, R.drawable.man_2, R.drawable.women_1, R.drawable.women_2};
@@ -424,6 +446,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
                 })
                 .show();
     }
+
     // Menü oluşturma
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

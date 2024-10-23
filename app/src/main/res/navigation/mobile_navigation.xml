@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="com.myapp.yolcu.ui.slideshow.SlideshowFragment"
+        android:name="com.myapp.yolcu.ui.Slideshow.SlideshowFragment"
         android:label="@string/menu_basari"
         tools:layout="@layout/fragment_slideshow" />
 </navigation>
