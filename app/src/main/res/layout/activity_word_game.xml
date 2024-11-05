@@ -1,6 +1,271 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- res/layout/activity_main.xml -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:theme="@style/Theme.Yolcu"
+    tools:context=".ui.game.WordGameActivity">
+
+    <!-- Altın Miktarı -->
+    <ImageView
+        android:id="@+id/coinImage_word"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/coin_2"
+        app:layout_constraintEnd_toStartOf="@id/gold_amount_text_word"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/gold_amount_text_word"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="35dp"
+        android:fontFamily="@font/tomorrow_b"
+        android:text="500"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@id/coinImage_word"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Geri Sayım Sayacı -->
+
+    <ImageView
+        android:id="@+id/clockImage"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/clock"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/timer_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/tomorrow_b"
+        android:text="@string/default_timer"
+        android:textColor="@color/infoGameText"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@id/clockImage"
+        app:layout_constraintEnd_toEndOf="@id/clockImage"
+        app:layout_constraintStart_toStartOf="@id/clockImage"
+        app:layout_constraintTop_toTopOf="@id/clockImage" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="100dp" />
+
+    <com.shuhart.stepview.StepView
+        android:id="@+id/step_view_word_game"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
+        app:sv_animationType="Line"
+        app:sv_doneCircleColor="@color/correctAnswer"
+        app:sv_doneStepLineColor="@color/correctAnswer"
+        app:sv_nextStepCircleColor="#88A1A1A1"
+        app:sv_nextStepCircleEnabled="true"
+        app:sv_nextStepLineColor="#88A1A1A1"
+        app:sv_nextTextColor="@color/white"
+        app:sv_selectedCircleColor="@color/colorAccent"
+        app:sv_selectedTextColor="@color/black"
+        app:sv_stepLineWidth="2dp"
+        app:sv_stepNumberTextSize="15sp" />
+
+    <TextView
+        android:id="@+id/questionTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:layout_margin="10dp"
+        android:text="@string/soru_yukleniyor"
+        android:fontFamily="sans-serif-black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/step_view_word_game"/>
+
+    <TextView
+        android:id="@+id/questionSpaceHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="hint"
+        android:textSize="18sp"
+        android:layout_margin="10dp"
+        android:textColor="@color/redAlertColor"
+        android:textStyle="bold"
+        android:fontFamily="@font/tomorrow_b"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/questionTextView"/>
+
+    <GridLayout
+        android:id="@+id/answerGrid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:rowCount="2"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/guideline3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/questionSpaceHint"/>
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="300dp" />
+
+    <ImageView
+        android:id="@+id/gifImageSuccessView"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/confirm"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        app:layout_constraintTop_toBottomOf="@id/guideline3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/guideline2"
+        android:layout_margin="5dp"/>
+    <TextView
+        android:id="@+id/gifImageSuccessViewLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/gifImageSuccessView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/correctAnswerEndgameLabel"
+        android:visibility="gone"
+        android:layout_margin="5dp"
+        android:fontFamily="@font/tomorrow_b"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp"/>
+
+
+    <!-- Jokerler -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.75512993" />
+
+    <TextView
+        android:id="@+id/joker_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:fontFamily="@font/tomorrow_b"
+        android:text="@string/joker_label"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline2" />
+
+    <Button
+        android:id="@+id/letterJokerButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/harf_iste"
+        app:layout_constraintEnd_toStartOf="@+id/confirmButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/joker_text" />
+
+    <!-- Joker harf iste -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@id/costCoinLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/round_green_border"
+        android:elevation="3dp"
+        app:layout_constraintEnd_toEndOf="@id/letterJokerButton"
+        app:layout_constraintStart_toStartOf="@+id/letterJokerButton"
+        app:layout_constraintTop_toTopOf="@+id/letterJokerButton">
+
+        <ImageView
+            android:id="@+id/costCoinImage"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/coin_1"
+            app:layout_constraintBottom_toBottomOf="@id/costCoinLayout"
+            app:layout_constraintEnd_toStartOf="@+id/costCoinLabel"
+            app:layout_constraintStart_toStartOf="@+id/costCoinLayout"
+            app:layout_constraintTop_toTopOf="@+id/costCoinLayout" />
+
+        <TextView
+            android:id="@+id/costCoinLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/tomorrow_b"
+            android:padding="10dp"
+            android:text="@string/default_cost_coin"
+            android:textColor="@color/infoGameText"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@id/costCoinLayout"
+            app:layout_constraintEnd_toEndOf="@id/costCoinLayout"
+            app:layout_constraintStart_toEndOf="@+id/costCoinImage"
+            app:layout_constraintTop_toTopOf="@+id/costCoinLayout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <!-- Onayla button -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@id/confirmButtonLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/round_green_border"
+        android:elevation="3dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        app:layout_constraintEnd_toEndOf="@id/confirmButton"
+        app:layout_constraintStart_toStartOf="@+id/confirmButton"
+        app:layout_constraintTop_toTopOf="@+id/confirmButton">
+
+        <ImageView
+            android:id="@+id/confirmButtonImage"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/confirm"
+            app:layout_constraintBottom_toBottomOf="@id/confirmButtonLayout"
+            app:layout_constraintEnd_toEndOf="@+id/confirmButtonLayout"
+            app:layout_constraintStart_toStartOf="@+id/confirmButtonLayout"
+            app:layout_constraintTop_toTopOf="@+id/confirmButtonLayout" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/confirmButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Onayla"
+        android:layout_margin="8dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/letterJokerButton"
+        app:layout_constraintTop_toBottomOf="@+id/joker_text" /> <!-- Butonlar arasında boşluk -->
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

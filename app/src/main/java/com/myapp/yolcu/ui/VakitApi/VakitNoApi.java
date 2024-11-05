@@ -68,8 +68,11 @@ public class VakitNoApi {
 
     public HashMap<String, String> localPrayerTimesByCityName(String cityName) {
         City city= City.fromCityName(cityName);
-        assert city != null;
-        return localPrayerTimes(city.getLatitude(),city.getLongitude());
+        if (city!=null) {
+            return localPrayerTimes(city.getLatitude(),city.getLongitude());
+        }
+        else
+            return new HashMap<>();
     }
 
 }

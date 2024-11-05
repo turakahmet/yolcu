@@ -95,5 +95,35 @@ public class Question {
         }
         return -1; // Eğer doğru cevap bulunamazsa -1 döner
     }
+
+    public String questionSpaceHint() {
+        // Soru metni içindeki boşluk karakterlerini saymak için bir sayaç başlatıyoruz
+        int spaceCount = 1;
+
+        // Soru metnindeki her karakteri kontrol ediyoruz
+        for (int i = 0; i < this.dogruCevap.length(); i++) {
+            if (this.dogruCevap.charAt(i) == ' ') {
+                spaceCount++;
+            }
+        }
+        if(spaceCount>1)
+            return "İpucu: "+ spaceCount +" Kelime";
+        else
+            return null;
+    }
+
+    public boolean isDogruCevapWordGame() {
+        // Yasak karakterleri belirtiyoruz
+        String forbiddenChars = "[',\".\\-]"; // Tek tırnak, virgül, çift tırnak, nokta, tire
+
+        // Eğer dogruCevap bu karakterlerden herhangi birini içeriyorsa false dönecek
+        return !dogruCevap.matches(".*" + forbiddenChars + ".*") && dogruCevap.replace(" ", "").length()<12;
+    }
+
+    public boolean isNumeric() {
+        // dogruCevap değerinin tamamının sayısal olup olmadığını kontrol et
+        return dogruCevap.matches("[0-9]+");
+    }
+
 }
 

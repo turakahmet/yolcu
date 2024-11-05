@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Gölge katmanı -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#50000000" /> <!-- Gölge için yarı saydam siyah -->
+        </shape>
+    </item>
+
+    <!-- Beyaz çerçeve katmanı -->
+    <item android:left="3dp" android:right="3dp" android:top="3dp" android:bottom="10dp">
+        <shape android:shape="oval">
+
+            <solid android:color="@android:color/white" />
+            <size android:width="80dp" android:height="80dp" />
+        </shape>
+    </item>
+</layer-list>

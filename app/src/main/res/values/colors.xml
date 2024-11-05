@@ -20,5 +20,7 @@
     <color name="firstAnswer" >#FBC02D</color>
     <color name="colorGray" >#9E9E9E</color>
     <color name="colorAccent" >#FBC02D</color>
+    <color name="redAlertColor">#EF5350</color>
+
 
 </resources>

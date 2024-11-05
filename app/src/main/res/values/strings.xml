@@ -47,8 +47,10 @@
     <string name="aksam_vakit_notification_body">Akşam namazına 10 dakika kaldı!</string>
     <string name="yatsi_vakit_notification_body">Yatsı namazına 10 dakika kaldı!</string>
     <string name="imsak_vakit_notification_body">İmsak vaktine 10 dakika kaldı!</string>
-    <string name="play">Oyna</string>
+    <string name="play">KATIL</string>
     <string name="default_cost_coin">000</string>
+    <string name="default_timer">00</string>
+    <string name="default_value">0</string>
     <string name="soru_yukleniyor">Soru yükleniyor</string>
     <string name="tamam">TAMAM</string>
     <string name="close">KAPAT</string>
@@ -56,4 +58,18 @@
     <string name="timeupLabel">Maalesef süreniz doldu. Daha hızlı olmalısın</string>
     <string name="levelLabel">SEVİYE</string>
     <string name="winnerLabel">TEBRİKLER KAZANDINIZ</string>
+    <string name="wordGameCorrectLabel">DOĞRU YANIT</string>
+    <string name="wordGameWrongLabel">YANLIŞ YANIT</string>
+    <string name="exit_game">Çıkış Yap</string>
+    <string name="exit_game_label">Çıkmak istediğinize emin misiniz?</string>
+    <string name="evet">Evet</string>
+    <string name="hayir">Hayır</string>
+    <string name="harf_iste">Harf iste</string>
+    <string name="joker_label">Joker</string>
+    <string name="edit_username">Kullanıcı Adını Düzenle</string>
+    <string name="total_altin">000</string>
+    <string name="toplam_rozet">Kazanılan Rozet:</string>
+    <string name="badge_icon">rozet simge</string>
+    <string name="bilgi_yarisma">Kim hidayete erişmek ister?</string>
+    <string name="kelime_yarismasi">Kelime-i Hikmet</string>
 </resources>

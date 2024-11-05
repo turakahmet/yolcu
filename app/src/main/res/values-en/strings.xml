@@ -49,6 +49,8 @@
     <string name="imsak_vakit_notification_body">10 minutes left until Fajr time!</string>
     <string name="play">Play</string>
     <string name="default_cost_coin">000</string>
+    <string name="default_timer">00</string>
+    <string name="default_value">0</string>
     <string name="soru_yukleniyor">Question is loading</string>
     <string name="tamam">OK</string>
     <string name="close">CLOSE</string>
@@ -56,4 +58,18 @@
     <string name="timeupLabel">Sorry, your time has expired. You should be faster</string>
     <string name="levelLabel">LEVEL</string>
     <string name="winnerLabel">CONGRATULATIONS YOU WON</string>
+    <string name="wordGameCorrectLabel">CORRECT ANSWER</string>
+    <string name="wordGameWrongLabel">WRONG ANSWER</string>
+    <string name="exit_game">Sign Out</string>
+    <string name="exit_game_label">Are you sure you want to quit?</string>
+    <string name="evet">Yes</string>
+    <string name="hayir">No</string>
+    <string name="harf_iste">request a letter</string>
+    <string name="joker_label">Joker</string>
+    <string name="edit_username">Edit Username</string>
+    <string name="total_altin">000</string>
+    <string name="toplam_rozet">Badge Earned:</string>
+    <string name="badge_icon">badge icon</string>
+    <string name="bilgi_yarisma">Who wants to reach guidance?</string>
+    <string name="kelime_yarismasi">Word of Wisdom</string>
 </resources>

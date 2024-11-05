@@ -45,7 +45,7 @@
             </intent-filter>
         </receiver>
         <activity
-            android:name=".NetworkCheckActivity"
+            android:name=".ui.main.NetworkCheckActivity"
             android:exported="true">
         </activity>
         <activity android:name=".ui.game.InfoGameActivity"/>

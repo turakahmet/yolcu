@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Circular ImageView style -->
-    <style name="CircleImageView" parent="">
+    <style name="CircleImageView">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">50%</item> <!-- This makes it circular -->
+        <item name="cornerSize">55%</item> <!-- This makes it circular -->
     </style>
 
     <style name="GreenOutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">

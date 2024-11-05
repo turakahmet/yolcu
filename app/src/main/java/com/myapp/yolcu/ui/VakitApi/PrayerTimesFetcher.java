@@ -154,15 +154,19 @@ public class PrayerTimesFetcher extends Service {
         LocalTime currentTime = LocalTime.now();
         VakitNoApi vakitNoApi=new VakitNoApi();
         HashMap<String, String> vakitList= vakitNoApi.localPrayerTimesByCityName(city);
-        imsakTime.setText(vakitList.get("imsakTime"));
-        gunesTime.setText(vakitList.get("gunesTime"));
-        ogleTime.setText(vakitList.get("ogleTime"));
-        ikindiTime.setText(vakitList.get("ikindiTime"));
-        aksamTime.setText(vakitList.get("aksamTime"));
-        yatsiTime.setText(vakitList.get("yatsiTime"));
-        updateBackgroundColor(currentTime);
-        assert locationRefreshLayout != null;
-        locationRefreshLayout.setVisibility(View.GONE);
+        if(!vakitList.isEmpty()) {
+            imsakTime.setText(vakitList.get("imsakTime"));
+            gunesTime.setText(vakitList.get("gunesTime"));
+            ogleTime.setText(vakitList.get("ogleTime"));
+            ikindiTime.setText(vakitList.get("ikindiTime"));
+            aksamTime.setText(vakitList.get("aksamTime"));
+            yatsiTime.setText(vakitList.get("yatsiTime"));
+            updateBackgroundColor(currentTime);
+            assert locationRefreshLayout != null;
+            locationRefreshLayout.setVisibility(View.GONE);
+        }else{
+            locationRefreshLayout.setVisibility(View.VISIBLE);
+        }
     }
     private void updateBackgroundColor(LocalTime currentTime) {
         LocalTime namazVakti = null;

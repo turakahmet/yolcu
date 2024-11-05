@@ -1,4 +1,4 @@
-package com.myapp.yolcu; // Uygulamanızın paketiyle değiştirin
+package com.myapp.yolcu.ui.main; // Uygulamanızın paketiyle değiştirin
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.myapp.yolcu.R;
 
 public class NetworkCheckActivity extends AppCompatActivity {
 

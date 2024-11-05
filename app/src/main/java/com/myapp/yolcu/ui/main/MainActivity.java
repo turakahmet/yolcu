@@ -45,15 +45,15 @@ import com.google.android.gms.location.Priority;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.myapp.yolcu.NetworkCheckActivity;
 import com.myapp.yolcu.R;
 import com.myapp.yolcu.databinding.ActivityMainBinding;
+import com.myapp.yolcu.ui.Rozet.BadgeService;
 import com.myapp.yolcu.ui.VakitApi.CityUrlMapping;
 import com.myapp.yolcu.ui.VakitApi.PrayerTimesFetcher;
-import com.myapp.yolcu.ui.VakitApi.VakitNoApi;
+import com.myapp.yolcu.ui.game.GoldService;
+import com.myapp.yolcu.ui.game.SoundService;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-    private TextView imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, locationTextView, usernameTextView, kalanSureTextView, toolbarKalanSureLabel;
+    private TextView imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, locationTextView, usernameTextView, kalanSureTextView, toolbarKalanSureLabel, total_user_gold, total_rozet;
     private LinearLayout imsakTimeLayout, gunesTimeLayout, ogleTimeLayout, ikindiTimeLayout, aksamTimeLayout, yatsiTimeLayout, locationRefreshLayout, remain_time_layout;
 
     private FusedLocationProviderClient fusedLocationClient;
@@ -81,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
     private ImageView editIcon;
     private static final int REQUEST_NOTIFICATION_PERMISSION = 123;
     private ShapeableImageView userAvatar;
+    private SoundService soundService;
+    private BadgeService badgeService;
+    private GoldService goldService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +97,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         locationPrefs = getSharedPreferences(PREFS_LOCATION_NAME, Context.MODE_PRIVATE);
         //user
         userPrefs = getSharedPreferences(PREFS_USER_NAME, Context.MODE_PRIVATE);
-        // Kullanıcının altın miktarını SharedPreferences ile ayarlama
-        setInitialGoldAmount();
+
 
         // FusedLocationProviderClient başlatma
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -111,31 +113,13 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         }
         // Bildirim izni iste
         requestNotificationPermission();
-
-        // TextView'leri tanımla
-        imsakTime = findViewById(R.id.imsak_time);
-        gunesTime = findViewById(R.id.gunes_time);
-        ogleTime = findViewById(R.id.ogle_time);
-        ikindiTime = findViewById(R.id.ikindi_time);
-        aksamTime = findViewById(R.id.aksam_time);
-        yatsiTime = findViewById(R.id.yatsi_time);
-        locationTextView = findViewById(R.id.location_time);
-        refreshButton = findViewById(R.id.refresh_button);
-
-        imsakTimeLayout = findViewById(R.id.imsak_layout);
-        gunesTimeLayout = findViewById(R.id.gunes_layout);
-        ogleTimeLayout = findViewById(R.id.ogle_layout);
-        ikindiTimeLayout = findViewById(R.id.ikindi_layout);
-        aksamTimeLayout = findViewById(R.id.aksam_layout);
-        yatsiTimeLayout = findViewById(R.id.yatsi_layout);
-        kalanSureTextView = findViewById(R.id.toolbarKalanSure);
-        locationRefreshLayout = findViewById(R.id.location_refresh_Layout);
-        remain_time_layout = findViewById(R.id.remain_time_layout);
-        toolbarKalanSureLabel = findViewById(R.id.toolbarKalanSureLabel);
-
+        initializeViews();
+        initializeServices();
+        initializeHeaderView();
+        initialGoldAmount();
+        checkInternetConnection();
 
         // Toolbar ve Navigation ayarları
-        setSupportActionBar(binding.appBarMain.toolbar);
         binding.appBarMain.fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show());
 
@@ -151,23 +135,30 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
             }
         });
 
+    }
+
+    private void initializeHeaderView() {
+        setSupportActionBar(binding.appBarMain.toolbar);
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_rozet)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-        checkInternetConnection();
+
+
 
         // NavigationView'in header'ından View'leri bulma
         View headerView = navigationView.getHeaderView(0); // Header layout'a erişim
         usernameTextView = headerView.findViewById(R.id.username); // Username TextView
         editIcon = headerView.findViewById(R.id.editIcon);
         userAvatar = headerView.findViewById(R.id.user_avatar);
+        total_user_gold=headerView.findViewById(R.id.total_user_gold);
+        total_rozet=headerView.findViewById(R.id.total_rozet);
 
 
         // Edit icon click listener
@@ -195,23 +186,72 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         userAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                soundService.commonButtonEffect();
                 ProfilePictureDialogFragment dialogFragment = new ProfilePictureDialogFragment();
                 dialogFragment.show(getSupportFragmentManager(), "profilePictureDialog");
+                dialogFragment.setCancelable(false);
             }
         });
 
+        // DrawerLayout'a DrawerListener ekleyin
+        drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+                // Çekmece sürüklenirken yapılan işlemler (İsteğe bağlı)
+            }
 
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+                total_user_gold.setText(String.valueOf(goldService.getGoldAmount()));
+                total_rozet.setText(String.valueOf(badgeService.getEnabledBadgeCount()));
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+                // NavigationView kapandığında yapılacak işlemler
+                Log.d("MainActivity", "Navigation kapandı");
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                // Çekmece durumunda değişiklik olduğunda yapılacak işlemler (İsteğe bağlı)
+            }
+        });
     }
 
-    private void setInitialGoldAmount() {
-        SharedPreferences sharedPreferences = getSharedPreferences("GamePreferences", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+    private void initializeServices() {
+        soundService = new SoundService(this);
+        badgeService = new BadgeService(this);
+    }
 
-        // Eğer daha önce altın miktarı ayarlanmamışsa 500 altın ver
-        if (sharedPreferences.getInt("userGold", -1) == -1) {
-            editor.putInt("userGold", 5000);
-            editor.apply();
-        }
+    private void initializeViews() {
+        // TextView'leri tanımla
+        imsakTime = findViewById(R.id.imsak_time);
+        gunesTime = findViewById(R.id.gunes_time);
+        ogleTime = findViewById(R.id.ogle_time);
+        ikindiTime = findViewById(R.id.ikindi_time);
+        aksamTime = findViewById(R.id.aksam_time);
+        yatsiTime = findViewById(R.id.yatsi_time);
+        locationTextView = findViewById(R.id.location_time);
+        refreshButton = findViewById(R.id.refresh_button);
+
+        imsakTimeLayout = findViewById(R.id.imsak_layout);
+        gunesTimeLayout = findViewById(R.id.gunes_layout);
+        ogleTimeLayout = findViewById(R.id.ogle_layout);
+        ikindiTimeLayout = findViewById(R.id.ikindi_layout);
+        aksamTimeLayout = findViewById(R.id.aksam_layout);
+        yatsiTimeLayout = findViewById(R.id.yatsi_layout);
+        kalanSureTextView = findViewById(R.id.toolbarKalanSure);
+        locationRefreshLayout = findViewById(R.id.location_refresh_Layout);
+        remain_time_layout = findViewById(R.id.remain_time_layout);
+        toolbarKalanSureLabel = findViewById(R.id.toolbarKalanSureLabel);
+    }
+
+
+    private void initialGoldAmount() {
+        goldService = new GoldService(this);
+        goldService.setInitialGoldAmount(); // Başlangıç altın miktarını ayarla
+        total_user_gold.setText(String.valueOf(goldService.getGoldAmount()));
     }
 
 
@@ -477,6 +517,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
 
     @Override
     public void onProfilePictureSelected(int resourceId) {
+        soundService.commonButtonEffect();
         // Seçilen resmi ayarla
         userAvatar.setImageResource(resourceId);
 
