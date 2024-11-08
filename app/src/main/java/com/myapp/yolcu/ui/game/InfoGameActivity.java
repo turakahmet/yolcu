@@ -54,7 +54,7 @@ public class InfoGameActivity extends AppCompatActivity {
 
     private List<Question> questionList;
     private int currentQuestionIndex = 0;
-    private int timeLeft = 105; // 60 saniye geri sayım süresi
+    private int timeLeft = 150; // 60 saniye geri sayım süresi
     private Handler handler = new Handler();
     private boolean joker50Used = false;
     private boolean jokerHintUsed = false;
@@ -224,11 +224,11 @@ public class InfoGameActivity extends AppCompatActivity {
 
         // Orta seviyeden 3 rastgele soru seç
         Collections.shuffle(mediumQuestions);
-        List<Question> selectedMediumQuestions = mediumQuestions.subList(0, Math.min(3, mediumQuestions.size()));
+        List<Question> selectedMediumQuestions = mediumQuestions.subList(0, Math.min(5, mediumQuestions.size()));
 
         // Zor seviyeden 3 rastgele soru seç
         Collections.shuffle(mediumQuestions);
-        List<Question> selectedHardQuestions = hardQuestions.subList(0, Math.min(3, hardQuestions.size()));
+        List<Question> selectedHardQuestions = hardQuestions.subList(0, Math.min(5, hardQuestions.size()));
 
 
         // Seçilen soruları birleştir
