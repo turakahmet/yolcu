@@ -1,4 +1,4 @@
-package com.myapp.yolcu.ui.game;
+package com.myapp.yolcu.ui.Service;
 
 import android.content.Context;
 import android.content.SharedPreferences;

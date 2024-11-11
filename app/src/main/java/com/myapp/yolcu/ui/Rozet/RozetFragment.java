@@ -1,24 +1,18 @@
 package com.myapp.yolcu.ui.Rozet;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.myapp.yolcu.R;
 import com.myapp.yolcu.databinding.FragmentRozetBinding;
-import com.myapp.yolcu.ui.game.SoundService;
+import com.myapp.yolcu.ui.Service.BadgeService;
+import com.myapp.yolcu.ui.Service.SoundService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RozetFragment extends Fragment {

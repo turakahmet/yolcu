@@ -47,11 +47,11 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.myapp.yolcu.R;
 import com.myapp.yolcu.databinding.ActivityMainBinding;
-import com.myapp.yolcu.ui.Rozet.BadgeService;
+import com.myapp.yolcu.ui.Service.BadgeService;
 import com.myapp.yolcu.ui.VakitApi.CityUrlMapping;
 import com.myapp.yolcu.ui.VakitApi.PrayerTimesFetcher;
-import com.myapp.yolcu.ui.game.GoldService;
-import com.myapp.yolcu.ui.game.SoundService;
+import com.myapp.yolcu.ui.Service.GoldService;
+import com.myapp.yolcu.ui.Service.SoundService;
 
 import java.io.IOException;
 import java.util.List;
