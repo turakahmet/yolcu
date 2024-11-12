@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.myapp.yolcu.databinding.FragmentGalleryBinding;
-import com.myapp.yolcu.ui.game.SoundService;
+import com.myapp.yolcu.ui.Service.SoundService;
 
 public class GalleryFragment extends Fragment {
     private SoundService soundService;

@@ -16,10 +16,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.myapp.yolcu.R;
 import com.myapp.yolcu.databinding.FragmentHomeBinding;
-import com.myapp.yolcu.ui.Rozet.BadgeService;
+import com.myapp.yolcu.ui.Service.BadgeService;
 import com.myapp.yolcu.ui.Rozet.BadgeType;
 import com.myapp.yolcu.ui.game.InfoGameActivity;
-import com.myapp.yolcu.ui.game.SoundService;
+import com.myapp.yolcu.ui.Service.SoundService;
 import com.myapp.yolcu.ui.game.WordGameActivity;
 
 public class HomeFragment extends Fragment {

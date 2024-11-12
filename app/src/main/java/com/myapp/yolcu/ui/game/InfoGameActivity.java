@@ -27,9 +27,11 @@ import androidx.core.content.ContextCompat;
 
 import com.myapp.yolcu.R;
 import com.myapp.yolcu.ui.Entity.Question;
-import com.myapp.yolcu.ui.Rozet.BadgeService;
+import com.myapp.yolcu.ui.Service.BadgeService;
 import com.myapp.yolcu.ui.Rozet.BadgeType;
 import com.myapp.yolcu.ui.Service.APIService;
+import com.myapp.yolcu.ui.Service.GoldService;
+import com.myapp.yolcu.ui.Service.SoundService;
 import com.myapp.yolcu.ui.Utils.APIClient;
 import com.shuhart.stepview.StepView;
 
@@ -97,7 +99,6 @@ public class InfoGameActivity extends AppCompatActivity {
         initializeUserGold();
         initializeServices();
         fetchQuestions();
-        startTimer();
         setupJokerClickListeners();
 
         // onBackPressedCallback tanımlıyoruz
@@ -236,6 +237,8 @@ public class InfoGameActivity extends AppCompatActivity {
         finalQuestions.addAll(selectedEasyQuestions);
         finalQuestions.addAll(selectedMediumQuestions);
         finalQuestions.addAll(selectedHardQuestions);
+        //sureyi baslat
+        startTimer();
 
 
 

@@ -1,15 +1,12 @@
-package com.myapp.yolcu.ui.Rozet;
+package com.myapp.yolcu.ui.Service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Handler;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.myapp.yolcu.R;
-import com.myapp.yolcu.ui.game.SoundService;
+import com.myapp.yolcu.ui.Rozet.Badge;
+import com.myapp.yolcu.ui.Rozet.BadgeType;
+import com.myapp.yolcu.ui.Service.SoundService;
 
 import java.util.ArrayList;
 import java.util.List;
