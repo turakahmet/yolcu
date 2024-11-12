@@ -21,24 +21,23 @@ Burada 3 adet yarışma düşünülüyor,
 		3.6. toplamda 3 kere yanlış yapma hakkı olacak her yanlış eşleştirmede 1 hak gidecek
 		3.7. doğru eşleştirmede 50 puan gelecek
 		3.8. Hak iste jokeri harca: 200 
-		3.9. toplam sure 300 sn 
-
+		3.9. toplam sure 300 sn
+ 
 	opsiyonel
-	4. woordle şeklinde olabilir 
-
+	4. woordle şeklinde olabilir
+ 
 • 2.ibadet bölümü 
 burada esmaü-l hüsna olacak ezber kartları gibi olabilir,
 40 hadis ve açıklması
 farzlar olabilir
-
+ 
 • 3. rozetler başarılar
 burada kullanıcının kazanabileceği 15-20 adet rozet pasif olacak başarıları açtıkça aktif olacak bu rozetlerin simgeside profil resmi altında
 gösterilebilir
-
-
+ 
+ 
 yapılacaklar
 1. bildirim gece gelmiyor bakılacak
 2. namaz sürelerinde kullanıcı ayarlardan dianamik ayarlasın
-
-
-
+3. uygulama ilk açıldığında bildirim ayarlarını istesin 
+4.uygulama ilk açılışta tanıtım fragmanları gelsin
