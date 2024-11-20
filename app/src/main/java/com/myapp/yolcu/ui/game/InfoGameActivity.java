@@ -228,7 +228,7 @@ public class InfoGameActivity extends AppCompatActivity {
         List<Question> selectedMediumQuestions = mediumQuestions.subList(0, Math.min(5, mediumQuestions.size()));
 
         // Zor seviyeden 3 rastgele soru seç
-        Collections.shuffle(mediumQuestions);
+        Collections.shuffle(hardQuestions);
         List<Question> selectedHardQuestions = hardQuestions.subList(0, Math.min(5, hardQuestions.size()));
 
 
@@ -471,7 +471,7 @@ public class InfoGameActivity extends AppCompatActivity {
             disableTwoWrongOptions(correctAnswerIndex);
         } else {
             soundService.noUsedJokerEffect();
-            showToast("Yeterli altınınız yok! Daha fazla doğru cevap vererek altın kazanın.");
+            goldService.yetersizKaynakDialog(this);
         }
     }
 
@@ -489,7 +489,7 @@ public class InfoGameActivity extends AppCompatActivity {
             showHintPopup();
         } else {
             soundService.noUsedJokerEffect();
-            showToast("Yeterli altınınız yok! Daha fazla doğru cevap vererek altın kazanın.");
+            goldService.yetersizKaynakDialog(this);
         }
     }
 
@@ -506,7 +506,7 @@ public class InfoGameActivity extends AppCompatActivity {
             enableDoubleAnswer();
         } else {
             soundService.noUsedJokerEffect();
-            showToast("Yeterli altınınız yok! Daha fazla doğru cevap vererek altın kazanın.");
+            goldService.yetersizKaynakDialog(this);
         }
     }
 

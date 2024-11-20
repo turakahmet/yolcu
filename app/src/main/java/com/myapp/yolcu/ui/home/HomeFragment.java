@@ -20,6 +20,7 @@ import com.myapp.yolcu.ui.Service.BadgeService;
 import com.myapp.yolcu.ui.Rozet.BadgeType;
 import com.myapp.yolcu.ui.game.InfoGameActivity;
 import com.myapp.yolcu.ui.Service.SoundService;
+import com.myapp.yolcu.ui.game.MatchesGameActivity;
 import com.myapp.yolcu.ui.game.WordGameActivity;
 
 public class HomeFragment extends Fragment {
@@ -31,6 +32,7 @@ public class HomeFragment extends Fragment {
     private final String PREFS_NAME = "GameJoinPreferences";
     private final String INFO_GAME_COUNT_KEY = "infoGameCount";
     private final String WORD_GAME_COUNT_KEY = "wordGameCount";
+    private final String MATCHES_GAME_COUNT_KEY = "matchesGameCount";
     private final int GAME_THRESHOLD = 10;  // 10 defa tıklama sonrası rozet için
     private SharedPreferences sharedPreferences;
 
@@ -48,6 +50,7 @@ public class HomeFragment extends Fragment {
         // "Oyna" butonlarını bağlama
         Button playInfoGameButton = root.findViewById(R.id.play_info_game_button);
         Button playWordGameButton = root.findViewById(R.id.play_word_game_button);
+        Button playMatchesGameButton = root.findViewById(R.id.play_matches_game_button);
 
         // Bilgi oyunu butonuna tıklama olayını tanımla
         playInfoGameButton.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +77,21 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        // Esleme oyunu butonuna tıklama olayını tanımla
+        playMatchesGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                incrementGameCount(MATCHES_GAME_COUNT_KEY);
+
+                // Kelime oyununu aç
+                soundService.playGameButtonEffect();
+                Intent intent = new Intent(getActivity(), MatchesGameActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
 
         return root;
     }

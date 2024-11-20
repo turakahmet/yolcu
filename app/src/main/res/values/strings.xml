@@ -6,7 +6,6 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Ayarlar</string>
-
     <string name="menu_yarisma">Yarışma</string>
     <string name="menu_ibadet">İbadet</string>
     <string name="menu_basari">Rozetler</string>
@@ -72,4 +71,7 @@
     <string name="badge_icon">rozet simge</string>
     <string name="bilgi_yarisma">Kim hidayete erişmek ister?</string>
     <string name="kelime_yarismasi">Kelime-i Hikmet</string>
+    <string name="yetersiz_kaynak_label">Yeterli kaynağınız yok!\n Sorulara doğru yanıt vererek altın kazanabilirsin</string>
+    <string name="esleme_yarismasi">Esma-i Hüsna Keşfi</string>
+    <string name="tebrikler">Tebrikler</string>
 </resources>

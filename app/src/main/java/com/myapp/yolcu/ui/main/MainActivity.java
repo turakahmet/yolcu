@@ -1,6 +1,7 @@
 package com.myapp.yolcu.ui.main;
 
 import android.Manifest;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -203,13 +204,20 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
             @Override
             public void onDrawerOpened(@NonNull View drawerView) {
                 total_user_gold.setText(String.valueOf(goldService.getGoldAmount()));
-                total_rozet.setText(String.valueOf(badgeService.getEnabledBadgeCount()));
+                ValueAnimator animator = ValueAnimator.ofInt(0, badgeService.getEnabledBadgeCount());
+                animator.setDuration(1000); //
+                animator.addUpdateListener(animation -> {
+                    // TextView'de sayıyı yavaş yavaş artırarak göster
+                    total_rozet.setText(animation.getAnimatedValue().toString());
+                });
+                animator.start();
             }
 
             @Override
             public void onDrawerClosed(@NonNull View drawerView) {
                 // NavigationView kapandığında yapılacak işlemler
                 Log.d("MainActivity", "Navigation kapandı");
+                total_rozet.setText("0");
             }
 
             @Override
@@ -251,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
     private void initialGoldAmount() {
         goldService = new GoldService(this);
         goldService.setInitialGoldAmount(); // Başlangıç altın miktarını ayarla
-        total_user_gold.setText(String.valueOf(goldService.getGoldAmount()));
+//        total_user_gold.setText(String.valueOf(goldService.getGoldAmount()));
     }
 
 
@@ -337,7 +345,10 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         try {
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             assert addresses != null;
-            if (addresses.size() > 0) {
+            if (!addresses.isEmpty()) {
+                if(!addresses.get(0).getCountryName().equals("Türkiye")){
+                    startLocationUpdates();
+                }
                 String city = addresses.get(0).getAdminArea();
 //                fetchPrayerTimes(city); //diyanetten alırsan burası acilacak aşağıdaki kapanacak
                 fetchPrayerTimesNoAPI(city);// kendin hesaplarsan burası acilacak yukardaki kapanak

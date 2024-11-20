@@ -78,7 +78,15 @@ public class SoundService {
         playSound(R.raw.common_button);
     }
 
+
     public void successRozet() {playSound(R.raw.rozet_success);
+    }
+
+    public void matchesSuccessButtonEffect() {
+        playSound(R.raw.matches_success);
+    }
+    public void matchesFailButtonEffect() {
+        playSound(R.raw.matches_fail);
     }
 }
 

@@ -60,7 +60,7 @@ import retrofit2.Response;
 public class WordGameActivity extends AppCompatActivity {
     private TextView timerText;
     private Handler handler = new Handler();
-    private int timeLeft = 105; // 60 saniye geri sayım süresi
+    private int timeLeft = 240; // 60 saniye geri sayım süresi
     private TextView questionTextView,questionSpaceHint,costCoinLabel;
     private GridLayout answerGrid;
     private Button letterJokerButton,confirmButton;
@@ -71,8 +71,8 @@ public class WordGameActivity extends AppCompatActivity {
     private TextView goldAmountText;
     private List<Question> finalQuestions;
     private StepView stepView;
-    private final int JOKER_LETTER=0;
-    private final int  ADD_COIN=100;
+    private final int JOKER_LETTER=100;
+    private final int ADD_COIN=50;
     private ConstraintLayout costCoinLayout,confirmButtonLayout;
     private GoldService goldService;
     private SoundService soundService;
@@ -83,6 +83,9 @@ public class WordGameActivity extends AppCompatActivity {
     private int profit=0;
     private boolean harfAlindimiRozet=false;
     private boolean jokerKullanmamaRozet=true;
+    private int toplamAcilanHarfSayisi=0;
+    private int sorudanAlinanPuan=0;
+    private boolean isAnimationRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -326,11 +329,11 @@ public class WordGameActivity extends AppCompatActivity {
 
         // Orta seviyeden 3 rastgele soru seç
         Collections.shuffle(mediumQuestions);
-        List<Question> selectedMediumQuestions = mediumQuestions.subList(0, Math.min(3, mediumQuestions.size()));
+        List<Question> selectedMediumQuestions = mediumQuestions.subList(0, Math.min(5, mediumQuestions.size()));
 
         // Zor seviyeden 3 rastgele soru seç
-        Collections.shuffle(mediumQuestions);
-        List<Question> selectedHardQuestions = hardQuestions.subList(0, Math.min(3, hardQuestions.size()));
+        Collections.shuffle(hardQuestions);
+        List<Question> selectedHardQuestions = hardQuestions.subList(0, Math.min(5, hardQuestions.size()));
 
 
         // Seçilen soruları birleştir
@@ -499,6 +502,7 @@ public class WordGameActivity extends AppCompatActivity {
         costCoinLayout.setAlpha(1.0f);
         confirmButtonLayout.setAlpha(1.0f);
         harfAlindimiRozet=false;
+        toplamAcilanHarfSayisi=0;
     }
 
     private void checkAnswer() {
@@ -508,12 +512,14 @@ public class WordGameActivity extends AppCompatActivity {
             userAnswer.append(editText.getText().toString());
         }
         if (userAnswer.toString().equalsIgnoreCase(currentAnswer)) {
+            int kalanHarfSayisi=currentAnswer.length() - toplamAcilanHarfSayisi;
+            sorudanAlinanPuan = ADD_COIN * kalanHarfSayisi;
+            goldService.addGoldAmount(sorudanAlinanPuan);
             showAnimation(true);
             soundService.successAnswer();
-            goldService.addGoldAmount(ADD_COIN);
             saveGoldAmountText();
             validationRozet(false);
-            profit+=ADD_COIN;
+            profit+=sorudanAlinanPuan;
             currentQuestionIndex++;
             confirmButtonLayout.setAlpha(0.0f);
             confirmButton.setEnabled(false);
@@ -521,7 +527,7 @@ public class WordGameActivity extends AppCompatActivity {
                 badgeService.enableBadge(BadgeType.KELIME_YARISMA_1);
             }
 
-            if (finalQuestions.size()>0) {
+            if (!finalQuestions.isEmpty()) {
                 nextQuestionWithDelay();
             } else {
                 endGamePopup(null,false,true,false);
@@ -559,7 +565,7 @@ public class WordGameActivity extends AppCompatActivity {
     private void showAnimation(boolean dogruYanit) {
         // Doğru veya yanlış yanıt duruma göre ayarla
         if (dogruYanit) {
-            gifImageSuccessViewLabel.setText(getString(R.string.wordGameCorrectLabel)+ "+" + ADD_COIN);
+            gifImageSuccessViewLabel.setText(getString(R.string.wordGameCorrectLabel)+ "+" + sorudanAlinanPuan);
             gifImageSuccessViewLabel.setTextColor(ContextCompat.getColor(this, R.color.correctAnswer));
             gifImageView.setImageResource(R.drawable.confirm );
         } else {
@@ -634,6 +640,8 @@ public class WordGameActivity extends AppCompatActivity {
     private void giveLetter() {
 
         if (goldService.getGoldAmount() >= JOKER_LETTER) {
+            goldService.minusGoldAmount(JOKER_LETTER);
+            saveGoldAmountText();
             Random random = new Random();
             int index;
             harfAlindimiRozet=true;
@@ -651,6 +659,7 @@ public class WordGameActivity extends AppCompatActivity {
             // Doğru cevaptan alınacak harf
             char hintChar = currentAnswer.charAt(index);
             hintEditText.setEnabled(false); // EditText'i düzenlenemez yap
+            toplamAcilanHarfSayisi++;
 
             // Alfabeden rasgele harfler gösterme animasyonu
             Handler handler = new Handler();
@@ -672,8 +681,7 @@ public class WordGameActivity extends AppCompatActivity {
                     } else {
                         // Animasyon süresi tamamlandı, doğru harfi yerleştir
                         finalHintEditText.setText(String.valueOf(hintChar));
-                        goldService.minusGoldAmount(JOKER_LETTER);
-                        saveGoldAmountText();
+
                     }
                 }
             };
@@ -697,7 +705,8 @@ public class WordGameActivity extends AppCompatActivity {
             }
         } else {
             soundService.noUsedJokerEffect();
-            showToast("Yeterli altınınız yok! Daha fazla doğru cevap vererek altın kazanın.");
+            letterJokerButton.setEnabled(false);
+            goldService.yetersizKaynakDialog(this);
         }
     }
 

@@ -13,6 +13,21 @@
         <item name="cornerRadius">5dp</item> <!-- Butonun kenarları yuvarlak olacak -->
         <item name="android:textColor">@color/infoGameText</item> <!-- Buton yazısı yeşil -->
     </style>
+
+    <style name="GreenOutMatchesGameButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="backgroundTint">@android:color/white</item>
+        <item name="strokeColor">#4CAF50</item> <!-- Yeşil çerçeve -->
+        <item name="strokeWidth">3dp</item> <!-- Çerçevenin kalınlığı -->
+        <item name="cornerRadius">10dp</item> <!-- Butonun kenarları yuvarlak olacak -->
+        <item name="android:textColor">@color/infoGameText</item> <!-- Buton yazısı yeşil -->
+    </style>
+    <style name="BlueOutMatchesGameButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="backgroundTint">@android:color/white</item>
+        <item name="strokeColor">#2196F3</item> <!-- Yeşil çerçeve -->
+        <item name="strokeWidth">3dp</item> <!-- Çerçevenin kalınlığı -->
+        <item name="cornerRadius">10dp</item> <!-- Butonun kenarları yuvarlak olacak -->
+        <item name="android:textColor">@color/infoGameText</item> <!-- Buton yazısı yeşil -->
+    </style>
     <style name="CustomButtonStyle">
         <item name="android:background">@color/colorGray</item> <!-- Kırmızı Renk -->
         <item name="android:textColor">#FFFFFF</item> <!-- Beyaz Metin -->
