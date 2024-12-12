@@ -16,6 +16,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
+    <uses-feature android:name="android.hardware.sensor.compass" android:required="true" />
+
 
 
     <application
@@ -53,6 +56,8 @@
         <activity android:name=".ui.game.InfoGameActivity"/>
         <activity android:name=".ui.game.WordGameActivity"/>
         <activity android:name=".ui.game.MatchesGameActivity"/>
+        <activity android:name=".ui.ibadet.KirkHadisActivity"/>
+        <activity android:name=".ui.ibadet.IbadetDetailActivity" />
 
         <meta-data
             android:name="preloaded_fonts"

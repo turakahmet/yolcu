@@ -13,6 +13,10 @@
             android:icon="@drawable/baseline_mosque_24"
             android:title="@string/menu_ibadet" />
         <item
+            android:id="@+id/nav_compass"
+            android:icon="@drawable/baseline_near_me_24"
+            android:title="@string/menu_pususla" />
+        <item
             android:id="@+id/nav_rozet"
             android:icon="@drawable/baseline_local_activity_24"
             android:title="@string/menu_basari" />

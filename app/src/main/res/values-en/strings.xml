@@ -10,6 +10,7 @@
     <string name="choose_avatar">Select profile picture</string>
     <string name="menu_yarisma">Competition</string>
     <string name="menu_ibadet">Prayer</string>
+    <string name="menu_pususla">Qibla Direction</string>
     <string name="menu_basari">Badges</string>
     <string name="empty_text">-</string>
     <string name="no_Internet">Check your internet connection</string>
@@ -72,4 +73,18 @@
     <string name="badge_icon">badge icon</string>
     <string name="bilgi_yarisma">Who wants to reach guidance?</string>
     <string name="kelime_yarismasi">Word of Wisdom</string>
+    <string name="esleme_yarismasi">Discovery of Esma-i Hüsna</string>
+    <string name="tebrikler">Congratulations</string>
+    <string name="testYazisi">Lorem Ipsum is simply</string>
+    <string name="kirkhadis">Let\'s Learn 40 Hadiths</string>
+    <string name="yetersiz_kaynak_label">You don\'t have enough resources!  You can earn gold by answering questions correctly</string>
+    <string name="required_locaiton">Turn on your location from location settings</string>
+    <string name="find_location_label">Searching for location...</string>
+    <string name="compassInfo_bottom">Warning: Direction finding with electronic devices may not always give accurate results. For accurate results, please refer to the Masjids and Mosques near you.</string>
+    <string name="location_fail">Error retrieving location error message:</string>
+    <string name="compassInfo_header">"1. Turn on your location permission and location settings for correct direction.\n2. Wait for your device to find your location information.\n3. When your location is found, city / district / neighborhood information will be written under the compass.\n4. Make sure you have accurate location information.\n5. Place your device on a flat surface.\n6. Turn your device to the right or left according to the Kaaba symbol.\n7.When you enter the approximate degree range, the compass degree will turn green and you can head in this direction."</string>
+    <string name="location_service_closed_header">Location Service is Off</string>
+    <string name="location_service_closed_message">Want to go to settings to turn on location service?</string>
+    <string name="location_permission_required_header">Location Permission Required</string>
+    <string name="location_permission_required_message">To use the location service, you need to provide location permission.</string>
 </resources>

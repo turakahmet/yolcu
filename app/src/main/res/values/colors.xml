@@ -21,6 +21,10 @@
     <color name="colorGray" >#9E9E9E</color>
     <color name="colorAccent" >#FBC02D</color>
     <color name="redAlertColor">#EF5350</color>
+    <color name="carViewHeaderColor">#55999999</color>
+    <color name="pricarViewIbadetColor">#7CB342</color>
+    <color name="pricarViewIbadetHeaderColor">#FFECB3</color>
+    <color name="compassTextColor">#16453E</color>
 
 
 </resources>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".ui.pusula.QiblaCompassFragment">
+
+    <TextView
+        android:id="@+id/degreeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:text="@string/default_value"
+        android:textColor="@color/compassTextColor"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/compassImageView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:contentDescription="compass arrow"
+        android:scaleType="centerCrop"
+        android:src="@drawable/compass"
+        app:layout_constraintBottom_toTopOf="@+id/degreeAdressDetailTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/degreeTextView" />
+
+    <com.myapp.yolcu.ui.pusula.QiblaDirectionView
+        android:id="@+id/qiblaDirectionView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:elevation="3dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/compassImageView"
+        app:layout_constraintStart_toStartOf="@id/compassImageView"
+        app:layout_constraintBottom_toBottomOf="@+id/compassImageView"
+        app:layout_constraintEnd_toEndOf="@+id/compassImageView" />
+
+
+    <TextView
+        android:id="@+id/degreeAdressDetailTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/find_location_label"
+        android:textColor="#16453E"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/loadingLocationCompass"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/loadingLocationCompass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="visible"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/compassInfoButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <Button
+        android:id="@+id/compassInfoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nasıl Kullanılır?"
+        android:layout_margin="5dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+<!--    <TextView-->
+<!--        android:id="@+id/compassInfo"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:padding="10dp"-->
+<!--        android:gravity="center"-->
+<!--        android:text="@string/compassInfo"-->
+<!--        android:textColor="@color/compassTextColor"-->
+<!--        android:textSize="12sp"-->
+<!--        android:textStyle="bold|italic"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--         />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
