@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="varlik_turu">
+        <item>Türk Lirası</item>
+        <item>Döviz</item>
+        <item>Altın</item>
+    </string-array>
+
+    <string-array name="doviz_turu">
+        <item>Dolar</item>
+        <item>Euro</item>
+        <item>İngiliz Sterlini</item>
+        <item>Kuweyt Dinarı</item>
+        <item>S. Arabistan Riyali</item>
+        <item>Azerbaycan Manatı</item>
+        <item>Bulgar Levası</item>
+        <item>Rus Rublesi</item>
+    </string-array>
+
+    <string-array name="altin_turu">
+        <item>Gram Altın</item>
+        <item>Çeyrek Altın</item>
+        <item>Yarım Altın</item>
+        <item>Tam Altın</item>
+        <item>14 Ayar Altın</item>
+        <item>18 Ayar Altın</item>
+        <item>22 Ayar Altın</item>
+        <item>Reşat Altın</item>
+        <item>Ata Beşli Altın</item>
+        <item>Gremse Altın</item>
+        <item>Gümüş</item>
+    </string-array>
+</resources>

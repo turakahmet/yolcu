@@ -17,6 +17,14 @@
             android:icon="@drawable/baseline_near_me_24"
             android:title="@string/menu_pususla" />
         <item
+            android:id="@+id/nav_zekat"
+            android:icon="@drawable/baseline_calculate_24"
+            android:title="@string/menu_zekat_hesapla" />
+        <item
+            android:id="@+id/nav_muze"
+            android:icon="@drawable/baseline_museum_24"
+            android:title="@string/menu_muze" />
+        <item
             android:id="@+id/nav_rozet"
             android:icon="@drawable/baseline_local_activity_24"
             android:title="@string/menu_basari" />

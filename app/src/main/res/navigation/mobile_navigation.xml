@@ -24,6 +24,18 @@
         tools:layout="@layout/fragment_compass" />
 
     <fragment
+        android:id="@+id/nav_zekat"
+        android:name="com.myapp.yolcu.ui.zekat.ZekatHesaplaFragment"
+        android:label="@string/menu_zekat_hesapla"
+        tools:layout="@layout/fragment_zekat_hesapla" />
+
+    <fragment
+        android:id="@+id/nav_muze"
+        android:name="com.myapp.yolcu.ui.muze.DigitalMuzeFragment"
+        android:label="@string/menu_muze"
+        tools:layout="@layout/fragment_digital_muze" />
+
+    <fragment
         android:id="@+id/nav_rozet"
         android:name="com.myapp.yolcu.ui.Rozet.RozetFragment"
         android:label="@string/menu_basari"

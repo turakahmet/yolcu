@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_rozet)
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_compass,R.id.nav_zekat,R.id.nav_muze,R.id.nav_rozet)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);

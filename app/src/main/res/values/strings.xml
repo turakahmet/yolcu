@@ -9,6 +9,8 @@
     <string name="menu_yarisma">Yarışma</string>
     <string name="menu_ibadet">İbadet</string>
     <string name="menu_pususla">Kıble Yönü</string>
+    <string name="menu_zekat_hesapla">Zekat Hesapla</string>
+    <string name="menu_muze">İslami Müze</string>
     <string name="menu_basari">Rozetler</string>
     <string name="empty_text">-</string>
     <string name="no_Internet">İnternet bağlantınızı kontrol edin</string>
@@ -249,4 +251,10 @@
     <string name="location_service_closed_message">Konum servisini açmak için ayarlara gitmek ister misiniz?</string>
     <string name="location_permission_required_header">Konum İzni Gerekli</string>
     <string name="location_permission_required_message">Konum servisini kullanabilmek için konum izni vermeniz gerekiyor.</string>
+    <string name="dovizTuru">Döviz Türü</string>
+    <string name="altinTuru">Altın Türü</string>
+    <string name="deteleButtonLabel">Sil</string>
+    <string name="nisapMiktarHeader">Nisap tutarı servisten alınamadı! İşleme gram altın alış fiyatı değeri girerek devam edebilirsiniz.</string>
+    <string name="nisapTutarUser">Gram altın fiyat giriniz</string>
+    <string name="nisapMiktarInfo">Yapılan hesaplamalar ve değerler bilgi amaçlıdır sorumluluk kullanıcı aittir.</string>
 </resources>

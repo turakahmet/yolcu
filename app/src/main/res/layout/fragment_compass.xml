@@ -23,11 +23,12 @@
 
     <ImageView
         android:id="@+id/compassImageView"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
         android:contentDescription="compass arrow"
         android:scaleType="centerCrop"
         android:src="@drawable/compass"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/degreeAdressDetailTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,10 +36,11 @@
 
     <com.myapp.yolcu.ui.pusula.QiblaDirectionView
         android:id="@+id/qiblaDirectionView"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
         android:elevation="3dp"
         android:visibility="gone"
+        android:padding="10dp"
         app:layout_constraintTop_toTopOf="@id/compassImageView"
         app:layout_constraintStart_toStartOf="@id/compassImageView"
         app:layout_constraintBottom_toBottomOf="@+id/compassImageView"
