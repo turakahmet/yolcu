@@ -10,7 +10,7 @@
     <string name="menu_ibadet">İbadet</string>
     <string name="menu_pususla">Kıble Yönü</string>
     <string name="menu_zekat_hesapla">Zekat Hesapla</string>
-    <string name="menu_muze">İslami Müze</string>
+    <string name="menu_muze">İslami Değerler</string>
     <string name="menu_basari">Rozetler</string>
     <string name="empty_text">-</string>
     <string name="no_Internet">İnternet bağlantınızı kontrol edin</string>
@@ -41,18 +41,29 @@
     <string name="aksam_kalan">Akşam vaktine kalan</string>
     <string name="yatsi_kalan">Yatsı vaktine kalan</string>
     <string name="imsak_kalan">İmsak vaktine kalan</string>
+
+    <string name="sabah_namazi">Sabah Namazı</string>
+    <string name="ogle_namazi">Öğle Namazı</string>
+    <string name="ikindi_namazi">İkindi Namazı</string>
+    <string name="aksam_namazi">Akşam Namazı</string>
+    <string name="yatsi_namazi">Yatsı Namazı</string>
+    <string name="imsak_vakti">İmsak Vakti</string>
+
     <string name="namaz_vakit_notification_header">Namaz Vakti</string>
     <string name="imsak_vakit_notification_header">İmsak Vakti</string>
-    <string name="gunes_vakit_notification_body">Güneş Doğmasına 10 dakika kaldı!</string>
-    <string name="ogle_vakit_notification_body">Öğle namazına 10 dakika kaldı!</string>
-    <string name="ikindi_vakit_notification_body">İkindi namazına 10 dakika kaldı!</string>
-    <string name="aksam_vakit_notification_body">Akşam namazına 10 dakika kaldı!</string>
-    <string name="yatsi_vakit_notification_body">Yatsı namazına 10 dakika kaldı!</string>
-    <string name="imsak_vakit_notification_body">İmsak vaktine 10 dakika kaldı!</string>
+    <string name="gunes_vakit_notification_body">Güneş Doğmasına ## dakika kaldı!</string>
+    <string name="ogle_vakit_notification_body">Öğle namazına ## dakika kaldı!</string>
+    <string name="ikindi_vakit_notification_body">İkindi namazına ## dakika kaldı!</string>
+    <string name="aksam_vakit_notification_body">Akşam namazına ## dakika kaldı!</string>
+    <string name="yatsi_vakit_notification_body">Yatsı namazına ## dakika kaldı!</string>
+    <string name="imsak_vakit_notification_body">İmsak vaktine ## dakika kaldı!</string>
+    <string name="kerahat_vakit_notification_header">Kerahat Vakti</string>
+    <string name="kerahat_vakit_notification_body">İkindi namazının farzı hariç namaz kılmayınız</string>
     <string name="play">KATIL</string>
     <string name="default_cost_coin">000</string>
     <string name="default_timer">00</string>
     <string name="default_value">0</string>
+    <string name="default_time_clock">00:01</string>
     <string name="soru_yukleniyor">Soru yükleniyor</string>
     <string name="tamam">TAMAM</string>
     <string name="close">KAPAT</string>
@@ -82,163 +93,163 @@
     <string name="dortbin_sunnet_adablari" translatable="false">4000 Sünnet ve Adabları</string>
     <string name="hadisinAnlami" translatable="false">Hadisi Anlayalım</string>
     <string name="hadisidenDersCikaralim" translatable="false">Hadisten Çıkarılan Dersler</string>
-    
+
     <string name="ihlas_ve_salih_amel" translatable="false">Ebû Hüreyre radıyallahu anh’den rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n “Allah Teâlâ sizin bedenlerinize ve yüzlerinize değil, kalblerinize ve amellerinize bakar.”</string>
     <string name="ihlas_ve_salih_amel_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 8 (Müslim, Birr 33. Ayrıca bk. İbni Mâce, Zühd 9)</string>
     <string name="ihlas_ve_salih_amel_T" translatable="false">1. Allah, ibadetleri ve güzel davranışları değerlendirirken samimiyet derecesini, ihlâs ve iyi niyeti esas alır.\n\n2. Kalb, Allah’ın çok değer verdiği, devamlı surette bakıp kontrol ettiği bir merkezdir. Bu sebeple onu kötü duygulardan arındırmak, dinin tavsiye ettiği güzel hâl ve davranışlara sahip kılmak gerekir.\n\n3. İbadetleri makbul ve değerli kılan kalbdir. Bu sebeple öncelikle kalbi kin ve haset gibi mânevî ve ictimâî (toplumsal) hastalıklardan arındırmalı, mükemmel hâle getirmeye çalışmalıdır.</string>
-    
+
     <string name="tevbe" translatable="false">Eğar İbni Yesâr el-Müzenî radıyallahu anh’den rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n “Ey insanlar! Allah’a tevbe edip ondan af dileyiniz. Zira ben ona günde yüz defa tevbe ederim.”</string>
     <string name="tevbe_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 14 (Buhârî, Daavât 3. Ayrıca bk. Tirmizî, Tefsîru sûre (47), İbni Mâce, Edeb 57)</string>
     <string name="tevbe_T" translatable="false">1. Kusur ve hatalarımızdan dolayı Allah’tan af dilemeliyiz.\n\n2. Peygamber Efendimiz, günah işlemediği halde hergün Allah’tan af dilemiştir.\n\n3. İstiğfar (Allah’ tan af dileme) önemli bir ibadettir\n\n4. İstiğfârın belli bir sayısı yoktur. Yetmiş ve yüz rakamları çok istiğfâr edilmesi gerektiğini belirtmek için söylenmiştir</string>
-    
+
     <string name="kanaatkarlik" translatable="false">İbni Abbas ve Enes İbni Mâlik radıyallahu anhüm’den rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n “İnsanoğlunun bir vadi dolusu altını olsa, bir vadi daha ister. Onun ağzını topraktan başka bir şey doldurmaz. Ama Allah, tevbe edenin tevbesini kabul eder.”</string>
     <string name="kanaatkarlik_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 24 (Buhârî, Rikak 10; Müslim, Zekât 116-119. Ayrıca bk. Tirmizî, Zühd 27, Menâkıb 32, 64; İbni Mâce, Zühd 27)</string>
     <string name="kanaatkarlik_T" translatable="false">1. Kanaatkâr olmak, Allah Teâlâ’nın verdikleriyle yetinmek güzel bir huydur.\n\n2. Açgözlülük, insanı dünyada huzursuz ettiği gibi, onu haksızlığa yönelteceği için ahiretini de perişan eder.\n\n3. Açgözlülük derdinden kurtulmanın yegâne çaresi, önce bu dertten kurtarması için Allah’a yalvarmak ve açgözlülük sebebiyle yaptığı günahları bağışlaması için ona yönelmektir\n\n4. Allah Teâlâ kötü huylarından dolayı tevbe eden kulunun tevbesini kabul eder.</string>
-    
+
     <string name="sabirvesukur" translatable="false">Ebû Yahyâ Suheyb İbni Sinân radıyallahu anh’den rivâyet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n“Mü’minin durumu gıbta (imrenme) ve hayranlığa değer. Çünkü her hâli kendisi için bir hayır sebebidir. Böylesi bir özellik sadece mü’minde vardır: Sevinecek olsa, şükreder; bu onun için hayır olur. Başına bir belâ gelecek olsa, sabreder; bu da onun için hayır olur.”</string>
     <string name="sabirvesukur_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 28 (Müslim, Zühd 64)</string>
     <string name="sabirvesukur_T" translatable="false">1. Allah, mümin kullarını bela ve musibetlerle deneyebilir.\n\n2. Sabretmek suretiyle bela, nimete dönüştürülebilir.\n\n3. Nimete şükür, nimetin arttırılmasına sebep olduğu gibi, belaya sabır da onun hayra dönüşmesine vesile olur.</string>
-    
+
     <string name="musibetleresabir" translatable="false">Ebû Saîd ve Ebû Hüreyre radıyallahu anhümâ’dan rivâyet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n“Yorgunluk, sürekli hastalık, tasa, keder, sıkıntı ve gamdan, ayağına batan dikene varıncaya kadar müslümanın başına gelen her şeyi, Allah, onun hatalarını bağışlamaya vesile kılar.”</string>
     <string name="musibetleresabir_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 38 (Buhârî, Merdâ1, 3; Müslim, Birr 49)</string>
     <string name="musibetleresabir_T" translatable="false">1. Bela ve musibetler her zaman ceza değil, bazen de rahmettir.\n\n2. Sabreden mümin için sıkıntılar, günahlarına kefâret olur. Bu da bir nimettir.</string>
-    
+
     <string name="akillikisi" translatable="false">Ebû Ya’lâ Şeddâd İbni Evs radıyallahu anh’den rivayet edildiğine göre Nebî sallallahu aleyhi ve sellem şöyle buyurdu:\n“Akıllı kişi, nefsine hâkim olan ve ölüm sonrası için çalışandır. Âciz kişi de, nefsini duygularına tâbi kılan ve Allah’tan dileklerde bulunup duran (bunu yeterli gören) dır.”</string>
     <string name="akillikisi_K" translatable="false">" Riyâzü’s-Sâlihîn, Hadis No: 67 (Tirmizî, Kıyâmet 25. Ayrıca bk. İbni Mace, Zühd 31)"</string>
     <string name="akillikisi_T" translatable="false">1. Akıllılık ve ileri görüşlülük, davranışlardan belli olur.\n\n2. Allah’ın “gazabını aşan rahmeti”nden yararlanabilmek için kulluk bilinciyle üzerimize düşeni yapmak gerekir. Zira “Allah’ın rahmeti, iyilik edenlere yakındır.” (Â’raf sûresi (7), 56. ayet)3. Nefsi her zaman denetleyip hesaba çekmek gerekir.\n\n4. Allah iyi niyetle yapılan amellere sevap verir, boş temennilere değil.\n\n5. Akıllı kişi, ahiretin azığını dünyada hazırlayandır.</string>
-    
+
     <string name="uctavsiye" translatable="false">Ebû Zer ve Muâz İbni Cebel radıyallahu anhümâ’dan rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurmuştur:\n“Nerede ve nasıl olursan ol, Allah’tan kork. Kötülük işlersen, hemen arkasından iyilik yap ki, o kötülüğü silip süpürsün. İnsanlarla güzel geçin!”</string>
     <string name="uctavsiye_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 62 (Tirmizî, Birr 55)</string>
     <string name="uctavsiye_T" translatable="false">1. İyilikler, kötülükleri ya büsbütün ortadan kaldırmak ya da iyiliğe dönüştürmek suretiyle yok eder.\n\n2. İnsanlarla güzel geçinmek; insanlara güler yüz göstermek, onlara zarar vermemek, iyiliklerin yaygınlaşmasına gayret etmek ve kendisine yapılmasını istemediğini başkalarına yapmamak, demektir.\n\n3. Takva (Allah’a karşı saygılı olmak), müslümanı her türlü kötülüklerden koruyacak üstün bir meziyettir.\n\n4. Her yer ve şartta Allah’a karşı saygılı olmak, murâkabe (Allah’ın her an bizimle beraber olduğu) şuurunun göstergesidir.</string>
-    
+
     <string name="camilerledostolmak" translatable="false">Ebû Hüreyre radıyallahu anh’den rivayet edildiğine göre Nebî sallallahu aleyhi ve sellem şöyle buyurdu:\n “Sabah veya akşam camiye giden kimseye, her gidişi için Allah cennette bir ikram hazırla(tı)r.”</string>
     <string name="camilerledostolmak_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 125 (Buhârî, Ezân 37; Müslim, Mesâcid 285)</string>
     <string name="camilerledostolmak_T" translatable="false">1. Cami ve mescidlere ibadet, zikir ve ilim için devam etmek başlı başına bir iyilik ve hayırdır.\n\n2. İbadetleri cemaatle eda eden kimse, cennette ağırlanmayı hak eder.</string>
-    
+
     <string name="cumanamazihutbe" translatable="false">Ebû Hüreyre radıyallahu anh’den rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n“Bir kişi güzelce abdest alır, cuma namazına gider, hutbeyi ses çıkarmadan dinlerse, iki cuma arasındaki bağışlanır...”</string>
     <string name="cumanamazihutbe_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 130 (Müslim, Cuma 27. Ayrıca bk. Ebû Dâvûd, Salât 203; Tirmizî, Cuma 5; İbni Mâce, İkâme 62, 81)</string>
     <string name="cumanamazihutbe_T" translatable="false">1. Cuma günü yıkanmak fazilettir, erdemdir.\n\n2. Abdesti tastamam, güzelce almak müstehabdır (yapılması teşvik edilen bir davranıştır).\n\n3. Hutbe okunurken hiçbir şeyle meşgul olmadan ve konuşmadan dinlemek gerekir.\n\n4. Hutbe esnasında bir başka şeyle meşgul olmak, Cuma’nın fazilet ve sevabından mahrum kalmaya sebeptir.\n\n5. Hatibi duymayacak kadar uzakta veya cami dışında olanlar da susmalı, konuşmamalıdırlar.\n\n6. İbadetleri, şartlarına uygun biçimde, en güzel şekilde yerine getirmek ayrıca bir hayır ve iyiliktir.</string>
-    
+
     <string name="gunahlardanarinma" translatable="false">Ebû Hüreyre radıyallahu anh’den rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n“Büyük günahlardan kaçınılması halinde, beş vakit namaz, iki cuma ve iki ramazan, aralarında (işlenecek küçük) günahlara kefârettir.”</string>
     <string name="gunahlardanarinma_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 132 (Müslim, Tahâret16)</string>
     <string name="gunahlardanarinma_T" translatable="false">1. Büyük günahlardan uzak durmak lâzımdır.\n\n2. İbadetler, küçük günahlara kefarettir (bedeldir).\n\n3. Namaz ve oruç müslümanları günahlarından arındırır.</string>
-    
+
     <string name="bidatlardansakinma" translatable="false">Âişe radıyallahu anhâ’dan rivâyet edildiğine göre, Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n“Kim bizim bu dinimizde ondan olmayan bir şey ortaya çıkarırsa, o şey kabul edilmez.”</string>
     <string name="bidatlardansakinma_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 171 (Buhârî, Sulh 5; Müslim, Akdiye 17,18. Ayrıca bk. İbni Mâce, Mukaddime 2 )</string>
     <string name="bidatlardansakinma_T" translatable="false">1. Bu hadis, İslâm’ın en büyük temellerinden birini teşkil eder. Bu temel, Kur’an ve Sünnet’e aykırı olarak sonradan ortaya çıkan her inanç, ibadet ve uygulamaların kabul edilemezliğini vurgular.\n\n2. Sonradan ortaya çıkan bir takım icat ve ihtiyaçlar, Kur’an ve Sünnet’e aykırı değilse kınanan, reddedilen bid’atlardan sayılmaz.\n\n3. Bid’at, hasene (iyi) ve seyyie (kötü) olmak üzere ikiye ayrılır. İslam’ın özüne aykırı olmayanlar iyi, aykırı olanlar da kötü diye adlandırılır.</string>
-    
+
     <string name="muslumandayanismasi" translatable="false">Ebû Mûsâ el-Eş’arî radıyallahu anh’den rivayet edildiğine göre, Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n“Mü’minin mü’mine karşı durumu, bir parçası diğer parçasını sımsıkı kenetleyip tutan binalar gibidir.”\nHz. Peygamber bunu açıklamak için, iki elinin parmaklarını birbiri arasına geçirerek kenetledi.</string>
     <string name="muslumandayanismasi_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 224 (Buhârî, Salât 88, Mezâlim 5; Müslim, Birr 65. Ayrıca bk. Tirmizî, Birr 18; Nesâî, Zekât 67)</string>
     <string name="muslumandayanismasi_T" translatable="false">1. Mü’minler, maddî ve manevî yönden birbirlerine yardımcı olmalı, bir binanın birbirine sımsıkı kenetlenmiş taşları ve tuğlaları gibi bir berâberlik oluşturmalıdırlar.\n\n2. Fert olarak, tek başına İslâm’ı yaşamak ve yaşatmak mümkün olmaz. Fertler, dıştan gelen baskılara karşı koyamazlar. Baskı ve şiddete karşı koymada birlik ve beraber esastır.\n\n3. Birliğini kaybeden toplumlar ayakta duramazlar.</string>
-    
+
     <string name="muslumankardesligi" translatable="false">Ebû Hüreyre radıyallahu anh’den rivayet edildiğine göre, Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n“Müslüman müslümanın kardeşidir. Ona hıyanet etmez, yalan söylemez ve yardımı terketmez. Her müslümanın, diğer müslümana ırzı, malı ve kanı haramdır. Takva buradadır. Bir kimseye şer olarak müslüman kardeşini hor ve hakir görmesi yeter.”</string>
     <string name="muslumankardesligi_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 236 (Tirmizî, Birr 18)</string>
     <string name="muslumankardesligi_T" translatable="false">1. Müslümanlar birbirlerinin din kardeşidir.\n\n2. Müslümanın müslümana yardımı terketmesi caiz değildir.\n\n3. Müslümanın canı, malı ve ırzı başka müslümana haramdır.\n\n4. Takvanın yeri kalbdir. Belirtileri ise, İslam’a uygun olarak yaptığmız davranışlardır.\n\n5. Müslümanı hakir görmek, küçümsemek, büyük günahlardandır</string>
-    
+
     <string name="yetimigozetmek" translatable="false">Ebû Hüreyre radıyallahu anh’den rivayet edildiğine göre Resûlullahsallallahu aleyhi ve sellem şöyle buyurdu:\n“Kendi yetimini veya başkasına ait bir yetimi himâye eden kimseyle ben, cennette şöyle yanyana bulunacağız.\nHadisin râvisi Peygamber Efendimiz gibi yaparak, işaret parmağıyla orta parmağını, aralarını biraz aralayarak (bunu) gösterdi.</string>
     <string name="yetimigozetmek_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 265 (Müslim, Zühd 42)</string>
     <string name="yetimigozetmek_T" translatable="false">1. Cennette en üstün mevki, Hz. Peygamber’e komşu olabilmektir.\n\n2. Bu üstün mevki kazanmanın bir yolu da, yetimi himâye etmektir.\n\n3. Kendisinin veya başkalarının yetimlerini koruyanlar, Allah Teâlâ’yı hoşnut ederler.</string>
-    
+
     <string name="misafireikram" translatable="false">Ebû Hüreyre radıyallahu anh’den rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n“Allah’a ve âhiret gününe iman eden kimse komşusunu rahatsız etmesin. Allah’a ve âhiret gününe iman eden kimse misafirine ikram etsin. Allah’a ve âhiret gününe iman eden kimse ya faydalı söz söylesin veya sussun!”</string>
     <string name="misafireikram_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 310 (Buhârî, Nikâh 80, Edeb 31, 85, Rikak 23; Müslim, Îmân 74, 75. Ayrıca bk. Ebû Dâvûd, Edeb 123; Tirmizî, Kıyâmet 50; İbni Mâce, Edeb 4)</string>
     <string name="misafireikram_T" translatable="false">1. Misafire ikram etmek, faydalı söz söylemek gibi bazı davranışlar insanın mükemmel bir imâna sahip olduğunu gösterir.\n\n2. Komşuya zarar vermemek, daha da iyisi, komşuya faydalı olmak mü’minlerin göstereceği bir davranıştır.\n\n3. Misafire elinden geldiğince ikrâm etmek de böyledir.\n\n4. Müslüman faydalı ve güzel söz söylemeye dikkat etmelidir.</string>
-    
+
     <string name="buyukleresaygi" translatable="false">Amr İbni Şuayb’ın, babası aracılığı ile dedesinden rivâyet ettiğine göre Resûlullah sallallâhu aleyhi ve sellem şöyle buyurdu:\n“Küçüklerimize merhamet etmeyen, büyüklerimizin (büyüklük) şerefini tanımayan bizden değildir.”</string>
     <string name="buyukleresaygi_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 356 (Ebû Dâvûd, Edeb 58; Tirmizî, Birr 15)</string>
     <string name="buyukleresaygi_T" translatable="false">1. Müslüman büyüklerin şeref ve haklarına riâyet etmek, her müslümanın iman borcudur.\n\n2. Küçüklere merhamet ve şefkat göstermek, müslümanlığın güzelliklerindendir.\n\n3. Bu iki İslâmî görevi yerine getirmeyenler, müslümanların yaşayış çizgisine uygun davranmamış olurlar.</string>
-    
+
     <string name="yasliyahurmet" translatable="false">Enes İbni Mâlik radıyallahu anh’den rivayet edildiğine göre, Peygamber sallallâhu aleyhi ve sellem şöyle buyurdu:\n“Allah Teâlâ, yaşından ötürü bir ihtiyara saygı gösteren gence, yaşlılığında hizmet edecek kimseler lutfeder.”</string>
     <string name="yasliyahurmet_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 360 (Tirmizî, Birr 75)</string>
     <string name="yasliyahurmet_T" translatable="false">1. Büyüklere ve yaşlılara saygı göstermek gençlerin ahlâkî görevidir.\n\n2. Yaşlıya gösterilecek saygının karşılığı, yaşlılıkta saygı ve hizmet görmektir.\n\n3. Toplum huzuru ancak fertler ve nesiller arası ilişkilerin düzeltilmesiyle sağlanabilir.\n\n4. Büyüklerine saygı göstermeyenler, küçüklerinden saygı ve hizmet göremezler.\n\n5. Her davranışın olumlu-olumsuz mutlaka bir sonucu ve bedeli vardır.</string>
-    
+
     <string name="tevbekapisi" translatable="false">Ebû Musâ radıyallahu anh’den rivayet edildiğine göre Peygamber sallallahu aleyhi ve sellem şöyle buyurdu:\n“Azîz ve celîl olan Allah, gündüz günah işleyenin tevbesini kabul etmek için gece rahmet kapısını açık tutar; gece günah işleyenin tevbesini kabul etmek için gündüz rahmet kapısını açık tutar. Bu uygulama güneş batıdan doğuncaya kadar böylece devam eder.”</string>
     <string name="tevbekapisi_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 438 (Müslim, Tevbe 31)</string>
     <string name="tevbekapisi_T" translatable="false">1. Allah Teâlâ’nın rahmeti sınırsızdır. O günahları affetmeyi ve tevbeleri kabul etmeyi sever.\n\n2. Tevbe kapısı, güneşin batıdan doğuşuna kadar açıktır.\n\n3. Büyük arınma imkânı demek olan tevbeyi ihmal etmemek lâzımdır.</string>
-    
+
     <string name="bizimlegider" translatable="false">Enes radıyallahu anh’den rivayet edildiğine göre, Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n“Ölen kimseyi peşinden üç şey takip eder: Aile çevresi, malı ve yaptığı işler. Bunlardan ikisi geri döner, biri ise kendisiyle birlikte kalır. Aile çevresi ve malı geri döner; yaptığı işler kendisiyle birlikte kalır.”</string>
     <string name="bizimlegider_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 462 (Buhârî, Rikak 42; Müslim, Zühd 5. Ayrıca bk. Tirmizî, Zühd 46; Nesâî, Cenâiz 52</string>
     <string name="bizimlegider_T" translatable="false">"1. İnsanın ölümünden sonra ailesi, yakınları, malı ve mülkü dünyada kalır. Bunlar hayırlı ise, kendisinin sevabının devamına vesile olabilir.\n\n2. Ölen kimsenin amelleri, yani iyi ve kötü davranışları onunla birlikte kabre gider. Bunlar, o kişinin âhirette mutluluğuna veya ceza görmesine sebep olur. "</string>
-    
+
     <string name="infak" translatable="false">Ebû Hüreyre radıyallahu anh’den rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem, “Allah Teâlâ şöyle buyurdu” demiştir:\n“Ey âdemoğlu! (Allah için) infak et ki, sana da infak olunsun!”</string>
     <string name="infak_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 550 (Buhâri, Tefsîru sûre (11) 2; Nefekât 1; Tevhid 35; Müslim, Zekât 36, 37. Ayrıca bk.\nİbni Mâce, Keffârât 15)</string>
     <string name="infak_T" translatable="false">1. İyilikler karşılıksız kalmaz.\n\n2. Allah yolunda infakta (harcamada) bulunan kişiye Allah Teâlâ daha fazlası ile karşılık verir.\n\n3. Cömert kimse hayırdan (ikram ve iyilikten) mahrum kalmaz.</string>
-    
+
     <string name="sadaka" translatable="false">Ebû Hüreyre radıyallahu anh’den rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n“Sadaka vermek malı eksiltmez. Kul başkalarının hatalarını bağışladıkca Allah da onun şerefini arttırır. Kim Allah için alçak gönüllü davranırsa, Allah da onu yükseltir.”</string>
     <string name="sadaka_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No:557 (Müslim, Birr 69. Ayrıca bk. Tirmizî, Birr 82)</string>
     <string name="sadaka_T" translatable="false">1. Allah için verilen sadaka malı noksanlaştırmaz. Sadakanın bereketi hayatımızda mutlaka görülür.\n\n2. Dünyada malını arttırmak, ahirette sevabını çoğaltmak isteyen sadaka vermelidir.\n\n3. Şeref ve izzetini yüksetmek isteyen kişi de insanlara karşı alçakgönüllü ve bağışlayıcı olmalıdır.</string>
-    
+
     <string name="kolaylik" translatable="false">Âişe radıyallahu anhâ’dan rivayet edildiğine göre Peygamber aleyhisselâm şöyle buyurdu:\n“Nerede kolaylık varsa, orada güzellik vardır. Kolaylığın bulunmadığı her şey çirkindir.”</string>
     <string name="kolaylik_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 636 (Müslim, Birr 78. Ayrıca bk. Ebû Dâvûd, Edeb 10)</string>
     <string name="kolaylik_T" translatable="false">1. Allah Teâlâ kullarına lutufkârdır. Bu sebeple onların birbirlerine kolaylık göstermesinden, nâzik, yumuşak ve anlayışlı davranmasından dolayı memnun olur.\n\n2. İnsanlara kolaylık ve anlayış göstermek mânasına gelen rıfk, güzel huyların en değerlisidir. Bu sebeple Allah Teâlâ kolaylık gösterenlere, diğer güzel huylulara verdiğinden daha fazla mükâfat verecektir.\n\n3. Kolaylık gösteren kimseler hem Allah’a hem kullarına güzel görünür. Zorluk çıkaran kimseler de hem Allah’a hem kullarına çirkin görünür.</string>
-    
+
     <string name="yigitadam" translatable="false">Ebû Hüreyre radıyallahu anh’den rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n“Yiğit dediğin, güreşte rakibini yenen kimse değildir; asıl yiğit kızdığı zaman öfkesini yenen adamdır.”</string>
     <string name="yigitadam_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 648 (Buhârî, Edeb 76; Müslim, Birr 107, 108)</string>
     <string name="yigitadam_T" translatable="false">1. Güçlü kuvvetli olmak dinimizce makbul sayılmıştır. Fakat öfkesini yenebilmek ondan da üstün kabul edilmiştir.\n\n2. Câhillere uymamak, onlara öfkelenmemek iyi müslümanın en belirgin özelliğidir.\n\n3. Nefisle mücâdele ve ona hâkim olmak, düşmanla cihad etmekten daha zordur.\n\n4. Bireysel ve toplumsal zararını düşünerek öfkelenmemeye çalışmak gerekir.</string>
-    
+
     <string name="imaninolgunlugu" translatable="false">Ebû Hüreyre radıyallahu anh’den rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n“İman yetmiş (veya altmış) kadar daldan ibarettir. Bunların en yükseği lâ ilâhe illallah demek, en aşağısı da insana zarar veren şeyleri yoldan kaldırmaktır. Utanmak da imanın dallarından biridir.”</string>
     <string name="imaninolgunlugu_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 684 (Buhârî, Îmân 3; Müslim, Îmân 58. Ayrıca bk. Ebû Dâvûd, Sünnet 14; Tirmizî, Birr\n80; Nesâî, Îmân 16; İbni Mâce, Mukaddime 9)</string>
     <string name="imaninolgunlugu_T" translatable="false">1. Bir müminin yapması gereken bütün hareketler, doğrudan doğruya imânla ilgilidir.\n\n2. Cenâb-ı Hakk’ın bizden istediği bütün görevler imanla ilgili olduğu için, görevlerimizi bu din işidir, bu da dünya işidir diye ayırmak mümkün değildir.\n\n3. Utanma duygusu bir kişilik zayıflığı değil, imanı yüceltip kemâle erdiren vazgeçilemez bir özelliktir.</string>
-    
+
     <string name="sozubirolma" translatable="false">Ebû Hüreyre radıyallahu anh’den rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n“Münâfığın alâmeti üçtür: Konuşunca yalan söyler. Söz verince sözünde durmaz. Kendisine bir şey emanet edilince hiyanet eder.”</string>
     <string name="sozubirolma_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 690 (Buhârî, Îmân 24, Şehâdât 28, Vesâyâ 8, Edeb 69; Müslim, Îmân 107-108. Ayrıca bk. Tirmizî, Îmân 14; Nesâî, Îmân 20)</string>
     <string name="sozubirolma_T" translatable="false">1. Yalan söylemek, sözünde veya va’dinde durmamak, emanete hiyânet etmek, birine düşman olduğu zaman çirkin sözler söyleyerek veya ona haksızlık ederek haddi aşmak münâfığın en belirgin vasfıdır.\n\n2. Bu huylara sahip olan kimse namazıyla, orucuyla müslümana benzese de o yine de davranış olarak münâfık gibidir.\n\n3. Müslüman bu huylardan şiddetle kaçınmalıdır. Bu davranışlardan birini istemeyerek yapmışsa, bir daha yapmamaya gayret etmelidir.</string>
-    
+
     <string name="gorgu" translatable="false">İbni Abbas radıyallahu anhümâ’dan rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n“Deve gibi bir nefeste içmeyin. İki, üç nefeste için. Bir şey içeceğiniz zaman besmele çekin; içtikten sonra da \"elhamdü lillah\"\ndeyin”</string>
     <string name="gorgu_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 759 (Buhârî, Ezân 93, Bed\'ü\'l-halk 11. Ayrıca bk. Ebû Dâvûd, Salât 161; Tirmizî, Cum\'a 59; Nesâî, Sehv 10)</string>
     <string name="gorgu_T" translatable="false">1. Yeme ve içmeye başlarken “bismillah” demelidir. Üç nefeste içen kimse suya iyice kanar, böylece susuzluğu teskin edilmiş olur.\n\n2. Suyu üç nefeste içmek sağlığa daha uygun, mideye daha faydalıdır.\n\n3. Peygamber Efendimiz bir şeyi başına bir dikişte içmez, arada iki defa soluklanarak içerdi.\n\n4. Yiyip içtikten sonra da “elhamdülillâh” demelidir.</string>
-    
+
     <string name="sorumluluk" translatable="false">Ebû Hüreyre radıyallahu anh’den rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n“Müslümanın, müslüman üzerindeki hakkı beştir: Selâm almak, hasta ziyaret etmek, cenâzenin arkasından yürümek, davete icâbet etmek ve aksırana “yerhamükellah” demek.”</string>
     <string name="sorumluluk_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 897 (Buhârî, Cenâîz 2; Müslim, Selâm 4. Ayrıca bk. İbni Mâce, Cenâiz 1)</string>
     <string name="sorumluluk_T" translatable="false">1. Hz. Peygamber hasta ziyaretini ve cenazeye iştirak etmeyi teşvik etmiştir.\n\n2. Hastayı ziyaret edip ebediyet yolcusunu uğurlamak müslümanın, müslüman üzerindeki din kardeşliğinden doğan haklarındandır.\n\n3. Selâmı almak, davete icabet etmek, aksırana “elhamdülillah” dediğinde “yerhamükellah” demek, yeminini bozmamak, haksızlığa uğrayana yardım etmek Hz. Peygamber’in tavsiye ettiği beşerî ilişkilerle ilgili tavsiyelerdendir.</string>
-    
+
     <string name="degerliAmeller" translatable="false">İbni Mes’ud radıyallahu anh şöyle dedi: Resûlullah sallallahu aleyhi ve sellem’e:\nHangi ameller daha faziletlidir? diye sordum.\n – “Vaktinde kılınan namaz” buyurdu.\nSonra hangisi? dedim.\n– “Ana babaya iyilik etmek” cevabını verdi.\nDaha sonra hangisidir? diye sordum.\n– “Allah yolunda cihâd etmektir” buyurdular.</string>
     <string name="degerliAmeller_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 1074 (Buhârî, Ezân 9, 32; Müslim, Salât 129. Ayrıca bk. Tirmizî, Mevâkît 52; Nesâî,\nMevâkît 22, Ezân 31)</string>
     <string name="degerliAmeller_T" translatable="false">1. Dinimizde ameller, fazilet ve sevap açısından derecelere ayrılmıştır.\n\n2. İmandan sonra en faziletli amel, en önemli farz, vaktinde kılınan namazdır.\n\n3. Namazı sebepsiz yere vaktinde kılmamak büyük günahlardandır.\n\n4. Kullar içinde saygı ve hürmete en lâyık olanlar ana babadır.\n\n5. En üstün fadâkârlık Allah yolunda cihaddır.</string>
-    
+
     <string name="slavat" translatable="false">Evs İbni Evs radıyallahu anh’den rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n“Günlerinizin en faziletlisi cuma günüdür. Bu sebeple o gün bana çokca salâtü selâm getiriniz; zira sizin salâtü selâmlarınız bana sunulur.”</string>
     <string name="slavat_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 1160 (Ebû Dâvûd, Salât 201, Vitir 26. Ayrıca bk. Nesâî, Cum`a 5; İbni Mâce, İkâmet 79, Cenâiz 65)</string>
     <string name="slavat_T" translatable="false">1. Peygamber Efendimiz’in mübarek ruhuna gönderilen salâtü selâmlar kendisine sunulur. O da bu selâmları alır.\n\n2. Cuma günü çok faziletli bir gün olduğu için, Resûlullah Efendimiz’e bu mübarek günde sunulan salâtü selâmlar, diğer vakitlerdeki salâtü selâmlardan daha kıymetli, sevabı daha çoktur.</string>
-    
+
     <string name="ramazanFazileti" translatable="false">Ebû Hüreyre radıyallahu anh\'den rivayet edildiğine göre Resûlullah sallalllahu aleyhi ve sellem şöyle buyurdu:\n\"Kim, faziletine inanarak ve karşılığını Allah\'tan bekleyerek ramazan orucunu tutarsa, geçmiş günahları bağışlanır.</string>
     <string name="ramazanFazileti_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 1222 (Buhârî, Îmân 28, Savm 6; Müslim, Sıyâm 203, Müsâfirîn 175. Ayrıca bk. Ebû Dâvûd, Ramazan 1, Savm 57; Tirmizî, Savm 1, Cennet 4; Nesâî, Sıyâm 39; İbni Mâce, İkâmet 173, Sıyâm 2, 33)</string>
     <string name="ramazanFazileti_T" translatable="false">1. Ramazan orucunu inanarak ve karşılığını Allah\'tan umarak tutmak, geçmiş günahlardan arınma sebebidir.\n\n2. Allah\'a iman etmek ve mükâfatını (karşılığını sadece) O\'ndan beklemek (ihtisab) bir ibadetin sıhhat ve kabul edilme şartıdır.</string>
-    
+
     <string name="kadirGecesi" translatable="false">Ebû Hüreyre radıyallahu anh\'den rivayet edildiğine göre Resûlullah sallalllahu aleyhi ve sellem şöyle buyurdu:\n\"Kim, faziletine inanarak ve karşılığını Allah\'tan bekleyerek Kadir gecesini ihya ederse (dolu dolu geçirirse), geçmiş günahları bağışlanır.\"</string>
     <string name="kadirGecesi_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 1192 (Buhârî, Îmân 25, 27, 28, 35, Savm 6, Terâvih 1, Leyletü\'l-kadr 1; Müslim, Müsâfirîn\n173-176. Ayrıca bk. Ebû Dâvûd, Ramazan 1; Tirmizî, Savm 1; Nesâî, Kıyâmü\'l-leyl 3, Savm 39-40; İbni Mâce, İkâmet 173, Sıyâm 2, 39)</string>
     <string name="kadirGecesi_T" translatable="false">1. Kadir gecesi, kadri kıymeti yüce bir gecedir.\n\n2. Değer ve faziletine inanarak ve karşılığını Allah\'tan bekleyerek bu geceyi ihyâ eden, geçmiş günahlarından arınır.\n\n3. İnanç ve ihlâs (samimiyet) olmadan yapılacak herhangi bir davranışın dinî bir değeri yoktur.</string>
-    
+
     <string name="kadirGecesiDuasi" translatable="false">Âişe radıyallahu anhâ şöyle dedi:\n- Ey Allah\'ın Resulü! Kadir gecesinin hangi gece olduğunu bilecek olursam, o gece nasıl dua edeyim? diye sordum.\n- \"Allahım! Sen çok affedicisin, affetmeyi seversin. Beni bağışla! diye dua et\" buyurdu. \"</string>
     <string name="kadirGecesiDuasi_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 1198 (Tirmizî, Daavât 84. Ayrıca bk. İbni Mâce, Dua 5)</string>
     <string name="kadirGecesiDuasi_T" translatable="false">1. Kadir gecesinin farkına varan müslüman, günahlarının bağışlanması için dua etmelidir.\n\n2. Kadir gecesinde \"Allahım! Sen çok affedicisin, affetmeyi seversin. Beni bağışla!\" diye dua etmek sünnettir.\n\n3. Mübarek geceler; dua etmek, ibadet yapmak, Kur\'an okumak ve tefekkürde bulunmak suretiyle ihya edilmelidir.</string>
-    
+
     <string name="ramazaninKiymeti" translatable="false">Ebû Hüreyre radıyallahu anh\'den rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n\"Ramazan ayı girdiğinde cennet kapıları açılır, cehennem kapıları kapanır ve şeytanlar bağlanır."</string>
     <string name="ramazaninKiymeti_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 1223 (Buhârî, Savm 5, Bed\'ul-halk 11; Müslim, Sıyâm 1, 2, 4, 5)</string>
     <string name="ramazaninKiymeti_T" translatable="false">1. Ramazan; af, rahmet ve sevabın arttığı, şeytanların etki ve saptırmalarının azaldığı ve dolayısıyla cehennem kapılarının kapandığı bir ay ve müstesna bir zamandır.\n\n2. Rahmet ve bereket aylarında ve günlerinde ibadetlerimizi arttırmaya gayret etmeliyiz.</string>
-    
+
     <string name="hakYolunaHarcamak" translatable="false">Ebû Yahyâ radıyallahu anh\' den rivayet edildiğine göre, Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n\"Allah yolunda malını harcayana, harcadığının yedi yüz misli ecir verilir.\"</string>
     <string name="hakYolunaHarcamak_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 1341 (Tirmizî, Fezâilü\'l-cihâd 4. Ayrıca bk. Nesâî, Cihâd 45)</string>
     <string name="hakYolunaHarcamak_T" translatable="false">1. Allah yolunda malını mülkünü sarfetmek hayrın en büyüklerindendir.\n\n2. İnfak (malını Allah yolunda harcama), önemli bir cihattır.\n\n3. Allah yolunda malını sarfedene, Cenab-ı Hak kıyamet gününde yedi yüz misli veya daha çok ecir ve sevap ihsan eder.</string>
-    
+
     <string name="alisverisAhlaki" translatable="false">Câbir radıyallahu anh\'den rivayet edildiğine göre, Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n\"Satışta, alışta ve borcunu istemekte kolaylık gösteren kimseye Allah merhamet etsin.\"</string>
     <string name="alisverisAhlaki_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 1371 (Buhârî, Büyû‘ 16. Ayrıca bk. İbni Mâce, Ticârât 28)</string>
     <string name="alisverisAhlaki_T" translatable="false">1. İslâm dini temelde kolaylık üzerine kurulmuş olup, insanlarla muamelede bu esası öne geçirmek gerekir.\n\n2. Alış veriş ve borçlanma toplumda hemen her ferdi ilgilendiren bir muamele çeşidi olup, bu alanda kolaylık yolunu tercih etmek faziletli bir davranış olur.\n\n3. İnsan, hakkı olan bir şeyi talep ederken de kolaylık yolunu seçmelidir.</string>
-    
+
     <string name="ilimYolculugu" translatable="false">Enes radıyallahu anh\'den rivayet edildiğine göre, Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n\"İlim tahsil etmek için yolculuğa çıkan kimse, evine dönünceye kadar Allah yolundadır.\"</string>
     <string name="ilimYolculugu_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 1388 (Tirmizî, İlim 2)</string>
     <string name="ilimYolculugu_T" translatable="false">1. İlim öğrenmek, Allah yolunda cihadın bir çeşididir. İlim öğrenen kişiye Allah yolunda cihad edenin ecri gibi sevap verilir.\n\n2. Allah yolunda cihad eden mücâhide karşı gösterilen sorumluluk, Allah rızası için ilim öğrenen kimseye de aynen gösterilir.</string>
-    
+
     <string name="yakinlasmak" translatable="false">Ebû Hüreyre radıyallahu anh’den rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle buyurdu:\n“Kulun Rabbine en yakın olduğu hal secde halidir. İşte bu sebeple secdede çok dua etmeye bakın!”</string>
     <string name="yakinlasmak_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 1431 (Müslim, Salât 215. Ayrıca bk. Ebû Dâvûd, Salât 148; Nesâî, Tatbîk 78)</string>
     <string name="yakinlasmak_T" translatable="false">1. Secde ânı, kulun Cenâb-ı Hakk’a yaklaştığı, O’nun rahmetini kazanmaya en elverişli olduğu zamandır. Bu sebeple secdede yapılan dua ve zikirlerin kabul edilme imkânı daha fazladır.\n\n2. Rükû ve secdede Peygamber Efendimiz’in öğrettiği dua ve zikirleri okumak suretiyle Rabbimize bağlılığımızı arzetmeye ve O’nun merhametini elde etmeye çalışmamız gerekir.</string>
-    
+
     <string name="peygamberdenDualar" translatable="false">Enes radıyallahu anh’den rivayet edildiğine göre Resûlullah sallallahu aleyhi ve sellem şöyle dua ederdi:\n“Allahım! Âcizlikten, tembellikten, korkaklıktan, ihtiyarlayıp ele avuca düşmekten ve cimrilikten sana sığınırım. Kabir azâbından sana sığınırım. Hayat ve ölüm fitnesinden sana sığınırım.”</string>
     <string name="peygamberdenDualar_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 1477 (Müslim, Zikir 50. Ayrıca bk. Ebû Dâvûd, Vitir 32; Nesâî, İstiâze 7)</string>
     <string name="peygamberdenDualar_T" translatable="false">1. Resûl-i Ekrem Efendimiz’in Allah’a sığındığı bu şeylerden biz de O’na sığınmalıyız.\n\n2. Allah sevgisi ve korkusu gönüllerimize hâkim olmalı, daha çok şey öğrenmeli ve öğrendiklerimizi yaşamalıyız.\n\n3. Şayet Allah’ın adı ve buyrukları anıldığı zaman kalbimiz duygulanmalı ve heyecanlanmalı; iyi bir müslüman olmaya daha çok gayret etmeliyiz.</string>
-    
+
     <string name="subhanallah" translatable="false">Âişe radıyallahu anhâ şöyle dedi: Resûlullah sallallahu aleyhi ve sellem vefatından önce sık sık “Ben Allah’ı ulûhiyyet (ilahlık) makamına yakışmayan sıfatlardan tenzih (uzak tutar) eder ve O’na hamdederim. Allah’tan beni bağışlamasını diler ve günahlarıma tevbe ederim” derdi.</string>
     <string name="subhanallah_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 1881 (Buhârî, Ezân 123, 139; Müslim, Salât 218-220)</string>
     <string name="subhanallah_T" translatable="false">1. Resûlullah Efendimiz gibi biz de bu zikri daha çok okumalıyız.\n\n2. Peygamber Efendimiz bizim biricik örneğimizdir. Onun izinden gitmeli, yaptığını yapmaya çalışmalıyız.</string>
-    
+
     <string name="basiret" translatable="false">Ebû Hüreyre radıyallahu anh’den rivayet edildiğine göre Resûl-i Ekrem sallallahu aleyhi ve sellem şöyle buyurdu:\n“Mü’min bir yılan deliğinden iki defa ısırılmaz.”</string>
     <string name="basiret_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 1838 (Buhârî, Edeb 83; Müslim Zühd 63. Ayrıca bk. Ebû Dâvûd, Edeb 29; İbni Mâce, Fiten 13)</string>
     <string name="basiret_T" translatable="false">1. Müslüman, her konuda dikkatli ve uyanık olmalıdır. Kendisini aldatmak isteyenlerin oyununa gelmemelidir.\n\n2. Bir defa yanılmış, aldatılmış, oyuna getirilmiş olsa bile, ikinci defa aynı oyuna gelmemelidir</string>
@@ -257,4 +268,218 @@
     <string name="nisapMiktarHeader">Nisap tutarı servisten alınamadı! İşleme gram altın alış fiyatı değeri girerek devam edebilirsiniz.</string>
     <string name="nisapTutarUser">Gram altın fiyat giriniz</string>
     <string name="nisapMiktarInfo">Yapılan hesaplamalar ve değerler bilgi amaçlıdır sorumluluk kullanıcı aittir.</string>
+    <string name="muzeInfo">BİLGİ</string>
+    <string name="sakaliserif" translatable="false">
+        Sakalı Şerif, İslam dünyasında Peygamber Efendimiz Hz. Muhammed’in (s.a.v.) sakalından alınan ve muhafaza edilen kutsal bir hatıradır. Müslümanlar için büyük bir manevi öneme sahiptir ve genellikle Ramazan ayında veya özel günlerde ziyaretçilere gösterilir.
+        \n\n ❖Tarihi ve Önemi\n
+\n• Hz. Muhammed’in (s.a.v.)  vefatından sonra bazı sahabeler, O’nun şahsi eşyalarını ve bedeninden bir parçayı hatıra olarak saklamışlardır. Sakalı Şerif de bu hatıralardan biridir.
+\n• Sakalı Şerif’in özellikle Emeviler, Abbasiler, Selçuklular ve Osmanlılar döneminde itina ile muhafaza edildiği bilinir.
+\n• Osmanlı döneminde padişahlar, Sakalı Şerif’i kutsal emanetler arasında Topkapı Sarayı’nda özel bir bölümde koruma altına almışlardır.
+        \n\n ❖Sakalı Şerif\'in Saklanması ve Gösterilmesi\n
+\n• Sakalı Şerif genellikle hırka-i şerif veya kutsal sandık içinde özel bir kutuda muhafaza edilir.
+\n• Bu kutu açıldığında, halk Sakalı Şerif’e saygı göstermek ve maneviyatını hissetmek için dua eder.
+\n• Ziyaret sırasında genellikle tesbihat yapılır ve salavatlar getirilir.
+        \n\n ❖Günümüzde\n
+\n• Türkiye’de Sakalı Şerif, çeşitli cami ve türbelerde muhafaza edilmektedir.
+\n• Ramazan ayının son günlerinde, özellikle Kadir Gecesi’nde, halkın ziyaretine açılır.
+\n• Sakalı Şerif’i ziyaret etmek, Müslümanlar için Peygamber Efendimiz’e olan sevgi ve bağlılıklarını ifade etmenin bir yolu olarak görülür.
+
+\nSakalı Şerif, Müslümanlar için manevi bir bağ kurma aracı olduğu kadar, geçmişle olan köklü bir bağın da hatırlatıcısıdır.
+    </string>
+    <string name="hirkaiiserif" translatable="false">
+        Hırka-i Şerif, Hz. Muhammed\'in (s.a.v.) mübarek bedenine değmiş, onun tarafından giyilmiş bir kıyafettir ve İslam dünyasında büyük bir kutsallık ve manevi değer taşır. Bu mübarek emanet, özellikle Ramazan ayında halkın ziyaretine açılarak Müslümanlar tarafından büyük bir sevgi ve saygıyla ziyaret edilir.
+        \n\n ❖Hırka-i Şerif\'in Tarihçesi
+\n• Hırka-i Şerif Hz. Muhammed (s.a.v.) tarafından Yemenli sahabe Veysel Karani’ye (Veysel bin Amr) hediye edilmiştir. Peygamber Efendimiz, onun samimi imanını ve sevgisini takdir etmiş, ancak Veysel Karani onunla bizzat görüşme imkânı bulamamıştır.
+\n• Hz. Ömer ve Hz. Ali, Veysel Karani’ye Hırka-i Şerif’i bizzat teslim etmişlerdir.
+\n• Veysel Karani, Hırka-i Şerif’i bir emanet olarak büyük bir özenle muhafaza etmiş, vefatından sonra da bu kıymetli emanet, soyundan gelenler tarafından korunmuştur.
+\n\n ❖Osmanlı Döneminde Hırka-i Şerif
+\n• Osmanlı padişahları, kutsal emanetlere büyük önem vermiştir. Hırka-i Şerif, Yavuz Sultan Selim döneminde İstanbul’a getirilmiştir ve günümüzde Hırka-i Şerif Camii’nde muhafaza edilmektedir.
+\n• Hırka-i Şerif’in muhafazası ve ziyareti için özel bir yapı inşa edilmiş ve Veysel Karani’nin soyundan gelenler, bu emaneti nesilden nesile koruma görevini sürdürmüşlerdir.
+\n\n ❖Ziyaret ve Manevi Önemi
+\n• Hırka-i Şerif, özellikle Ramazan ayı boyunca İstanbul’daki Hırka-i Şerif Camii’nde halkın ziyaretine açılır.
+\n• Ziyaret sırasında Müslümanlar, Hz. Peygamber’in hatırasına saygı gösterir, salavat getirir ve dua ederler.
+\n• Hırka-i Şerif, Müslümanların Peygamber Efendimiz’e olan sevgi ve bağlılıklarını hatırlatan önemli bir semboldür.
+\n\n ❖Hırka-i Şerif Camii
+\n• Hırka-i Şerif Camii, İstanbul’un Fatih semtinde yer alır. Bu camii, 1851 yılında Sultan Abdülmecid tarafından inşa ettirilmiş ve Hırka-i Şerif burada muhafaza edilmeye başlanmıştır.
+\n• Cami içindeki özel bölümde Hırka-i Şerif, cam bir muhafaza içerisinde ziyaretçilere gösterilmektedir.
+\n\n ❖Hırka-i Şerif’in Manevi Mesajı
+\n\nHırka-i Şerif, Müslümanlar için sadece bir giysi değil, aynı zamanda Hz. Muhammed’in (s.a.v.)  mübarek hayatına, onun sevgisine ve mesajına olan bağlılığın bir sembolüdür. Bu emanet, Müslümanları Peygamber Efendimiz’in örnek ahlakını yaşamaya teşvik eder ve manevi bağlarını güçlendirir.
+    </string>
+    <string name="kademiserif" translatable="false">
+        Kadem-i Şerif (Peygamberimizin Mübarek Ayak İzi), İslam dünyasında büyük bir manevi değer taşıyan önemli emanetlerden biridir. Hz. Muhammed\'in (s.a.v.) ayak izinin kaldığı düşünülen taşlar, Kadem-i Şerif olarak adlandırılır ve birçok İslam beldesinde özenle muhafaza edilir. Bu emanetlere saygı ve hürmetle yaklaşılır, çünkü Peygamber Efendimiz’in izlerini taşıdığı kabul edilir.
+
+\n\n ❖Tarihçesi ve Önemi
+\n1. Kaynağı:\n
+   Kadem-i Şerif\'in, Hz. Muhammed’in (s.a.v.)  çeşitli yerlerde bıraktığı ayak izlerinden birinin kalıp hâline getirilmiş veya doğal yollarla oluşmuş olduğu düşünülür. Bu ayak izlerinin, Peygamber Efendimiz’in miraca çıktığı veya kutsal mekânlarda ibadet ettiği anlarda oluştuğuna inanılır.
+
+\n2. Kutsallığı:\n
+   İslam dünyasında Kadem-i Şerif, Peygamber Efendimiz’in varlığına duyulan sevginin ve bağlılığın bir simgesi olarak görülür. Ziyaretçiler, bu emanete hürmet ederek dua eder ve manevi bir bağ kurmaya çalışırlar.
+
+\n3. Muhafaza Edildiği Yerler:\n
+   Kadem-i Şerif\'in orijinal veya kopyalarının bulunduğu bazı yerler şunlardır:
+   \n• Topkapı Sarayı (İstanbul): Kutsal emanetler arasında yer alır.
+   \n• Dünyanın Çeşitli Camileri ve Türbeleri: Kahire, Şam, Mekke, ve Kudüs gibi şehirlerde de Kadem-i Şerif bulunduğu rivayet edilen taşlar vardır.
+
+\n4. Sanatsal ve Manevi Tasvirler\n
+   Kadem-i Şerif\'in bazıları sadece ayak izi olarak değil, aynı zamanda çeşitli desen ve tezhiplerle süslenerek muhafaza edilmiştir. Bu, eserin hem sanatsal hem de dini değerini artırır.
+\n\n ❖İlgili Rivayetler:
+\n• Bir rivayete göre, Peygamber Efendimiz, Mescid-i Aksa\'da ibadet ettiği sırada bu ayak izi bırakmıştır.
+\n• Bir başka rivayette, Miraç Gecesi sırasında bastığı taşta iz bıraktığı söylenir.
+    </string>
+    <string name="sancakiserif" translatable="false">
+        Sancak-ı Şerif, İslam dünyasında Hz. Muhammed\'in (s.a.v.) sancağı olduğu kabul edilen ve büyük bir manevi değer taşıyan kutsal bir emanettir. Bu sancak, Müslümanlar için hem dini hem de tarihi açıdan önemlidir ve genellikle İslam ordularını motive eden bir sembol olarak kullanılmıştır. Sancak-ı Şerif\'in zamanla yıpranarak toz ve kırıntı haline geldiğini söylenmektedir.
+
+\n\n ❖Sancak-ı Şerif\'in Tarihçesi
+\n• Hz. Muhammed (s.a.v.), savaşlarda sahabelerine sancak taşıma görevi verirdi. Bu sancaklar, İslam\'ın zafer ve birliğinin simgesiydi.
+\n• Sancak-ı Şerif, Peygamber Efendimizin bizzat kullandığı bir sancak olarak kabul edilir. Bu sancak, genellikle siyah renkli olup "Ukab" (Kartal) adıyla da anılır.
+\n• Rivayetlere göre, Sancak-ı Şerif, Peygamber Efendimizin vefatından sonra İslam halifelerine ve ardından Abbasi halifelerine emanet edilmiştir.
+
+\n\n ❖Osmanlı Döneminde Sancak-ı Şerif
+\n• Osmanlı padişahı Yavuz Sultan Selim, 1517 yılında Mısır Seferi sırasında Abbasi halifeliğini Osmanlı Devleti’ne devretmiş ve bu sırada kutsal emanetlerle birlikte Sancak-ı Şerif’i de İstanbul’a getirmiştir.
+\n• Osmanlılar, Sancak-ı Şerif’i Topkapı Sarayı’ndaki Mukaddes Emanetler Dairesinde muhafaza etmişlerdir.
+\n• Sancak-ı Şerif, Osmanlı ordularının sefere çıkışı öncesinde ve kritik anlarda padişahlar tarafından çıkarılarak askerlerin manevi gücünü artırmak için gösterilmiştir. Ayrıca Yeniçeri Ocağı\'nın ayaklanmalarında, isyancıların yatıştırılması amacıyla da Sancak-ı Şerif çıkarılmıştır.
+
+
+\n\n ❖Manevi ve Sembolik Önemi
+\n• Sancak-ı Şerif, İslam\'ın birliğini, dirliğini ve zaferini temsil eder.
+\n• Sancak, Müslümanlar için cesaret ve inancın sembolü olmuştur. Onu görmek, savaş sırasında Müslümanlara manevi güç ve motivasyon vermiştir.
+\n• Sancak-ı Şerif, Peygamber Efendimiz’in İslam’a olan bağlılığını ve liderliğini hatırlatan önemli bir semboldür.
+
+
+\n\n ❖Sancak-ı Şerif\'in Kullanımı
+\n• Sancak-ı Şerif, Osmanlı ordularının sefere çıkışında özel bir merasimle taşınırdı.
+\n• Savaşlarda ön safta yer alır ve askerlere moral kaynağı olurdu.
+\n• Halk ayaklanmaları veya devletin ciddi tehlike altında olduğu durumlarda, padişahlar Sancak-ı Şerif’i çıkararak halkın ve ordunun bir araya gelmesini sağlamıştır.
+
+\n\n ❖Manevi Mesajı
+\nSancak-ı Şerif, Müslümanlar için Peygamber Efendimiz\'in davasına bağlılığın, cesaretin ve İslam birliğinin sembolüdür. Bu sancak, İslam tarihindeki büyük zaferleri ve iman gücünü hatırlatarak, Müslümanları manevi olarak güçlendirmeye devam etmektedir.
+    </string>
+    <string name="efendimizevi" translatable="false">
+        Hz. Muhammed’in (s.a.v.) evi, sade ve mütevazı bir yaşamın en güzel örneğini yansıtan bir yapıdır. Peygamber Efendimiz, Medine’ye hicret ettikten sonra burada bir ev yaptırmış ve bu evde İslam topluluğunun merkezi haline gelen Mescid-i Nebevî ile bitişik bir şekilde yaşamıştır.
+
+\n\n ❖Peygamber Efendimizin Evinin Özellikleri
+\n• Sade ve Basit Yapı: Ev, kerpiçten yapılmış, tavanı hurma dallarıyla örtülmüştür. Evin tabanı ise topraktı.
+\n• Küçük ve İşlevsel: Evin büyüklüğü, Hz. Muhammed’in (s.a.v.) sade yaşamını yansıtıyordu. Sade ve kullanışlı eşyalarla döşenmişti; yatak olarak hurma lifinden yapılmış bir hasır kullanırdı.
+\n• İhtiyaç Odaklı Düzen: Ev, küçük bir oda ve bir avludan oluşuyordu. Ayrıca, peygamberlik görevlerini yerine getirmek ve insanlarla buluşmak için evinin yanında Mescid-i Nebevî ile bitişik bir konumdaydı.
+
+\n\n ❖Manevi Atmosfer
+\nHz. Muhammed’in (s.a.v.) evi, aynı zamanda İslam’ın ilk öğretim ve tebliğ merkezi olma özelliği taşıyordu. Sahabeler, Peygamber Efendimiz’i ziyaret eder, ondan İslam’ı öğrenir ve dini meselelerini istişare ederdi. Bu evde ibadetler yapılır, Kur\'an ayetleri tebliğ edilirdi.
+
+
+\n\n ❖Hane-i Saadet
+\nPeygamber Efendimiz’in evi, Hane-i Saadet (Mutluluk Evi) olarak da anılır. Burada Hz. Hatice ve Hz. Aişe gibi eşleriyle birlikte mütevazı bir yaşam sürmüştür. Bu ev, İslam toplumu için bir örnek oluşturmuş ve sadeliğin, tevazuunun önemini vurgulamıştır.
+
+\n\n ❖Günümüzdeki Durum
+\nHz. Muhammed’in (s.a.v.) evi, Mescid-i Nebevî\'nin genişletilmesi sırasında ortadan kalkmıştır. Ancak evin yeri, Müslümanlar için hala büyük bir manevi anlam taşır. Bugün Mescid-i Nebevî, Peygamber Efendimiz’in türbesini ve bu kutsal mekânı içermektedir.
+
+\n\n ❖Manevi Mesajı
+\nHz. Muhammed’in (s.a.v.) evi, sade bir hayatın ve Allah’a bağlılığın en güzel örneklerinden biridir. Bu mütevazı yaşam tarzı, Müslümanlara mal ve mülk konusunda ölçülü olmayı, şükretmeyi ve kanaat etmeyi öğütler.
+\nPeygamber efendimiz (s.a.v.) Efendimiz’in daracık evlerde yaşaması, yokluktan değil, dünyâ hayâtına zerre kadar değer vermemesindendi. Sadece ganimet mallarından hissesine düşen hakkını dağıtmayıp elinde tutsa, süslü saraylar ve kâşâneler yaptırabilme imkânına fazlasıyla sâhipti. Ancak O, fakrı ve zâhidâne bir hayâtı, irâdî olarak tercih ediyor, kendi hissesine düşen ganimetleri infâk etmeden de huzur bulamıyordu.
+
+    </string>
+    <string name="kilicveyay" translatable="false">
+
+Hz. Muhammed\'in (s.a.v.) kullandığı kılıç, yay ve oklar, onun sade, güçlü ve tevazu dolu yaşamının bir parçasıdır. Bu silahlar, Peygamber Efendimizin hem savaşlarda görevini yerine getirirken hem de İslam’ı savunurken kullandığı eşyalardır. Her biri İslam tarihindeki önemli olaylarla ilişkilidir ve bugün Müslümanlar için büyük manevi değere sahiptir.
+        \n\n ❖Savaşlarda Kullanımı ve Manevi Mesajı
+\nHz. Muhammed’in (s.a.v.)  kılıç, yay ve okları sadece savaş için değil, aynı zamanda adalet, hak ve İslam’ın korunması için birer araçtı.
+\nSilahlarını asla zulüm için kullanmamış, her zaman savunma amaçlı hareket etmiştir.
+\nO, barış ve hoşgörü peygamberi olarak bilinse de gerektiğinde İslam’ı ve Müslümanları korumaktan geri durmamıştır.
+
+        \n\n ❖Günümüzdeki Durum
+\nBu silahların bir kısmı, Topkapı Sarayı’nda Mukaddes Emanetler Dairesinde sergilenmektedir. Müslümanlar için bu silahlar, Peygamber Efendimiz’in mücadeleci ruhunu ve İslam’ın savunulmasına olan bağlılığını hatırlatan önemli emanetlerdir.
+
+         \n\nHz. Muhammed’in (s.a.v.)  kılıç, yay ve okları, onun cesaretini, adaletini ve İslam’a hizmetini simgeler. Bu silahlar, Müslümanlara doğruyu savunmayı, adil olmayı ve gerektiğinde hak yolunda mücadele etmeyi öğütleyen değerli hatıralardır.
+
+    </string>
+    <string name="naliserif" translatable="false">
+        Hz. Muhammed’in (s.a.v.) kullandığı ayakkabılara “na‘l-i şerif” denilir. Hadis kaynaklarında ayrıntılı biçimde tarif edilen na‘l-i şerif, İslami edebiyatta hem Resul-i Ekrem’in zatı hem de ayağının kutsiyetine nispetle iki yönden önemli görülmüştür.
+\n\n ❖Na‘l-i Şerif’in Özellikleri
+\nNa‘l-i Şerif, deriden yapılmış, sade bir ayakkabıydı.
+\nİki kayışla ayağa bağlanırdı. Kayışların biri ayak parmaklarının üzerinden, diğeri ise ayağın üst kısmından geçerdi.
+\nPeygamber Efendimiz’in, Na‘l-i Şerif’i ihtiyaçlarını karşılayacak şekilde kullanıp, hiçbir zaman israfa kaçmadığı rivayet edilmiştir.
+       \n\n ❖Na‘l-i Şerif’in Manevi Değeri
+\nNa‘l-i Şerif, İslam kültüründe Peygamber sevgisinin bir sembolü olarak görülür.
+\nMüslümanlar, Na‘l-i Şerif’i, Hz. Muhammed’in (s.a.v.)  yolunda gitmeyi, onun ahlak ve yaşayışını örnek almayı hatırlatan bir hatıra olarak benimsemişlerdir.
+\nOsmanlı döneminde padişahlar, Na‘l-i Şerif’in tasvirlerini sancaklara, hilatlere (giysilere) ve diğer eşyalarına işleyerek bu kutsal emanetle manevi bağlarını göstermişlerdir.
+
+        \n\n ❖Osmanlı’daki Yeri ve Korunması
+\nNa‘l-i Şerif, Osmanlı İmparatorluğu döneminde Topkapı Sarayı’nda Mukaddes Emanetler Dairesinde özenle muhafaza edilmiştir.
+\nSarayda bu emanetlere özel törenler düzenlenmiş, Na‘l-i Şerif’e saygı gösterilerek dua edilmiştir.
+
+        \nNa‘l-i Şerif, Peygamber Efendimiz’in mütevazı yaşamını ve İslam’ın sade, gösterişsiz ruhunu yansıtan bir semboldür. Müslümanlar için bu kutsal emanet, Hz. Muhammed’in (s.a.v.) izinden gitme ve onun ahlakını örnek alma yönünde bir hatırlatıcı ve manevi bir bağdır. Günümüzde hala derin bir sevgi ve saygıyla anılmaktadır.
+    </string>
+    <string name="musafserif" translatable="false">
+    Mushaf-ı Şerif, Kur\'an-ı Kerim’in kitap hâline getirilmiş şekline verilen isimdir. "Mushaf" kelimesi, Arapça kökenli olup, "sayfalar arasında toplanmış yazılar" anlamına gelir. Mushaf-ı Şerif, İslam’ın kutsal kitabı olan Kur\'an’ın yazılı metnini ifade eder ve Müslümanlar için en değerli ve saygı duyulan metindir.
+ \n\n ❖Tarihî Süreç ve Derlenmesi
+\n•Vahyin Toplanması
+
+\nKur\'an-ı Kerim, Hz. Muhammed’e (s.a.v.) 23 yıllık peygamberlik süresi boyunca parça parça vahyedilmiştir.
+\nVahiyler, Peygamberimizin yakın sahabeleri tarafından ezberlenmiş ve deri, taş, hurma yaprakları gibi malzemelere yazılmıştır.
+\n•Hz. Ebu Bekir Dönemi
+
+\nPeygamber Efendimizin vefatından sonra, Yemame Savaşı sırasında birçok hafızın şehit olması nedeniyle, Kur\'an ayetlerinin korunması için bir komisyon kurulmuştur.
+\nZeyd bin Sabit liderliğinde, vahiy kâtipleri tarafından yazılan ayetler bir araya getirilmiş ve ilk kez kitap hâline getirilmiştir.
+\n•Hz. Osman Dönemi
+
+\n•Farklı bölgelerde Kur\'an’ın okunmasında bazı farklılıklar ortaya çıkınca, Hz. Osman, Mushaf’ın çoğaltılmasını ve farklı bölgelere gönderilmesini emretmiştir.
+\n•Bu süreçte hazırlanan nüshalara Osmanî Mushaf denir.
+
+         \n\n ❖Mushaf-ı Şerif’in Özellikleri
+\n•Arapça Metin: Kur\'an-ı Kerim, Arapça olarak indirilmiştir ve Mushaf-ı Şerif de bu orijinal metni içerir.
+\n•Tertipli Düzen: 114 sure ve 6236 ayet, belirli bir düzen içinde sıralanmıştır.
+\n•Tashih Edilmiş Metin: Mushaf, hiçbir değişikliğe uğramadan günümüze kadar gelmiştir. Müslümanlar, bu korumanın Allah’ın bir vaadi olduğuna inanırlar (Hicr Suresi, 15:9).
+
+         \n\n ❖Manevi Değeri ve Adabı
+\n•Saygı: Mushaf-ı Şerif’e büyük bir saygı gösterilir; yüksek bir yerde muhafaza edilir, temiz bir ortamda okunur ve abdestsiz dokunulmaz.
+\n•Tilavet: Mushaf, yalnızca okunmak için değil, aynı zamanda anlamak ve hayatı ona göre şekillendirmek için rehber olarak görülür.
+\n•Hafızlık: Mushaf-ı Şerif’in ezberlenmesi, İslam kültüründe çok önemli bir ibadet ve gelenektir.
+
+
+    </string>
+    <string name="kisveiserif" translatable="false">
+        Kisve-i Şerif, Kâbe’nin üzerine örtülen ve büyük bir manevi değere sahip olan kutsal örtüdür. İslam kültüründe önemli bir yere sahip olan Kisve, her yıl yenilenir ve Kâbe’nin örtüsü olarak büyük bir saygıyla korunur.
+\n\n ❖ Kisve-i Şerif’in Tarihi ve Kökeni
+\n1. İslam Öncesi Dönem
+   \n• Kâbe, İslam’dan önce de kutsal bir yapı olarak kabul edilirdi ve farklı dönemlerde çeşitli kumaşlarla örtülürdü.
+   \n• İlk defa Kâbe’yi bir örtüyle kaplayan kişinin Himyeri Kralı Tubba olduğu rivayet edilir.
+
+\n2. Hz. Muhammed (s.a.v.) Dönemi
+   \n• Peygamber Efendimiz döneminde Kisve, Yemen kumaşından yapılırdı.
+   \n• O dönemde Kisve, Kâbe’ye büyük bir özenle yerleştirilirdi ve ihtiyaç oldukça yenilenirdi.
+
+\n3. Halifeler ve İslam Devletleri Dönemi
+   \n• Dört Halife döneminde Kisve’ye ayrı bir önem verilmiş, Hz. Ömer ve Hz. Osman gibi halifeler Kisve’nin düzenli olarak yenilenmesini sağlamışlardır.
+   \n• Emevîler, Abbasîler, Memlükler ve Osmanlılar döneminde Kisve, her yıl özenle hazırlanarak Kâbe’ye gönderilmiştir.
+
+\n\n ❖ Kisve-i Şerif’in Özellikleri
+\n• Malzemesi: Kisve, siyah ipekten yapılır ve üzerine altın ve gümüş işlemelerle ayetler yazılır.
+\n• Boyutları: Kâbe’nin yüzeyini tamamen kaplayacak şekilde dikilir. Genellikle dört ayrı parça hâlinde hazırlanır.
+\n• İşlemeler: Kisve’nin üzerindeki altın ve gümüş işlemeler, özellikle Kur’an-ı Kerim’den ayetleri ve Allah’ın isimlerini içerir.
+\n• Hazırlanma Süreci: Kisve-i Şerif, günümüzde Suudi Arabistan’da özel atölyelerde büyük bir titizlikle hazırlanır. Her yıl, Arefe Günü eski Kisve çıkarılarak yenisiyle değiştirilir.
+
+\n\n ❖ Manevi ve Sembolik Anlamı
+\n• Kisve-i Şerif, Kâbe’nin kutsallığını ve İslam dünyasının birliğini temsil eder.
+\n• Müslümanlar, Kâbe’nin üzerindeki bu örtüyü büyük bir sevgi ve saygıyla karşılar.
+\n• Eski Kisve parçaları, ziyaretçilere hediye olarak verilir ve büyük bir hatıra niteliği taşır.
+
+\n\n ❖ Kisve-i Şerif’in Değiştirilmesi
+\n• Kisve her yıl Zilhicce ayının 9. günü, yani Arefe Günü, büyük bir törenle değiştirilir.
+\n• Eski Kisve parçaları, daha önce farklı İslam ülkelerine hediye olarak gönderilirdi. Günümüzde, bu parçalar genellikle Suudi Arabistan’da özel olarak muhafaza edilir.
+
+\n\n
+Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir semboldür. Hem estetik güzelliği hem de manevi değeriyle Müslümanlar için büyük bir anlam taşır. Her yıl yenilenen bu kutsal örtü, İslam dünyasının Kâbe’ye olan bağlılığını ve saygısını ifade eder.
+    </string>
+    <string name="kerahat_vakti">Kerahat Vaktlerini Göster</string>
+    <string name="sound_setting">Uygulama Sesleri</string>
+    <string name="vakit_sound_setting">Namazda Titreşime Al</string>
+    <string name="app_version" >1.0.1</string>
+    <string name="prayer_times_updated">Namaz Vakitleri Güncellendi</string>
+    <string name="prayer_times_updated_body">Namaz vakitleri güncellendi. Yeniden kurulum gerekiyor.</string>
+    <string name="vakitHerzamanGoster">Bildirimleri Her Zaman Göster</string>
+    <string name="local_products_title">Yerli Ürünler</string>
+    <string name="local_products_description">Yerli ürünleri keşfedin ve bilinçli bir tüketici olun. Barkod tarayıcı ile ürünlerin yerli olup olmadığını öğrenin.</string>
+    <string name="local_products_image">Yerli Ürünler İkonu</string>
+    <string name="open_local_products_app">Uygulamayı Aç</string>
+    <string name="app_logo_description">widget logo</string>
+    <string name="weather_icon_description">weather label</string>
 </resources>

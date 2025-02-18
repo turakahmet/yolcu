@@ -3,11 +3,11 @@ package com.myapp.yolcu.ui.game;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -16,7 +16,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -57,7 +56,7 @@ public class InfoGameActivity extends AppCompatActivity {
     private List<Question> questionList;
     private int currentQuestionIndex = 0;
     private int timeLeft = 150; // 60 saniye geri sayım süresi
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler(Looper.getMainLooper());
     private boolean joker50Used = false;
     private boolean jokerHintUsed = false;
     private boolean jokerDoubleUsed = false;
@@ -77,7 +76,6 @@ public class InfoGameActivity extends AppCompatActivity {
     private int correctAnswerIndex;
     private ConstraintLayout costCoinLayout, costCoinLayout_2, costCoinLayout_3;
     private StepView stepView;
-    private List<String> stepLabels;
     private List<Question> finalQuestions;
     private Animation buttonClickAnim;
     private GoldService goldService;
@@ -111,18 +109,10 @@ public class InfoGameActivity extends AppCompatActivity {
                 new AlertDialog.Builder(InfoGameActivity.this)
                         .setTitle(getString(R.string.exit_game))
                         .setMessage(getString(R.string.exit_game_label))
-                        .setPositiveButton(getString(R.string.evet), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                endGamePopup(null,false,false,true);
-                            }
-                        })
-                        .setNegativeButton(getString(R.string.hayir), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss(); // "Hayır" seçilirse dialog kapanır
-                                startTimer(); // "Hayır" seçildiğinde timer yeniden başlar
-                            }
+                        .setPositiveButton(getString(R.string.evet), (dialog, which) -> endGamePopup(null,false,false,true))
+                        .setNegativeButton(getString(R.string.hayir), (dialog, which) -> {
+                            dialog.dismiss(); // "Hayır" seçilirse dialog kapanır
+                            startTimer(); // "Hayır" seçildiğinde timer yeniden başlar
                         })
                         .setCancelable(false)
                         .create()
@@ -237,8 +227,7 @@ public class InfoGameActivity extends AppCompatActivity {
         finalQuestions.addAll(selectedEasyQuestions);
         finalQuestions.addAll(selectedMediumQuestions);
         finalQuestions.addAll(selectedHardQuestions);
-        //sureyi baslat
-        startTimer();
+
 
 
 
@@ -373,9 +362,7 @@ public class InfoGameActivity extends AppCompatActivity {
     private void handleIncorrectAnswer(Button selectedButton, Question currentQuestion) {
         selectedButton.setBackgroundColor(ContextCompat.getColor(this, R.color.wrongAnswer)); // Yanlış cevap seçilen buton
         highlightCorrectAnswer(currentQuestion);
-        handler.postDelayed(() -> {
-            endGamePopup(currentQuestion,false,false,false);
-        }, 2000);
+        handler.postDelayed(() -> endGamePopup(currentQuestion,false,false,false), 2000);
     }
 
     private void highlightCorrectAnswer(Question currentQuestion) {
@@ -446,6 +433,13 @@ public class InfoGameActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         stopTimer();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //sureyi baslat
+        startTimer();
     }
 
     private void saveGoldAmountText() {
@@ -568,13 +562,10 @@ public class InfoGameActivity extends AppCompatActivity {
         mDialog.setCancelable(false);
         // Kapat butonunu bul ve tıklama olayını ayarla
         Button closeButton = mDialog.findViewById(R.id.closeButtonEndGame);
-        closeButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                soundService.commonButtonEffect();
-                mDialog.dismiss();
-                finish();
-            }
+        closeButton.setOnClickListener(view -> {
+            soundService.commonButtonEffect();
+            mDialog.dismiss();
+            finish();
         });
             TextView hitpouptext = mDialog.findViewById(R.id.hintPopUpTextEndGame);
             TextView correctAnswerEndGame = mDialog.findViewById(R.id.correctAnswerEndGame);
@@ -634,7 +625,10 @@ public class InfoGameActivity extends AppCompatActivity {
 
         // Dialog'u göster
         mDialog.show();
+        //app review cagir
+        badgeService.showInAppReview(InfoGameActivity.this);
     }
+
     private void showHintPopup() {
         // Yeni bir Dialog oluştur
         mDialog = new Dialog(InfoGameActivity.this);
@@ -645,12 +639,9 @@ public class InfoGameActivity extends AppCompatActivity {
         mDialog.setCancelable(true);
         // Kapat butonunu bul ve tıklama olayını ayarla
         Button closeButton = mDialog.findViewById(R.id.closeButton);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                soundService.commonButtonEffect();
-                mDialog.dismiss();
-            }
+        closeButton.setOnClickListener(view -> {
+            soundService.commonButtonEffect();
+            mDialog.dismiss();
         });
         //hint text set
         TextView hitpouptext=mDialog.findViewById(R.id.hintPopUpText);
@@ -702,10 +693,6 @@ public class InfoGameActivity extends AppCompatActivity {
             currentQuestionIndex++;
             showQuestion();
         }, 2000);
-    }
-
-    private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -62,7 +62,7 @@ public class EsmaHusna {
         esmaHusnaList.add(new EsmaHusna("el-Mü’min", "Bütün mahlûkâta emniyet/güven veren ve kendisine güvenilen."));
         esmaHusnaList.add(new EsmaHusna("el-Müheymin", "Kâinatı gözeten ve koruyan."));
         esmaHusnaList.add(new EsmaHusna("el-Azîz", "Ulu, galip, her şeye üstün gelen izzet sahibi."));
-        esmaHusnaList.add(new EsmaHusna("el-Cebbâr", "Dilediğini yaptırma gücüne sahip olan, istediğini mutlak yapan, dilediğine muktedir olan."));
+        esmaHusnaList.add(new EsmaHusna("el-Cebbâr", "Dilediğini yaptırma gücüne sahip olan, dilediğine muktedir olan."));
         esmaHusnaList.add(new EsmaHusna("el-Mütekebbir", "Büyüklüğünü izhar eden, son derece ulu, yüce."));
         esmaHusnaList.add(new EsmaHusna("el-Hâlık", "Yaratan, yoktan var eden."));
         esmaHusnaList.add(new EsmaHusna("el-Bâri", "Her şeyi kusursuz ve uyumlu yaratan."));

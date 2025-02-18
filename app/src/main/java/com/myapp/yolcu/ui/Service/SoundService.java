@@ -1,5 +1,7 @@
 package com.myapp.yolcu.ui.Service;
 
+import static com.myapp.yolcu.ui.main.MainActivity.sharedPrefsHelperService;
+
 import android.content.Context;
 import android.media.MediaPlayer;
 
@@ -16,6 +18,8 @@ public class SoundService {
 
     // Ses oynatma metodu
     public void playSound(int soundResourceId) {
+        if(sharedPrefsHelperService!=null && !sharedPrefsHelperService.getSwitchState("switchNotificationSound"))
+            return;
         // Daha önce bir MediaPlayer nesnesi çalışıyorsa, önce durdur ve serbest bırak
         if (mediaPlayer != null) {
             mediaPlayer.release();

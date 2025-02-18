@@ -2,11 +2,9 @@ package com.myapp.yolcu.ui.main;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -16,8 +14,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.myapp.yolcu.R;
-
-import java.util.Objects;
 
 public class ProfilePictureDialogFragment extends DialogFragment {
     public interface ProfilePictureDialogListener {
@@ -32,7 +28,7 @@ public class ProfilePictureDialogFragment extends DialogFragment {
         try {
             listener = (ProfilePictureDialogListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement ProfilePictureDialogListener");
+            throw new ClassCastException(context + " must implement ProfilePictureDialogListener");
         }
     }
 
@@ -45,11 +41,8 @@ public class ProfilePictureDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setTitle(getString(R.string.choose_avatar))
-                .setPositiveButton(getString(R.string.save), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Kullanıcı seçimini yapmadıysa hiçbir şey yapma
-                    }
+                .setPositiveButton(getString(R.string.save), (dialog, which) -> {
+                    // Kullanıcı seçimini yapmadıysa hiçbir şey yapma
                 })
                 .setNegativeButton(getString(R.string.cancel), null);
 
@@ -59,17 +52,9 @@ public class ProfilePictureDialogFragment extends DialogFragment {
         gridView.setAdapter(new ImageAdapter(getActivity(), imageOptions));
 
         // GridView'e tıklama olayı ekle
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                listener.onProfilePictureSelected(imageOptions[position]);
-                builder.setPositiveButton(getString(R.string.save), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        listener.onProfilePictureSelected(imageOptions[position]);
-                    }
-                });
-            }
+        gridView.setOnItemClickListener((parent, view, position, id) -> {
+            listener.onProfilePictureSelected(imageOptions[position]);
+            builder.setPositiveButton(getString(R.string.save), (dialog, which) -> listener.onProfilePictureSelected(imageOptions[position]));
         });
 
         builder.setView(gridView);

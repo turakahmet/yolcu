@@ -12,7 +12,6 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.myapp.yolcu.R;
 import com.myapp.yolcu.databinding.FragmentHomeBinding;
@@ -51,42 +50,33 @@ public class HomeFragment extends Fragment {
         Button playMatchesGameButton = root.findViewById(R.id.play_matches_game_button);
 
         // Bilgi oyunu butonuna tıklama olayını tanımla
-        playInfoGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                incrementGameCount(INFO_GAME_COUNT_KEY);
+        playInfoGameButton.setOnClickListener(v -> {
+            incrementGameCount(INFO_GAME_COUNT_KEY);
 
-                // Bilgi oyununu aç
-                soundService.playGameButtonEffect();
-                Intent intent = new Intent(getActivity(), InfoGameActivity.class);
-                startActivity(intent);
-            }
+            // Bilgi oyununu aç
+            soundService.playGameButtonEffect();
+            Intent intent = new Intent(getActivity(), InfoGameActivity.class);
+            startActivity(intent);
         });
 
         // Kelime oyunu butonuna tıklama olayını tanımla
-        playWordGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                incrementGameCount(WORD_GAME_COUNT_KEY);
+        playWordGameButton.setOnClickListener(v -> {
+            incrementGameCount(WORD_GAME_COUNT_KEY);
 
-                // Kelime oyununu aç
-                soundService.playGameButtonEffect();
-                Intent intent = new Intent(getActivity(), WordGameActivity.class);
-                startActivity(intent);
-            }
+            // Kelime oyununu aç
+            soundService.playGameButtonEffect();
+            Intent intent = new Intent(getActivity(), WordGameActivity.class);
+            startActivity(intent);
         });
 
         // Esleme oyunu butonuna tıklama olayını tanımla
-        playMatchesGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                incrementGameCount(MATCHES_GAME_COUNT_KEY);
+        playMatchesGameButton.setOnClickListener(v -> {
+            incrementGameCount(MATCHES_GAME_COUNT_KEY);
 
-                // Kelime oyununu aç
-                soundService.playGameButtonEffect();
-                Intent intent = new Intent(getActivity(), MatchesGameActivity.class);
-                startActivity(intent);
-            }
+            // Kelime oyununu aç
+            soundService.playGameButtonEffect();
+            Intent intent = new Intent(getActivity(), MatchesGameActivity.class);
+            startActivity(intent);
         });
 
 

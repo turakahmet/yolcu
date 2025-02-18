@@ -1,5 +1,7 @@
 package com.myapp.yolcu.ui.VakitApi;
 
+import static com.myapp.yolcu.ui.main.MainActivity.sharedPrefsHelperService;
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -19,6 +21,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.myapp.yolcu.R;
+import com.myapp.yolcu.ui.Service.SharedPrefsHelperService;
+import com.myapp.yolcu.ui.main.MainActivity;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -31,10 +35,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.chrono.ChronoLocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.Call;
@@ -45,12 +51,16 @@ import okhttp3.Response;
 
 public class PrayerTimesFetcher extends Service {
 
-    private Handler handler = new Handler();
+    private Handler handler = new Handler(Looper.getMainLooper());
     private Runnable runnable;
     private Context context;
     private TextView imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, kalanSureTextView, toolbarKalanSureLabel;
     private LinearLayout imsakTimeLayout, gunesTimeLayout, ogleTimeLayout, ikindiTimeLayout, aksamTimeLayout, yatsiTimeLayout, locationRefreshLayout, remain_time_layout;
     private AtomicInteger namazVakitTip =new AtomicInteger(0);
+    private NamazVakiti namazVakiti;
+    private final int kerahatVakti=45;
+
+
     public PrayerTimesFetcher(Context context, TextView imsakTime, TextView gunesTime, TextView ogleTime, TextView ikindiTime, TextView aksamTime, TextView yatsiTime, LinearLayout imsakTimeLayout, LinearLayout gunesTimeLayout, LinearLayout ogleTimeLayout, LinearLayout ikindiTimeLayout, LinearLayout aksamTimeLayout, LinearLayout yatsiTimeLayout, LinearLayout locationRefreshLayout, TextView kalanSureTextView, LinearLayout remain_time_layout, TextView toolbarKalanSureLabel) {
         this.context = context;
         this.imsakTime = imsakTime;
@@ -153,14 +163,14 @@ public class PrayerTimesFetcher extends Service {
     public void fetchPrayerTimesNoAPI(String city) {
         LocalTime currentTime = LocalTime.now();
         VakitNoApi vakitNoApi=new VakitNoApi();
-        HashMap<String, String> vakitList= vakitNoApi.localPrayerTimesByCityName(city);
-        if(!vakitList.isEmpty()) {
-            imsakTime.setText(vakitList.get("imsakTime"));
-            gunesTime.setText(vakitList.get("gunesTime"));
-            ogleTime.setText(vakitList.get("ogleTime"));
-            ikindiTime.setText(vakitList.get("ikindiTime"));
-            aksamTime.setText(vakitList.get("aksamTime"));
-            yatsiTime.setText(vakitList.get("yatsiTime"));
+        namazVakiti = vakitNoApi.getLocalPrayerTimesByCityName(city);
+        if(namazVakiti !=null) {
+            imsakTime.setText(namazVakiti.getImsak());
+            gunesTime.setText(namazVakiti.getGunes());
+            ogleTime.setText(namazVakiti.getOgle());
+            ikindiTime.setText(namazVakiti.getIkindi());
+            aksamTime.setText(namazVakiti.getAksam());
+            yatsiTime.setText(namazVakiti.getYatsi());
             updateBackgroundColor(currentTime);
             assert locationRefreshLayout != null;
             locationRefreshLayout.setVisibility(View.GONE);
@@ -169,58 +179,75 @@ public class PrayerTimesFetcher extends Service {
         }
     }
     private void updateBackgroundColor(LocalTime currentTime) {
-        LocalTime namazVakti = null;
-        LinearLayout remainTimeLayout =null;
+        LocalTime vakit = null;
+        LinearLayout remainTimeLayout = null;
         gunesTimeLayout.setBackground(null);
         ogleTimeLayout.setBackground(null);
         ikindiTimeLayout.setBackground(null);
         aksamTimeLayout.setBackground(null);
         yatsiTimeLayout.setBackground(null);
         imsakTimeLayout.setBackground(null);
-        if (imsakTime != null && currentTime.isAfter(parseTime(String.valueOf(imsakTime.getText()))) && currentTime.isBefore(parseTime(String.valueOf(gunesTime.getText())))) {
+        if(namazVakiti==null)
+            return;
+        if (namazVakiti.getImsak() != null && currentTime.isAfter(parseTime(namazVakiti.getImsak())) && currentTime.isBefore(parseTime(namazVakiti.getGunes()))) {
+            Log.d("PrayerTimesFetcher", "Namaz Vakti tetiklendi! Gunes dogmasi");
             gunesTimeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.current_namaz_time));
-            scheduleNotification(context.getString(R.string.namaz_vakit_notification_header), context.getString(R.string.gunes_vakit_notification_body), Objects.requireNonNull(parseTime(String.valueOf(gunesTime.getText()))));
-            namazVakti= LocalTime.parse(gunesTime.getText());
+            vakit= LocalTime.parse(gunesTime.getText());
             toolbarKalanSureLabel.setText(R.string.gunes_kalan);
             remainTimeLayout=gunesTimeLayout;
             namazVakitTip.set(1);
-        } else if (gunesTime != null && currentTime.isAfter(parseTime(String.valueOf(gunesTime.getText()))) && currentTime.isBefore(parseTime(String.valueOf(ogleTime.getText())))) {
+            namazVakiti.setGecerliVakit(NamazVakiti.GecerliVakit.GUNES);
+        } else if (namazVakiti.getGunes() != null && currentTime.isAfter(parseTime(namazVakiti.getGunes())) && currentTime.isBefore(parseTime(namazVakiti.getOgle()))) {
+            Log.d("PrayerTimesFetcher", "Namaz Vakti tetiklendi! Ogle namazi");
             ogleTimeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.current_namaz_time));
-            scheduleNotification(context.getString(R.string.namaz_vakit_notification_header), context.getString(R.string.ogle_vakit_notification_body), Objects.requireNonNull(parseTime(String.valueOf(ogleTime.getText()))));
-            namazVakti= LocalTime.parse(ogleTime.getText());
+            vakit= LocalTime.parse(ogleTime.getText());
             toolbarKalanSureLabel.setText(R.string.ogle_kalan);
             remainTimeLayout=ogleTimeLayout;
             namazVakitTip.set(2);
-        } else if (ogleTime != null && currentTime.isAfter(parseTime(String.valueOf(ogleTime.getText()))) && currentTime.isBefore(parseTime(String.valueOf(ikindiTime.getText())))) {
+            namazVakiti.setGecerliVakit(NamazVakiti.GecerliVakit.OGLE);
+        } else if (namazVakiti.getOgle() != null && currentTime.isAfter(parseTime(namazVakiti.getOgle())) && currentTime.isBefore(parseTime(namazVakiti.getIkindi()))) {
+            Log.d("PrayerTimesFetcher", "Namaz Vakti tetiklendi! ikindi namazi");
             ikindiTimeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.current_namaz_time));
-            scheduleNotification(context.getString(R.string.namaz_vakit_notification_header), context.getString(R.string.ikindi_vakit_notification_body), Objects.requireNonNull(parseTime(String.valueOf(ikindiTime.getText()))));
-            namazVakti= LocalTime.parse(ikindiTime.getText());
+            vakit= LocalTime.parse(ikindiTime.getText());
             toolbarKalanSureLabel.setText(R.string.ikindi_kalan);
             remainTimeLayout=ikindiTimeLayout;
             namazVakitTip.set(3);
-        } else if (ikindiTime != null && currentTime.isAfter(parseTime(String.valueOf(ikindiTime.getText()))) && currentTime.isBefore(parseTime(String.valueOf(aksamTime.getText())))) {
+            namazVakiti.setGecerliVakit(NamazVakiti.GecerliVakit.IKINDI);
+        } else if (namazVakiti.getIkindi() != null && currentTime.isAfter(parseTime(namazVakiti.getIkindi())) && currentTime.isBefore(parseTime(namazVakiti.getAksam()))) {
+            Log.d("PrayerTimesFetcher", "Namaz Vakti tetiklendi! aksam namazi");
             aksamTimeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.current_namaz_time));
-            scheduleNotification(context.getString(R.string.namaz_vakit_notification_header), context.getString(R.string.aksam_vakit_notification_body), Objects.requireNonNull(parseTime(String.valueOf(aksamTime.getText()))));
-            namazVakti= LocalTime.parse(aksamTime.getText());
+            vakit= LocalTime.parse(aksamTime.getText());
             toolbarKalanSureLabel.setText(R.string.aksam_kalan);
             remainTimeLayout=aksamTimeLayout;
             namazVakitTip.set(4);
-        } else if (aksamTime != null && currentTime.isAfter(parseTime(String.valueOf(aksamTime.getText()))) && currentTime.isBefore(parseTime(String.valueOf(yatsiTime.getText())))) {
+            namazVakiti.setGecerliVakit(NamazVakiti.GecerliVakit.AKSAM);
+        } else if (namazVakiti.getAksam() != null && currentTime.isAfter(parseTime(namazVakiti.getAksam())) && currentTime.isBefore(parseTime(namazVakiti.getYatsi()))) {
+            Log.d("PrayerTimesFetcher", "Namaz Vakti tetiklendi! yatsi namazi");
             yatsiTimeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.current_namaz_time));
-            scheduleNotification(context.getString(R.string.namaz_vakit_notification_header), context.getString(R.string.yatsi_vakit_notification_body), Objects.requireNonNull(parseTime(String.valueOf(yatsiTime.getText()))));
-            namazVakti= LocalTime.parse(yatsiTime.getText());
+            vakit= LocalTime.parse(yatsiTime.getText());
             toolbarKalanSureLabel.setText(R.string.yatsi_kalan);
             remainTimeLayout=yatsiTimeLayout;
             namazVakitTip.set(5);
-        } else {
+            namazVakiti.setGecerliVakit(NamazVakiti.GecerliVakit.YATSI);
+        } else if(currentTime.isAfter(parseTime(namazVakiti.getYatsi()))){
+            Log.d("PrayerTimesFetcher", "Namaz Vakti tetiklendi! imsak vakti");
             imsakTimeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.current_namaz_time));
-            scheduleNotification(context.getString(R.string.imsak_vakit_notification_header), context.getString(R.string.imsak_vakit_notification_body), Objects.requireNonNull(parseTime(String.valueOf(imsakTime.getText()))));
-            namazVakti= LocalTime.parse(imsakTime.getText());
+            vakit= LocalTime.parse(imsakTime.getText());
             toolbarKalanSureLabel.setText(R.string.imsak_kalan);
             remainTimeLayout=imsakTimeLayout;
             namazVakitTip.set(6);
+            namazVakiti.setGecerliVakit(NamazVakiti.GecerliVakit.IMSAK);
+        } else if (currentTime.isAfter(LocalTime.MIDNIGHT)){
+            Log.d("PrayerTimesFetcher", "Namaz Vakti tetiklendi! imsak vakti");
+            imsakTimeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.current_namaz_time));
+            vakit= LocalTime.parse(imsakTime.getText());
+            toolbarKalanSureLabel.setText(R.string.imsak_kalan);
+            remainTimeLayout=imsakTimeLayout;
+            namazVakitTip.set(6);
+            namazVakiti.setGecerliVakit(NamazVakiti.GecerliVakit.IMSAK);
         }
-        startCountdown(namazVakti,remainTimeLayout,namazVakitTip);
+
+        startCountdown(vakit,remainTimeLayout,namazVakitTip);
     }
 
     private void startCountdown(LocalTime namazVakti, LinearLayout remainTimeLayout, AtomicInteger namazVakitTip) {
@@ -258,9 +285,37 @@ public class PrayerTimesFetcher extends Service {
                         remain_time_layout.setBackgroundColor(ContextCompat.getColor(context, R.color.remain_namaz_time_3));
                         remainTimeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.remain_namaz_time_3));
                     }else if(minutes<20 && hours==0){
-                        remain_time_layout.setBackgroundColor(ContextCompat.getColor(context, R.color.remain_namaz_time_2));;
-                        remainTimeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.remain_namaz_time_2));;
-                    }else {
+                        remain_time_layout.setBackgroundColor(ContextCompat.getColor(context, R.color.remain_namaz_time_2));
+                        remainTimeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.remain_namaz_time_2));
+                    }else if(sharedPrefsHelperService.getSwitchState("switchNotificationKerahat") && minutes<kerahatVakti && hours==0 && (NamazVakiti.GecerliVakit.OGLE.equals(NamazVakiti.getInstance().getGecerliVakit()) || NamazVakiti.GecerliVakit.AKSAM.equals(NamazVakiti.getInstance().getGecerliVakit()))) {
+                        remain_time_layout.setBackgroundColor(ContextCompat.getColor(context, R.color.remain_kerahat_time));
+                        remainTimeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.remain_kerahat_time));
+                        if(NamazVakiti.GecerliVakit.OGLE.equals(NamazVakiti.getInstance().getGecerliVakit()))
+                            toolbarKalanSureLabel.setText(context.getString(R.string.ogle_kalan)+" / KERAHAT VAKTİ İÇİNDESİNİZ");
+                        else if(NamazVakiti.GecerliVakit.AKSAM.equals(NamazVakiti.getInstance().getGecerliVakit())){
+                            toolbarKalanSureLabel.setText(context.getString(R.string.aksam_kalan)+" / KERAHAT VAKTİ İÇİNDESİNİZ");
+                        }
+                    }else if(sharedPrefsHelperService.getSwitchState("switchNotificationKerahat") && (NamazVakiti.GecerliVakit.OGLE.equals(NamazVakiti.getInstance().getGecerliVakit()))){
+                        // Güneş doğumu saatini alın
+                        LocalTime gunesDogumu = NamazVakiti.getInstance().getVakitTime(NamazVakiti.GecerliVakit.GUNES);
+
+                        // Sabah namazından 45 dakika sonrasını hesaplayın
+                        LocalTime kerahatBitis = gunesDogumu.plusMinutes(45);
+
+                        // Mevcut zaman
+                        LocalDateTime gunesDogumuDateTime = LocalDateTime.of(currentTime.toLocalDate(), gunesDogumu);
+                        LocalDateTime kerahatBitisDateTime = LocalDateTime.of(currentTime.toLocalDate(), kerahatBitis);
+
+                        // Eğer şu anki zaman kerahat vakti içindeyse
+                        if (currentTime.isAfter(gunesDogumuDateTime) && currentTime.isBefore(kerahatBitisDateTime)) {
+                            remain_time_layout.setBackgroundColor(ContextCompat.getColor(context, R.color.remain_kerahat_time));
+                            remainTimeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.remain_kerahat_time));
+                            toolbarKalanSureLabel.setText("KERAHAT VAKTİ İÇİNDESİNİZ");
+                        } else {
+                            toolbarKalanSureLabel.setText(context.getString(R.string.ogle_kalan));
+                            remain_time_layout.setBackgroundColor(ContextCompat.getColor(context, R.color.remain_namaz_time_1));;
+                        }
+                    } else {
                         remain_time_layout.setBackgroundColor(ContextCompat.getColor(context, R.color.remain_namaz_time_1));;
                     }
                     // Her saniye tekrar çalıştır
@@ -268,6 +323,7 @@ public class PrayerTimesFetcher extends Service {
                 } else {
                     // Eğer süre dolduysa TextView'i sıfırla veya yeni vakit için bir işlem yap
                     updateBackgroundColor(LocalTime.from(currentTime));
+                    handler.removeCallbacks(this); // Runnable'ı durdur
                 }
             }
         };
@@ -284,41 +340,6 @@ public class PrayerTimesFetcher extends Service {
             e.printStackTrace();
             return null;  // Eğer bir hata oluşursa null döndür
         }
-    }
-
-    @SuppressLint("ScheduleExactAlarm")
-    private void scheduleNotification(String title, String message, LocalTime notificationTime) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.putExtra("title", title);
-        intent.putExtra("message", message);
-
-        int requestCode = (int) System.currentTimeMillis(); // Benzersiz bir requestCode oluşturun
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE );
-
-        // Namaz vaktinden 10 dakika önceye ayarlama
-        long triggerTime = notificationTime
-                .minusMinutes(10) // 10 dakika önce
-                .atDate(LocalDate.now())
-                .atZone(ZoneId.systemDefault()) // Zaman dilimine göre dönüştür
-                .toInstant()
-                .toEpochMilli(); // Milisaniye cinsine çevirme
-//         long triggerTime2 = System.currentTimeMillis() + 5000; // 5 saniye sonrası
-
-        LocalDate today = LocalDate.now();
-        // Şu anki zamandan daha ilerideki bir zamana ayarlayın
-        if (triggerTime > System.currentTimeMillis()) {
-            Log.d("AlarmReceiver", "Alarm tetiklendi!");
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
-        }
-    }
-
-    public AtomicInteger getNamazVakitTip() {
-        return namazVakitTip;
-    }
-
-    public void setNamazVakitTip(AtomicInteger namazVakitTip) {
-        this.namazVakitTip = namazVakitTip;
     }
 
     @Nullable
@@ -338,6 +359,5 @@ public class PrayerTimesFetcher extends Service {
         super.onDestroy();
         handler.removeCallbacks(runnable); // Fetch işlemini durdur
     }
-
 
 }

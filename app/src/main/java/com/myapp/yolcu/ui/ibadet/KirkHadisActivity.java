@@ -27,7 +27,6 @@ public class KirkHadisActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewKirkHadis);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Dummy Data
         ibadetList = new Ibadet().KirkHadisListesiniAl(this);
         adapter = new KirkHadisAdapter(this, ibadetList);
         recyclerView.setAdapter(adapter);

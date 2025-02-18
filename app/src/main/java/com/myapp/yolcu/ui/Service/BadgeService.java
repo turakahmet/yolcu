@@ -1,15 +1,24 @@
 package com.myapp.yolcu.ui.Service;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.play.core.review.ReviewException;
+import com.google.android.play.core.review.ReviewInfo;
+import com.google.android.play.core.review.ReviewManager;
+import com.google.android.play.core.review.ReviewManagerFactory;
+import com.google.android.play.core.review.model.ReviewErrorCode;
 import com.myapp.yolcu.ui.Rozet.Badge;
 import com.myapp.yolcu.ui.Rozet.BadgeType;
 import com.myapp.yolcu.ui.Service.SoundService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class BadgeService {
 
@@ -67,6 +76,33 @@ public class BadgeService {
     private void showToast(String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
+
+    public void showInAppReview(Activity activity) {
+        // ReviewManager oluştur
+        ReviewManager manager = ReviewManagerFactory.create(activity);
+
+        // İnceleme bilgilerini talep et
+        Task<ReviewInfo> request = manager.requestReviewFlow();
+        request.addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // Başarılı bir şekilde ReviewInfo alındı
+                ReviewInfo reviewInfo = task.getResult();
+
+                // İnceleme akışını başlat
+                Task<Void> flow = manager.launchReviewFlow(activity, reviewInfo);
+                flow.addOnCompleteListener(flowTask -> {
+                    // İnceleme akışı tamamlandı
+                    // Kullanıcının puanlama yapıp yapmadığı bilgisi API tarafından sağlanmaz
+                    Log.d("InAppReview", "İnceleme akışı tamamlandı");
+                });
+            } else {
+                // Hata durumunda işlem yap
+                @ReviewErrorCode int reviewErrorCode = ((ReviewException) Objects.requireNonNull(task.getException())).getErrorCode();
+                Log.e("InAppReview", "İnceleme isteği başarısız oldu. Hata kodu: " + reviewErrorCode);
+            }
+        });
+    }
+
 }
 
 

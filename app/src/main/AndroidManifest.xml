@@ -15,6 +15,11 @@
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <!-- Android 14 (API 34) için gerekli izinler -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
 
     <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
     <uses-feature android:name="android.hardware.sensor.compass" android:required="true" />
@@ -44,13 +49,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".ui.VakitApi.AlarmReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-            </intent-filter>
-        </receiver>
+        <receiver android:name=".ui.VakitApi.AlarmReceiver" android:exported="false" />
+        <receiver android:name=".ui.VakitApi.NotificationCancelReceiver" />
+        <receiver android:name=".ui.VakitApi.DailyPrayerWorkerReceiver" />
         <activity
             android:name=".ui.main.NetworkCheckActivity"
             android:exported="true">
@@ -60,10 +61,38 @@
         <activity android:name=".ui.game.MatchesGameActivity"/>
         <activity android:name=".ui.ibadet.KirkHadisActivity"/>
         <activity android:name=".ui.ibadet.IbadetDetailActivity" />
+        <activity android:name=".ui.muze.MuzeDetailActivity" />
+        <activity android:name=".ui.main.SettingsActivity" android:label="@string/action_settings"/>
+
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+        <service
+            android:name=".ui.Service.PrayerNotificationService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="location|dataSync" />
+
+        <receiver
+            android:name=".ui.VakitApi.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".ui.widget.PrayerTimesWidget"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.myapp.UPDATE_WIDGET" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/prayer_times_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

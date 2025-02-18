@@ -33,11 +33,19 @@
         android:id="@+id/nav_muze"
         android:name="com.myapp.yolcu.ui.muze.DigitalMuzeFragment"
         android:label="@string/menu_muze"
-        tools:layout="@layout/fragment_digital_muze" />
+        tools:layout="@layout/digital_muze_detail" />
+
+    <fragment
+        android:id="@+id/navigation_local_products"
+        android:name="com.myapp.yolcu.ui.localProducts.LocalProductsFragment"
+        android:label="@string/local_products_title"
+        tools:layout="@layout/fragment_local_products" />
 
     <fragment
         android:id="@+id/nav_rozet"
         android:name="com.myapp.yolcu.ui.Rozet.RozetFragment"
         android:label="@string/menu_basari"
         tools:layout="@layout/fragment_rozet" />
+
+
 </navigation>

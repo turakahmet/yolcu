@@ -96,16 +96,18 @@ public class LocationService {
     // konumu işleme
     private Address handleLocation(Location location) {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-        try {
-            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            assert addresses != null;
-            if (!addresses.isEmpty()) {
-                return addresses.get(0);
+        if(Geocoder.isPresent()) {
+            try {
+                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                assert addresses != null;
+                if (!addresses.isEmpty()) {
+                    return addresses.get(0);
+                }
+            } catch (IOException e) {
+                Log.e("Konum Hatası", Objects.requireNonNull(e.getMessage()));
             }
-        }catch (IOException e){
-            Log.e("Konum Hatası", Objects.requireNonNull(e.getMessage()));
         }
-        return null;
+            return null;
     }
 
     public void startLocationUpdates(OnSuccessListener<Location> callback) {

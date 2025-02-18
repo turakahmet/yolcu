@@ -7,12 +7,12 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -26,7 +26,6 @@ import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -59,7 +58,7 @@ import retrofit2.Response;
 
 public class WordGameActivity extends AppCompatActivity {
     private TextView timerText;
-    private Handler handler = new Handler();
+    private Handler handler = new Handler(Looper.getMainLooper());
     private int timeLeft = 240; // 60 saniye geri sayım süresi
     private TextView questionTextView,questionSpaceHint,costCoinLabel;
     private GridLayout answerGrid;
@@ -79,13 +78,11 @@ public class WordGameActivity extends AppCompatActivity {
     private BadgeService badgeService;
     private ImageView gifImageView;
     private TextView gifImageSuccessViewLabel;
-    private Question currentQuestion;
     private int profit=0;
     private boolean harfAlindimiRozet=false;
     private boolean jokerKullanmamaRozet=true;
     private int toplamAcilanHarfSayisi=0;
     private int sorudanAlinanPuan=0;
-    private boolean isAnimationRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,18 +109,10 @@ public class WordGameActivity extends AppCompatActivity {
                 new AlertDialog.Builder(WordGameActivity.this)
                         .setTitle(getString(R.string.exit_game))
                         .setMessage(getString(R.string.exit_game_label))
-                        .setPositiveButton(getString(R.string.evet), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                endGamePopup(null,false,false,true);
-                            }
-                        })
-                        .setNegativeButton(getString(R.string.hayir), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss(); // "Hayır" seçilirse dialog kapanır
-                                startTimer(); // "Hayır" seçildiğinde timer yeniden başlar
-                            }
+                        .setPositiveButton(getString(R.string.evet), (dialog, which) -> endGamePopup(false,false,true))
+                        .setNegativeButton(getString(R.string.hayir), (dialog, which) -> {
+                            dialog.dismiss(); // "Hayır" seçilirse dialog kapanır
+                            startTimer(); // "Hayır" seçildiğinde timer yeniden başlar
                         })
                         .setCancelable(false)
                         .create()
@@ -220,7 +209,7 @@ public class WordGameActivity extends AppCompatActivity {
                     handler.postDelayed(this, 1000);
                 } else {
                     // Süre dolduğunda ana menüye dön
-                    endGamePopup(null,true,false,false);
+                    endGamePopup(true,false,false);
                 }
             }
         }, 1000);
@@ -235,8 +224,15 @@ public class WordGameActivity extends AppCompatActivity {
         stopTimer();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //sureyi baslat
+        startTimer();
+    }
+
     @SuppressLint("SetTextI18n")
-    private void endGamePopup(Question currentQuestion, boolean sureDoldumu, boolean yarismaKazandiMi, boolean cikisYapildi) {
+    private void endGamePopup(boolean sureDoldumu, boolean yarismaKazandiMi, boolean cikisYapildi) {
         stopTimer();
         mDialog = new Dialog(WordGameActivity.this);
         mDialog.setContentView(R.layout.end_game_popup);
@@ -248,13 +244,10 @@ public class WordGameActivity extends AppCompatActivity {
         mDialog.setCancelable(false);
         // Kapat butonunu bul ve tıklama olayını ayarla
         Button closeButton = mDialog.findViewById(R.id.closeButtonEndGame);
-        closeButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                soundService.commonButtonEffect();
-                mDialog.dismiss();
-                finish();
-            }
+        closeButton.setOnClickListener(view -> {
+            soundService.commonButtonEffect();
+            mDialog.dismiss();
+            finish();
         });
         TextView hitpouptext = mDialog.findViewById(R.id.hintPopUpTextEndGame);
         TextView correctAnswerEndGame = mDialog.findViewById(R.id.correctAnswerEndGame);
@@ -303,6 +296,8 @@ public class WordGameActivity extends AppCompatActivity {
 
         // Dialog'u göster
         mDialog.show();
+        //app review cagir
+        badgeService.showInAppReview(WordGameActivity.this);
     }
 
     private void prepareQuestions(){
@@ -341,9 +336,6 @@ public class WordGameActivity extends AppCompatActivity {
         finalQuestions.addAll(selectedEasyQuestions);
         finalQuestions.addAll(selectedMediumQuestions);
         finalQuestions.addAll(selectedHardQuestions);
-        //sureyi baslat
-        startTimer();
-
 
 
         // Toplam soru sayısı kadar adım oluştur
@@ -398,52 +390,46 @@ public class WordGameActivity extends AppCompatActivity {
 
 
             // Odaklanma durumunu dinlemek için OnFocusChangeListener ekleyin
-            answerBox.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (hasFocus) {
-                        // Odaklandığında arka planı farklı bir renge veya drawable'a ayarla
-                        answerBox.setBackgroundResource(R.drawable.hexagon_focused);
-                    } else {
-                        // Odak dışına çıktığında varsayılan arka plana geri dön
-                        answerBox.setBackgroundResource(R.drawable.hexagon);
-                    }
+            answerBox.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    // Odaklandığında arka planı farklı bir renge veya drawable'a ayarla
+                    answerBox.setBackgroundResource(R.drawable.hexagon_focused);
+                } else {
+                    // Odak dışına çıktığında varsayılan arka plana geri dön
+                    answerBox.setBackgroundResource(R.drawable.hexagon);
                 }
             });
 
             // Geri tuşu olayını dinleyin
             int[] indexArray = {i}; // `index`'i dizide sakla
-            answerBox.setOnKeyListener(new View.OnKeyListener() {
-                @Override
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL) {
-                        int index = answerGrid.indexOfChild(v); // Hangi EditText'e basıldığını bul
-                        EditText currentEditText = (EditText) answerGrid.getChildAt(index);
+            answerBox.setOnKeyListener((v, keyCode, event) -> {
+                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL) {
+                    int index = answerGrid.indexOfChild(v); // Hangi EditText'e basıldığını bul
+                    EditText currentEditText = (EditText) answerGrid.getChildAt(index);
 
-                        // Eğer şu anki EditText ipucu harfi içeriyorsa, silmeye izin verme
-                        if (!currentEditText.isEnabled()) {
-                            return true; // Tuş olayını işlediğimizi belirt
-                        }
-
-                        // Şu anki EditText içindeki metni sil
-                        String currentText = currentEditText.getText().toString();
-                        if (!currentText.isEmpty()) {
-                            currentEditText.setText(""); // Mevcut metni temizle
-                        } else if (index > 0) {
-                            // Eğer mevcut EditText boşsa ve ilk kutucuk değilse, önceki kutucuğa geç
-                            EditText previousEditText = (EditText) answerGrid.getChildAt(index - 1);
-                            while (!previousEditText.isEnabled() && index > 1) {
-                                index--;
-                                previousEditText = (EditText) answerGrid.getChildAt(index - 1);
-                            }
-
-                            // Önceki EditText'e odaklan
-                            previousEditText.requestFocus();
-                        }
+                    // Eğer şu anki EditText ipucu harfi içeriyorsa, silmeye izin verme
+                    if (!currentEditText.isEnabled()) {
                         return true; // Tuş olayını işlediğimizi belirt
                     }
-                    return false; // Olayın başka bir dinleyici tarafından işlenmesine izin ver
+
+                    // Şu anki EditText içindeki metni sil
+                    String currentText = currentEditText.getText().toString();
+                    if (!currentText.isEmpty()) {
+                        currentEditText.setText(""); // Mevcut metni temizle
+                    } else if (index > 0) {
+                        // Eğer mevcut EditText boşsa ve ilk kutucuk değilse, önceki kutucuğa geç
+                        EditText previousEditText = (EditText) answerGrid.getChildAt(index - 1);
+                        while (!previousEditText.isEnabled() && index > 1) {
+                            index--;
+                            previousEditText = (EditText) answerGrid.getChildAt(index - 1);
+                        }
+
+                        // Önceki EditText'e odaklan
+                        previousEditText.requestFocus();
+                    }
+                    return true; // Tuş olayını işlediğimizi belirt
                 }
+                return false; // Olayın başka bir dinleyici tarafından işlenmesine izin ver
             });
 
             answerGrid.addView(answerBox);
@@ -530,7 +516,7 @@ public class WordGameActivity extends AppCompatActivity {
             if (!finalQuestions.isEmpty()) {
                 nextQuestionWithDelay();
             } else {
-                endGamePopup(null,false,true,false);
+                endGamePopup(false,true,false);
                 stepView.done(true);
             }
         } else {
@@ -617,7 +603,7 @@ public class WordGameActivity extends AppCompatActivity {
         fadeInSet.start();
 
         // 2 saniye sonra çıkış animasyonunu başlatmak için Handler kullan
-        new Handler().postDelayed(() -> {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
             AnimatorSet fadeOutSet = new AnimatorSet();
             fadeOutSet.playTogether(fadeOutImage, scaleOutXImage, scaleOutYImage, fadeOutLabel, scaleOutXLabel, scaleOutYLabel);
             fadeOutSet.start();
@@ -662,12 +648,12 @@ public class WordGameActivity extends AppCompatActivity {
             toplamAcilanHarfSayisi++;
 
             // Alfabeden rasgele harfler gösterme animasyonu
-            Handler handler = new Handler();
+            Handler handler = new Handler(Looper.getMainLooper());
             EditText finalHintEditText = hintEditText;
             Runnable runnable = new Runnable() {
-                int animDuration = 1300; // Animasyonun süresi (2 saniye)
-                int interval = 70; // Harflerin değişme aralığı (100 ms)
-                long startTime = System.currentTimeMillis();
+                final int animDuration = 1300; // Animasyonun süresi (2 saniye)
+                final int interval = 70; // Harflerin değişme aralığı (100 ms)
+                final long startTime = System.currentTimeMillis();
 
                 @Override
                 public void run() {
@@ -711,7 +697,4 @@ public class WordGameActivity extends AppCompatActivity {
     }
 
 
-    private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
 }

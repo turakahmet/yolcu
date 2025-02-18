@@ -7,18 +7,17 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
@@ -27,7 +26,6 @@ import androidx.core.content.ContextCompat;
 
 import com.myapp.yolcu.R;
 import com.myapp.yolcu.ui.Entity.EsmaHusna;
-import com.myapp.yolcu.ui.Entity.Question;
 import com.myapp.yolcu.ui.Rozet.BadgeType;
 import com.myapp.yolcu.ui.Service.BadgeService;
 import com.myapp.yolcu.ui.Service.GoldService;
@@ -57,7 +55,7 @@ public class MatchesGameActivity extends AppCompatActivity {
     private Button selectedEsmaButton; // Seçilen Esma butonunu tutar
     private Button selectedAnswerButton; // Seçilen Anlam butonunu tutar
     private List<Button> allButtonList = new ArrayList<>();
-    private Handler handler = new Handler();
+    private Handler handler = new Handler(Looper.getMainLooper());;
     private int timeLeft = 500; // 60 saniye geri sayım süresi
     private List<Button> mEsmaButtons;
     private List<Button> mAnswerButtons;
@@ -92,18 +90,10 @@ public class MatchesGameActivity extends AppCompatActivity {
                 new AlertDialog.Builder(MatchesGameActivity.this)
                         .setTitle(getString(R.string.exit_game))
                         .setMessage(getString(R.string.exit_game_label))
-                        .setPositiveButton(getString(R.string.evet), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                endGamePopup(null,false,false,true);
-                            }
-                        })
-                        .setNegativeButton(getString(R.string.hayir), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss(); // "Hayır" seçilirse dialog kapanır
-                                startTimer(); // "Hayır" seçildiğinde timer yeniden başlar
-                            }
+                        .setPositiveButton(getString(R.string.evet), (dialog, which) -> endGamePopup(false,false,true))
+                        .setNegativeButton(getString(R.string.hayir), (dialog, which) -> {
+                            dialog.dismiss(); // "Hayır" seçilirse dialog kapanır
+                            startTimer(); // "Hayır" seçildiğinde timer yeniden başlar
                         })
                         .setCancelable(false)
                         .create()
@@ -126,7 +116,6 @@ public class MatchesGameActivity extends AppCompatActivity {
         // Başlangıçta soruları karıştır
         shuffleQuestions();
         loadingDialog.dismiss();
-        startTimer();
     }
 
     private void initializeServices() {
@@ -199,7 +188,7 @@ public class MatchesGameActivity extends AppCompatActivity {
                     handler.postDelayed(this, 1000);
                 } else {
                     // Süre dolduğunda ana menüye dön
-                    endGamePopup(null,true,false,false);
+                    endGamePopup(true,false,false);
                 }
             }
         }, 1000);
@@ -217,8 +206,16 @@ public class MatchesGameActivity extends AppCompatActivity {
         stopTimer();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //sureyi baslat
+        startTimer();
+    }
 
-    private void endGamePopup(Question currentQuestion, boolean sureDoldumu, boolean yarismaKazandiMi, boolean cikisYapildi) {
+
+    @SuppressLint("SetTextI18n")
+    private void endGamePopup(boolean sureDoldumu, boolean yarismaKazandiMi, boolean cikisYapildi) {
         stopTimer();
         mDialog = new Dialog(MatchesGameActivity.this);
         mDialog.setContentView(R.layout.end_game_popup);
@@ -230,13 +227,10 @@ public class MatchesGameActivity extends AppCompatActivity {
         mDialog.setCancelable(false);
         // Kapat butonunu bul ve tıklama olayını ayarla
         Button closeButton = mDialog.findViewById(R.id.closeButtonEndGame);
-        closeButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                soundService.commonButtonEffect();
-                mDialog.dismiss();
-                finish();
-            }
+        closeButton.setOnClickListener(view -> {
+            soundService.commonButtonEffect();
+            mDialog.dismiss();
+            finish();
         });
         TextView hitpouptext = mDialog.findViewById(R.id.hintPopUpTextEndGame);
         TextView correctAnswerCountLevelLabel=mDialog.findViewById(R.id.correctAnswerCountLevelLabel);
@@ -281,6 +275,8 @@ public class MatchesGameActivity extends AppCompatActivity {
 
         // Dialog'u göster
         mDialog.show();
+        //app review cagir
+        badgeService.showInAppReview(MatchesGameActivity.this);
     }
 
     private void validationRozet(boolean yarismaKazandiMi) {
@@ -305,12 +301,8 @@ public class MatchesGameActivity extends AppCompatActivity {
     }
 
     private void setOptionClickListener(Button esmaButton, Button answerButton) {
-        esmaButton.setOnClickListener(v -> {
-            handleEsmaSelection(esmaButton);
-        });
-        answerButton.setOnClickListener(v -> {
-            handleAnswerSelection(answerButton);
-        });
+        esmaButton.setOnClickListener(v -> handleEsmaSelection(esmaButton));
+        answerButton.setOnClickListener(v -> handleAnswerSelection(answerButton));
     }
 
     private void handleEsmaSelection(Button esmaButton) {
@@ -425,7 +417,7 @@ public class MatchesGameActivity extends AppCompatActivity {
         fadeInSet.start();
 
         // 2 saniye sonra çıkış animasyonunu başlatmak için Handler kullan
-        new Handler().postDelayed(() -> {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
             AnimatorSet fadeOutSet = new AnimatorSet();
             fadeOutSet.playTogether(fadeOutLabel, scaleOutXLabel, scaleOutYLabel);
             fadeOutSet.start();
@@ -456,19 +448,6 @@ public class MatchesGameActivity extends AppCompatActivity {
             }
         }
         return true;
-    }
-
-    private void disableAllButtons() {
-        // Diğer butonları pasif hale getir
-        mEsma1.setAlpha(0.5f);
-        mEsma2.setAlpha(0.5f);
-        mEsma3.setAlpha(0.5f);
-        mEsma4.setAlpha(0.5f);
-
-        mAnswer1.setAlpha(0.5f);
-        mAnswer2.setAlpha(0.5f);
-        mAnswer3.setAlpha(0.5f);
-        mAnswer4.setAlpha(0.5f);
     }
 
     private void disabledEsmaButtons() {
@@ -534,7 +513,7 @@ public class MatchesGameActivity extends AppCompatActivity {
             }
         }
         if(unansweredEsmas.isEmpty()){
-            endGamePopup(null,false,true,false);
+            endGamePopup(false,true,false);
             return;
         }
 

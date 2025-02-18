@@ -60,6 +60,7 @@
                 android:textColorHint="@color/colorGray"
                 android:inputType="numberDecimal"
                 android:maxLength="10"
+                android:textColor="@color/themeTextColor"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

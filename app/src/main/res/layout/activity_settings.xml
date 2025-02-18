@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    tools:context=".ui.main.SettingsActivity">
+
+    <!-- Dikey kaydırma için ScrollView -->
+    <ScrollView
+        android:id="@+id/popupVerticalScroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/popupVerticalScrollConstraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/notification_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="5dp"
+                android:contentDescription="Bildirim"
+                android:src="@drawable/baseline_notifications_24"
+                app:layout_constraintBottom_toBottomOf="@+id/notificationLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/notificationLabel" />
+
+            <TextView
+                android:id="@+id/notificationLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:text="Bildirimler"
+                android:textColor="@color/pastelRedColor_m"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/notification_icon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- çizgi -->
+            <View
+                android:id="@+id/line_notification"
+                android:layout_width="0dp"
+                android:layout_height="3dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@color/colorGray"
+                app:layout_constraintBottom_toBottomOf="@+id/notificationLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/notificationLabel"
+                app:layout_constraintTop_toTopOf="@+id/notificationLabel"
+                />
+
+            <TextView
+                android:id="@+id/all_notification_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
+                android:text="Tüm Bildirimler"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/notificationLabel" />
+
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchNotification_All"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/all_notification_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/all_notification_label" />
+
+            <TextView
+                android:id="@+id/vakit_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/imsak_vakti"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/all_notification_label" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchNotification_Imsak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/vakit_1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/vakit_1" />
+
+            <TextView
+                android:id="@+id/vakit_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/sabah_namazi"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/vakit_1" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchNotification_Sabah"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/vakit_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/vakit_2" />
+
+            <TextView
+                android:id="@+id/vakit_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/ogle_namazi"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/vakit_2" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchNotification_Ogle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/vakit_3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/vakit_3" />
+
+            <TextView
+                android:id="@+id/vakit_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/ikindi_namazi"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/vakit_3" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchNotification_Ikindi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/vakit_4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/vakit_4" />
+
+            <TextView
+                android:id="@+id/vakit_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/aksam_namazi"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/vakit_4" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchNotification_Aksam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/vakit_5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/vakit_5" />
+
+            <TextView
+                android:id="@+id/vakit_6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/yatsi_namazi"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/vakit_5" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchNotification_Yatsi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/vakit_6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/vakit_6" />
+
+            <TextView
+                android:id="@+id/vakitHerzamanGoster"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/vakitHerzamanGoster"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/vakit_6" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchNotification_VakitHerzamanGoster"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/vakitHerzamanGoster"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/vakitHerzamanGoster" />
+
+            <!--______-->
+
+            <ImageView
+                android:id="@+id/setting_timer_image"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="5dp"
+                android:contentDescription="Bildirim"
+                android:src="@drawable/baseline_access_time_filled_24"
+                app:layout_constraintBottom_toBottomOf="@+id/settingTimerLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/settingTimerLabel" />
+
+            <TextView
+                android:id="@+id/settingTimerLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="3dp"
+                android:text="Vakit Öncesi Uyarı"
+                android:textColor="@color/pastelRedColor_m"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/setting_timer_image"
+                app:layout_constraintTop_toBottomOf="@id/vakitHerzamanGoster" />
+
+            <!-- çizgi -->
+            <View
+                android:id="@+id/line_timer"
+                android:layout_width="0dp"
+                android:layout_height="3dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@color/colorGray"
+                app:layout_constraintBottom_toBottomOf="@+id/settingTimerLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/settingTimerLabel"
+                app:layout_constraintTop_toTopOf="@+id/settingTimerLabel" />
+
+
+            <RadioGroup
+                android:id="@+id/radioGroupVakit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="5dp"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/settingTimerLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <RadioButton
+                    android:id="@+id/radioButtonVakitBes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5 dk"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    />
+
+                <RadioButton
+                    android:id="@+id/radioButtonVakitOn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:text="10 dk"
+                    android:checked="true"
+                    />
+
+                <RadioButton
+                    android:id="@+id/radioButtonVakitYirmi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:text="20 dk"
+                    />
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/vakit_kerahat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/kerahat_vakti"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/radioGroupVakit" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchNotification_Kerahat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/vakit_kerahat"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/vakit_kerahat" />
+
+
+            <!--______-->
+
+            <ImageView
+                android:id="@+id/setting_sound_image"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="5dp"
+                android:contentDescription="Bildirim"
+                android:src="@drawable/baseline_volume_up_24"
+                app:layout_constraintBottom_toBottomOf="@+id/settingSoundLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/settingSoundLabel" />
+
+            <TextView
+                android:id="@+id/settingSoundLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="3dp"
+                android:text="Ses Ayarı"
+                android:textColor="@color/pastelRedColor_m"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/setting_timer_image"
+                app:layout_constraintTop_toBottomOf="@id/vakit_kerahat" />
+
+            <!-- çizgi -->
+            <View
+                android:id="@+id/line_sound"
+                android:layout_width="0dp"
+                android:layout_height="3dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@color/colorGray"
+                app:layout_constraintBottom_toBottomOf="@+id/settingSoundLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/settingSoundLabel"
+                app:layout_constraintTop_toTopOf="@+id/settingSoundLabel" />
+
+            <TextView
+                android:id="@+id/sound_setting_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/sound_setting"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/settingSoundLabel" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchNotification_Sound"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/sound_setting_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/sound_setting_label" />
+
+            <TextView
+                android:id="@+id/vakit_sound_setting_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/vakit_sound_setting"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sound_setting_label" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchNotification_VakitSound"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/vakit_sound_setting_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/vakit_sound_setting_label" />
+
+
+
+            <!--______-->
+
+            <ImageView
+                android:id="@+id/setting_iletisim_image"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="5dp"
+                android:contentDescription="Bildirim"
+                android:src="@drawable/baseline_info_24_gray"
+                app:layout_constraintBottom_toBottomOf="@+id/settingIletisimLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/settingIletisimLabel" />
+
+            <TextView
+                android:id="@+id/settingIletisimLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="3dp"
+                android:text="İletişim ve Bilgi"
+                android:textColor="@color/pastelRedColor_m"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/setting_timer_image"
+                app:layout_constraintTop_toBottomOf="@id/vakit_sound_setting_label" />
+
+            <!-- çizgi -->
+            <View
+                android:id="@+id/line_info"
+                android:layout_width="0dp"
+                android:layout_height="3dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@color/colorGray"
+                app:layout_constraintBottom_toBottomOf="@+id/settingIletisimLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/settingIletisimLabel"
+                app:layout_constraintTop_toTopOf="@+id/settingIletisimLabel" />
+
+            <Button
+                android:id="@+id/contactButton"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:text="İletişim"
+                android:textStyle="bold"
+                android:layout_margin="5dp"
+                app:layout_constraintEnd_toStartOf="@+id/privacyButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/settingIletisimLabel" />
+
+            <Button
+                android:id="@+id/privacyButton"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_margin="5dp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:text="Gizlilik ve Kullanım"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/contactButton"
+                app:layout_constraintTop_toBottomOf="@id/settingIletisimLabel" />
+
+            <TextView
+                android:id="@+id/versionTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_version"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_margin="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/contactButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,7 +22,7 @@
             android:layout_height="200dp"
             android:contentDescription="@string/app_name"
             android:scaleType="centerCrop"
-            android:src="@drawable/k_hadis_26"
+            android:src="@drawable/k_hadis_1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

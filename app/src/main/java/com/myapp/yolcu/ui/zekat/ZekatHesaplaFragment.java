@@ -78,36 +78,30 @@ public class ZekatHesaplaFragment extends Fragment {
     }
 
     private void nisapMiktarServistenAl() {
-        CurrencyParserAPI.fetchCurrencies("GetGold", new CurrencyParserAPI.CurrencyCallback() {
-            @Override
-            public void onCurrenciesFetched(List<Currency> currencies) {
-                if (!currencies.isEmpty()) {
-                    servisAktifMi = true;
-                    for (Currency currency : currencies) {
-                        if (currency.getAciklama().contains("Gram Altın")) {
-                            nisapTutar = nisapOran.multiply(BigDecimal.valueOf(currency.getSatis()));
-                        }
+        CurrencyParserAPI.fetchCurrencies("GetGold", currencies -> {
+            if (!currencies.isEmpty()) {
+                servisAktifMi = true;
+                for (Currency currency : currencies) {
+                    if (currency.getAciklama().contains("Gram Altın")) {
+                        nisapTutar = nisapOran.multiply(BigDecimal.valueOf(currency.getSatis()));
                     }
-                } else
-                    servisAktifMi = false;
-                if (nisapTutar.compareTo(BigDecimal.ZERO) == 0)
-                    showNisapInfoPopup();
-            }
+                }
+            } else
+                servisAktifMi = false;
+            if (nisapTutar.compareTo(BigDecimal.ZERO) == 0)
+                showNisapInfoPopup();
         });
     }
 
     private void showNisapInfoPopup() {
         mDialog.setCancelable(false);
         Button closeButton = mDialog.findViewById(R.id.closeButton);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!nisapTutarUser.getText().toString().isEmpty() && new BigDecimal(nisapTutarUser.getText().toString().replace(",", ".")).compareTo(BigDecimal.ZERO) > 0) {
-                    nisapTutar = new BigDecimal(nisapTutarUser.getText().toString().replace(",", "."));
-                    mDialog.dismiss();
-                } else {
-                    Toast.makeText(requireContext(), "Geçersiz değer girildi!", Toast.LENGTH_SHORT).show();
-                }
+        closeButton.setOnClickListener(view -> {
+            if (!nisapTutarUser.getText().toString().isEmpty() && new BigDecimal((nisapTutarUser.getText().toString().replace(".", "")).replace(",", ".")).compareTo(BigDecimal.ZERO) > 0) {
+                nisapTutar = new BigDecimal((nisapTutarUser.getText().toString().replace(".", "")).replace(",", "."));
+                mDialog.dismiss();
+            } else {
+                Toast.makeText(requireContext(), "Geçersiz değer girildi!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -315,7 +309,7 @@ public class ZekatHesaplaFragment extends Fragment {
             }
         });
     }
-
+    @SuppressWarnings("unchecked")
     private void setupAltTuruSpinner() {
         spinnerAltTuru.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

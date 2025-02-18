@@ -115,9 +115,7 @@ public class QiblaCompassFragment extends Fragment implements SensorEventListene
                             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                             startActivity(intent);
                         })
-                        .setNegativeButton(getString(R.string.hayir), (dialog, which) -> {
-                            navigateToPreviousScreen();
-                        })
+                        .setNegativeButton(getString(R.string.hayir), (dialog, which) -> navigateToPreviousScreen())
                         .setCancelable(false)
                         .show();
             }
@@ -126,11 +124,9 @@ public class QiblaCompassFragment extends Fragment implements SensorEventListene
             new AlertDialog.Builder(requireContext())
                     .setTitle(getString(R.string.location_permission_required_header))
                     .setMessage(getString(R.string.location_permission_required_message))
-                    .setPositiveButton(getString(R.string.tamam), (dialog, which) -> {
-                        ActivityCompat.requestPermissions(requireActivity(),
-                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                LOCATION_PERMISSION_REQUEST_CODE);
-                    })
+                    .setPositiveButton(getString(R.string.tamam), (dialog, which) -> ActivityCompat.requestPermissions(requireActivity(),
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            LOCATION_PERMISSION_REQUEST_CODE))
                     .setCancelable(false)
                     .show();
         });
@@ -158,12 +154,7 @@ public class QiblaCompassFragment extends Fragment implements SensorEventListene
         // Dialog dışına tıklanıldığında kapansın
         mDialog.setCancelable(true);
         Button closeButton = mDialog.findViewById(R.id.closeButton);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mDialog.dismiss();
-            }
-        });
+        closeButton.setOnClickListener(view -> mDialog.dismiss());
 
         mDialog.show();
     }

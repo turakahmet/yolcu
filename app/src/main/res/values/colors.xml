@@ -11,6 +11,7 @@
     <color name="remain_namaz_time_1">#8BC34A</color>
     <color name="remain_namaz_time_2">#FFA726</color>
     <color name="remain_namaz_time_3">#F44336</color>
+    <color name="remain_kerahat_time">#FFA726</color>
     <color name="location_bg">#4DB6AC</color>
     <color name="colorPrimary">#9CCC65</color>
     <color name="infoGameText">#2E2E2E</color>
@@ -28,9 +29,27 @@
     <color name="lightGreenColor">#DCEDC8</color>
     <color name="lightGrayColor">#FAFAFA</color>
     <color name="lineColor">@color/black</color>
+    <color name="themeTextColor">@color/black</color>
     <color name="lightPoolGrayColor">#E2E2E2</color>
     <color name="pastelRedColor">#EF9A9A</color>
+    <color name="pastelRedColor_m">#EF5350</color>
+    <!-- Widget Colors -->
+    <color name="widget_background">#FFFFFF</color>
+    <color name="widget_background_night">#2C2C2C</color>
+    <color name="widget_text_color">#212121</color>
+    <color name="widget_text_color_night">#FFFFFF</color>
+    <color name="widget_highlight_color">#4CAF50</color>
+    <color name="widget_border">#EEEEEE</color>
+    <color name="widget_border_night">#424242</color>
+    <!-- Eklenecek yeni renkler -->
+    <color name="prayer_imsak_bg">#1A237E</color>
+    <color name="prayer_gunes_bg">#E65100</color>
+    <color name="prayer_ogle_bg">#1B5E20</color>
+    <color name="prayer_ikindi_bg">#4A148C</color>
+    <color name="prayer_aksam_bg">#3E2723</color>
+    <color name="prayer_yatsi_bg">#263238</color>
 
-
+    <color name="prayer_widget">#66BB6A</color>
+    <color name="prayer_next_time_wigdet">#FFEA00</color>
 
 </resources>

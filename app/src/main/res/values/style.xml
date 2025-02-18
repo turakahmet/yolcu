@@ -35,4 +35,14 @@
         <item name="android:layout_margin">15dp</item> <!-- Buton Kenar Boşluğu -->
         <item name="android:padding">10dp</item> <!-- İç Boşluk -->
     </style>
+
+    <style name="NotificationPrayerTime">
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_columnWeight">1</item>
+    <item name="android:textSize">14sp</item>
+    <item name="android:padding">8dp</item>
+    <item name="android:gravity">center</item>
+    <item name="android:layout_margin">4dp</item>
+</style> 
 </resources>
