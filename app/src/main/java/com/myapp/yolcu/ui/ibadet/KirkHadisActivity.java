@@ -20,10 +20,7 @@ public class KirkHadisActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hadis_kirk);
-        // ActionBar'ı gizle
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
+        setTitle(R.string.kirkhadis);
         recyclerView = findViewById(R.id.recyclerViewKirkHadis);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

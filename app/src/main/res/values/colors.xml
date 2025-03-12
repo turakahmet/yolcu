@@ -28,6 +28,7 @@
     <color name="compassTextColor">#16453E</color>
     <color name="lightGreenColor">#DCEDC8</color>
     <color name="lightGrayColor">#FAFAFA</color>
+    <color name="mountlyBackgroundColor">#E0E0E0</color>
     <color name="lineColor">@color/black</color>
     <color name="themeTextColor">@color/black</color>
     <color name="lightPoolGrayColor">#E2E2E2</color>
@@ -51,5 +52,8 @@
 
     <color name="prayer_widget">#66BB6A</color>
     <color name="prayer_next_time_wigdet">#FFEA00</color>
+    <color name="monthly_row_gray">#F5F5F5</color>
+    <color name="monthly_row_orange">#FFCC80</color>
+    <color name="icon_color">@android:color/black</color>
 
 </resources>

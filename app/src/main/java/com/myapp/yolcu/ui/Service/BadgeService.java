@@ -14,7 +14,6 @@ import com.google.android.play.core.review.ReviewManagerFactory;
 import com.google.android.play.core.review.model.ReviewErrorCode;
 import com.myapp.yolcu.ui.Rozet.Badge;
 import com.myapp.yolcu.ui.Rozet.BadgeType;
-import com.myapp.yolcu.ui.Service.SoundService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,9 +95,13 @@ public class BadgeService {
                     Log.d("InAppReview", "İnceleme akışı tamamlandı");
                 });
             } else {
-                // Hata durumunda işlem yap
-                @ReviewErrorCode int reviewErrorCode = ((ReviewException) Objects.requireNonNull(task.getException())).getErrorCode();
-                Log.e("InAppReview", "İnceleme isteği başarısız oldu. Hata kodu: " + reviewErrorCode);
+                try {
+                    // Hata durumunda işlem yap
+                    @ReviewErrorCode int reviewErrorCode = ((ReviewException) Objects.requireNonNull(task.getException())).getErrorCode();
+                    Log.e("InAppReview", "İnceleme isteği başarısız oldu. Hata kodu: " + reviewErrorCode);
+                }catch (Exception ignored){
+
+                }
             }
         });
     }

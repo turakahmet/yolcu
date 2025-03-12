@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/notification_collapsed_root"
+    android:foreground="?attr/selectableItemBackground"
     android:theme="@style/Theme.Yolcu">
 
 

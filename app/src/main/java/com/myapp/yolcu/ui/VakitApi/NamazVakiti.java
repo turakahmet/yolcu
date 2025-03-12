@@ -18,7 +18,7 @@ public class NamazVakiti {
 
     private String imsak, gunes, ogle, ikindi, aksam, yatsi;
     private GecerliVakit gecerliVakit;
-    private NextPrayerTime nextPrayerTime;
+    private String monthlyDay;
 
     public NamazVakiti(String imsak, String gunes, String ogle, String ikindi, String aksam, String yatsi) {
         this.imsak = imsak;
@@ -50,12 +50,23 @@ public class NamazVakiti {
     }
 
     public enum GecerliVakit {
-        IMSAK,
-        GUNES,
-        OGLE,
-        IKINDI,
-        AKSAM,
-        YATSI
+        IMSAK("İmsak"),
+        GUNES("Güneş"),
+        OGLE("Öğle"),
+        IKINDI("İkindi"),
+        AKSAM("Akşam"),
+        YATSI("Yatsı");
+
+
+        private final String value;
+
+        GecerliVakit(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
     }
 
     public static class NextPrayerTime {
@@ -144,6 +155,16 @@ public class NamazVakiti {
         this.gecerliVakit = gecerliVakit;
     }
 
+
+
+    public String getMonthlyDay() {
+        return monthlyDay;
+    }
+
+    public void setMonthlyDay(String monthlyDay) {
+        this.monthlyDay = monthlyDay;
+    }
+
     public LocalTime getVakitTime(GecerliVakit vakit) {
         switch (vakit) {
             case IMSAK:
@@ -220,7 +241,7 @@ public class NamazVakiti {
         }
     }
 
-
+    // TODO: 24.02.2025 eğer burası düzgün çalışmaz ise rolback et başka birsey yapmadan
     public String getNextPrayerTimeRemainingTimeFormatted(boolean saatDakikaSaniyeSeklinde) {
         try {
             NextPrayerTime nextPrayer = getNextPrayer();
@@ -236,15 +257,39 @@ public class NamazVakiti {
                 return "Süre hesaplanamadı";
             }
 
-            boolean geceYarisiGecildiMi = now.get(Calendar.HOUR_OF_DAY) == 0;
+//            Log.d(TAG, String.format(
+//                "Zaman hesaplanıyor:\n" +
+//                "Şu an: %02d:%02d\n" +
+//                "Sonraki vakit: %s - %02d:%02d",
+//                now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE),
+//                nextPrayer.getName(), prayerTime.get(Calendar.HOUR_OF_DAY), prayerTime.get(Calendar.MINUTE)
+//            ));
 
-            // Eğer yatsıdan sonra İmsak vakti hesaplanıyorsa ve tarih yanlışsa düzeltilir
-            if (!geceYarisiGecildiMi && nextPrayer.getName().equals(PrayerNames.IMSAK.getValue())) {
-                prayerTime.add(Calendar.DAY_OF_MONTH, 1);
+            // Yatsı vaktinden sonra İmsak vakti hesaplanıyorsa
+            if (nextPrayer.getName().equals(PrayerNames.IMSAK.getValue())) {
+                Calendar yatsiVakti = getPrayerCalendar(getPrayerTime(PrayerNames.YATSI.getValue()));
+                
+                if (yatsiVakti != null) {
+                    // Şu an yatsı vaktinden sonra mı kontrol et
+                    if (now.after(yatsiVakti)) {
+                        Log.d(TAG, "Yatsı vaktinden sonra, İmsak için yarının tarihi kullanılacak");
+                        prayerTime.add(Calendar.DAY_OF_MONTH, 1);
+                    } else {
+                        Log.d(TAG, "Henüz yatsı vakti gelmedi, bugünün İmsak vakti kullanılacak");
+                    }
+                }
             }
 
-            long minDiff = prayerTime.getTimeInMillis() - now.getTimeInMillis();
-            return formatRemainingTime(minDiff, saatDakikaSaniyeSeklinde);
+            long timeDiff = prayerTime.getTimeInMillis() - now.getTimeInMillis();
+            
+            // Negatif süre kontrolü
+            if (timeDiff < 0) {
+                Log.w(TAG, "Negatif süre hesaplandı, yarının vakti kullanılacak");
+                prayerTime.add(Calendar.DAY_OF_MONTH, 1);
+                timeDiff = prayerTime.getTimeInMillis() - now.getTimeInMillis();
+            }
+
+            return formatRemainingTime(timeDiff, saatDakikaSaniyeSeklinde);
 
         } catch (Exception e) {
             Log.e(TAG, "Kalan süre hesaplama hatası: " + e.getMessage(), e);
@@ -252,10 +297,32 @@ public class NamazVakiti {
         }
     }
 
+    private String getPrayerTime(String prayerName) {
+        try {
+            switch (prayerName) {
+                case "Imsak":
+                    return imsak;
+                case "Gunes":
+                    return gunes;
+                case "Ogle":
+                    return ogle;
+                case "Ikindi":
+                    return ikindi;
+                case "Aksam":
+                    return aksam;
+                case "Yatsi":
+                    return yatsi;
+                default:
+                    return null;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Namaz vakti alınırken hata: " + e.getMessage());
+            return null;
+        }
+    }
 
     private Calendar getPrayerCalendar(String time) {
         if (time == null) {
-            Log.e(TAG, "Namaz vakti null");
             return null;
         }
 
@@ -285,11 +352,7 @@ public class NamazVakiti {
             return String.format(Locale.getDefault(), "%02d:%02d:%02d",
                     hours, minutes, seconds);
         else {
-            if (hours == 0 && minutes == 0)
-                return String.format(Locale.getDefault(), "%02d:%02d",
-                        minutes, seconds);
-            else
-                return String.format(Locale.getDefault(), "%02d:%02d",
+            return String.format(Locale.getDefault(), "%02d:%02d",
                         hours, minutes);
         }
     }

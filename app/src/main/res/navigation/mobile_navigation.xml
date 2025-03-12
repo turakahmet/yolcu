@@ -41,6 +41,18 @@
         android:label="@string/local_products_title"
         tools:layout="@layout/fragment_local_products" />
 
+    <activity
+        android:id="@+id/nav_monthly_prayer_calendar"
+        android:name="com.myapp.yolcu.ui.monthlyCalender.MonthlyPrayerActivity"
+        android:label="@string/aylikNamazTakvim"
+        tools:layout="@layout/activity_monthly_prayer" />
+
+    <activity
+        android:id="@+id/nav_dini_gunler"
+        android:name="com.myapp.yolcu.ui.islamicDays.IslamicDayActivity"
+        android:label="@string/diniTakvim"
+        tools:layout="@layout/activity_islamic_days" />
+
     <fragment
         android:id="@+id/nav_rozet"
         android:name="com.myapp.yolcu.ui.Rozet.RozetFragment"

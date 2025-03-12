@@ -5,7 +5,11 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 
@@ -16,6 +20,7 @@ import com.myapp.yolcu.ui.VakitApi.NamazVakiti;
 import com.myapp.yolcu.ui.VakitApi.VakitNoApi;
 import com.myapp.yolcu.ui.main.MainActivity;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import android.os.Handler;
@@ -40,15 +45,38 @@ public class PrayerTimesWidget extends AppWidgetProvider {
     private final VakitNoApi vakitNoApi = new VakitNoApi();
     private RemoteViews views;
     private ImageView widget_logo;
-
+    private static final String ACTION_REFRESH_WEATHER = "com.myapp.yolcu.REFRESH_WEATHER";
+    private static final String TAG = "PrayerTimesWidget";
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        if (ACTION_UPDATE.equals(intent.getAction())) {
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            ComponentName thisWidget = new ComponentName(context, PrayerTimesWidget.class);
-            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-            onUpdate(context, appWidgetManager, appWidgetIds);
+        
+        String action = intent.getAction();
+        if (action != null) {
+            Log.d(TAG, "Received action: " + action);
+            if (ACTION_UPDATE.equals(intent.getAction())) {
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                ComponentName thisWidget = new ComponentName(context, PrayerTimesWidget.class);
+                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+                onUpdate(context, appWidgetManager, appWidgetIds);
+            }else if (ACTION_REFRESH_WEATHER.equals(action)) {
+                Log.d(TAG, "Weather refresh button clicked");
+                
+                // Widget ID'sini al
+                int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 
+                    AppWidgetManager.INVALID_APPWIDGET_ID);
+                
+                if (widgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                    // Sadece tıklanan widget'ı güncelle
+                    updateWidgetInBackground(context, widgetId);
+                } else {
+                    // Tüm widget'ları güncelle
+                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                    ComponentName thisWidget = new ComponentName(context, PrayerTimesWidget.class);
+                    int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+                    onUpdate(context, appWidgetManager, appWidgetIds);
+                }
+            }
         }
     }
 
@@ -82,12 +110,12 @@ public class PrayerTimesWidget extends AppWidgetProvider {
                     });
 
                 } catch (Exception e) {
-                    Log.e("PrayerTimesWidget", "Background update error: " + e.getMessage());
+                    Log.e(TAG, "Background update error: " + e.getMessage());
                 }
             }).start();
 
         } catch (Exception e) {
-            Log.e("PrayerTimesWidget", "Widget update error: " + e.getMessage());
+            Log.e(TAG, "Widget update error: " + e.getMessage());
         }
     }
 
@@ -123,7 +151,7 @@ public class PrayerTimesWidget extends AppWidgetProvider {
             appWidgetManager.updateAppWidget(appWidgetId, views);
             scheduleNextUpdate(context);
         } catch (Exception e) {
-            Log.e("PrayerTimesWidget", "Widget view update error: " + e.getMessage());
+            Log.e(TAG, "Widget view update error: " + e.getMessage());
         }
     }
 
@@ -258,6 +286,12 @@ public class PrayerTimesWidget extends AppWidgetProvider {
         // Önce tüm panelleri sıfırla
         resetAllPanelsAndTexts(views, context);
         Log.d("PrayerTimesWidget", "Widget enabled");
+
+        // WeatherPrefs'i sıfırla (son güncelleme zamanını 0 yap)
+        SharedPreferences prefs = context.getSharedPreferences("WeatherPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putLong("last_update", 0); // 0 yaparak hemen güncelleme yapmasını sağla
+        editor.apply();
     }
 
     @Override
@@ -336,36 +370,53 @@ public class PrayerTimesWidget extends AppWidgetProvider {
     }
 
     private enum WeatherIcon {
-        CLEAR_DAY(R.drawable.day_clear, 0, true),
-        CLEAR_NIGHT(R.drawable.night_clear, 0, false),
-        FEW_CLOUDS_DAY(R.drawable.day_few_clouds, 1, true),
-        FEW_CLOUDS_NIGHT(R.drawable.night_few_clouds, 1, false),
-        PARTLY_CLOUDY_DAY(R.drawable.day_partly_cloudy, 2, true),
-        PARTLY_CLOUDY_NIGHT(R.drawable.night_partly_cloudy, 2, false),
-        CLOUDY(R.drawable.cloudy, 3, true), // Gündüz/gece aynı ikon
-        FOG(R.drawable.fog, 45, true),
-        HEAVY_FOG(R.drawable.heavy_fog, 48, true),
-        DRIZZLE_LIGHT(R.drawable.drizzle_light, 51, true),
-        DRIZZLE_MEDIUM(R.drawable.drizzle_light, 53, true),
-        DRIZZLE_HEAVY(R.drawable.drizzle_light, 55, true),
-        RAIN_LIGHT(R.drawable.rain_light, 61, true),
-        RAIN_MEDIUM(R.drawable.rain_light, 63, true),
-        RAIN_HEAVY(R.drawable.rain_heavy, 65, true),
-        SNOW_LIGHT(R.drawable.snow_light, 71, true),
-        SNOW_MEDIUM(R.drawable.snow_light, 73, true),
-        SNOW_HEAVY(R.drawable.snow_light, 75, true),
-        THUNDERSTORM_LIGHT(R.drawable.thunderstorm_light, 95, true),
-        THUNDERSTORM_HAIL(R.drawable.thunderstorm_hail, 96, true),
-        THUNDERSTORM_HEAVY(R.drawable.thunderstorm_heavy, 99, true),
-        UNKNOWN(R.drawable.unknown_weather, -1, true);
+        CLEAR_DAY(R.drawable.day_clear, new int[]{0}, true),
+        CLEAR_NIGHT(R.drawable.night_clear, new int[]{0}, false),
+
+        FEW_CLOUDS_DAY(R.drawable.day_few_clouds, new int[]{1}, true),
+        FEW_CLOUDS_NIGHT(R.drawable.night_few_clouds, new int[]{1}, false),
+
+        PARTLY_CLOUDY_DAY(R.drawable.day_partly_cloudy, new int[]{2}, true),
+        PARTLY_CLOUDY_NIGHT(R.drawable.night_partly_cloudy, new int[]{2}, false),
+
+        CLOUDY(R.drawable.cloudy, new int[]{3,5,19}, true),
+        CLOUDY_NIGHT(R.drawable.night_few_clouds, new int[]{3,5,19}, false),
+
+        SANDSTORM(R.drawable.sandstorm, new int[]{8,9,30,31,32,33,34,35,36,37,38,39}, true),
+        SANDSTORM_NIGHT(R.drawable.sandstorm, new int[]{8,9,30,31,32,33,34,35,36,37,38,39}, false),
+
+        FOG(R.drawable.fog, new int[]{10,11,12,28,40,41,42,43,44,45}, true),
+        FOG_NIGHT(R.drawable.fog, new int[]{10,11,12,28,40,41,42,43,44,45}, false),
+
+        HEAVY_FOG(R.drawable.heavy_fog, new int[]{46,47,48,49}, true),
+        HEAVY_FOG_NIGHT(R.drawable.heavy_fog, new int[]{46,47,48,49}, false),
+
+        DRIZZLE(R.drawable.drizzle_light, new int[]{20,50,52,54,59,58,57,56,60,62,64}, true),
+        DRIZZLE_NIGHT(R.drawable.drizzle_light, new int[]{20,50,52,54,59,58,57,56,60,62,64}, false),
+
+        RAIN_LIGHT(R.drawable.rain_light, new int[]{21,51,53,55,61, 63,80,91,92}, true),
+        RAIN_LIGHT_NIGHT(R.drawable.night_rain, new int[]{61, 63,92}, false),
+
+        RAIN_HEAVY(R.drawable.rain_heavy, new int[]{25,65,81,82}, true),
+        RAIN_HEAVY_NIGHT(R.drawable.rain_heavy, new int[]{25,65,81,82}, false),
+
+        SNOW_LIGHT(R.drawable.snow_light, new int[]{22,70,71,72, 73, 74, 75, 77, 85,86}, true),
+        SNOW_LIGHT_NIGHT(R.drawable.night_snow, new int[]{22,70,71,72, 73, 74, 75, 77,85,86}, false),
+        SNOW_MIXED(R.drawable.snow_mixed, new int[]{23,26,27,66,67,68,69,83,84,87,88,89,90,93,94}, true),
+        SNOW_MIXED_NIGHT(R.drawable.snow_mixed_night, new int[]{23,26,27,66,67,68,69,83,84,87,88,89,90,93,94}, false),
+        SNOW_CRYSTAL(R.drawable.snow_crystals, new int[]{24,76,78,79}, false),
+
+        THUNDERSTORM(R.drawable.thunderstorm_light, new int[]{17,18,13,29,98,99 }, true),
+        THUNDERSTORM_HEAVY(R.drawable.thunderstorm_heavy, new int[]{95,96,97}, true),
+        UNKNOWN(R.drawable.unknown_weather, new int[]{-1}, true);
 
         private final int resourceId;
-        private final int weatherCode;
+        private final int[] weatherCodes;
         private final boolean isDay;
 
-        WeatherIcon(int resourceId, int weatherCode, boolean isDay) {
+        WeatherIcon(int resourceId, int[] weatherCodes, boolean isDay) {
             this.resourceId = resourceId;
-            this.weatherCode = weatherCode;
+            this.weatherCodes = weatherCodes;
             this.isDay = isDay;
         }
 
@@ -375,26 +426,47 @@ public class PrayerTimesWidget extends AppWidgetProvider {
 
         public static int getWeatherIconResource(int weatherCode, boolean isDay) {
             for (WeatherIcon icon : WeatherIcon.values()) {
-                if (icon.weatherCode == weatherCode && (icon.isDay == isDay || weatherCode >= 3)) {
-                    return icon.getResourceId();
+                for (int code : icon.weatherCodes) {
+                    if (code == weatherCode && (icon.isDay == isDay || weatherCode >= 3)) {
+                        return icon.getResourceId();
+                    }
                 }
             }
             return UNKNOWN.getResourceId();
         }
     }
 
-    private void updateWeatherInfo(Context context, RemoteViews views, double latitude, double longitude, AppWidgetManager appWidgetManager, int appWidgetId) {
-        WeatherService weatherService = new WeatherService();
+    private void updateWeatherInfo(Context context, RemoteViews views, double latitude, double longitude, 
+                                 AppWidgetManager appWidgetManager, int appWidgetId) {
+        if (!isNetworkAvailable(context)) {
+            Log.w(TAG, "İnternet bağlantısı yok");
+            showRefreshButton(views, context, appWidgetId);
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+            return;
+        }
+
+        WeatherService weatherService = new WeatherService(context);
         weatherService.getWeatherData(latitude, longitude, new WeatherService.WeatherCallback() {
             @Override
             public void onSuccess(WeatherData weatherData) {
                 if (weatherData.getCurrentWeather() != null) {
-                    views.setTextViewText(R.id.weather_temp,
-                        String.format(Locale.getDefault(), "%.1f°C", 
-                        weatherData.getCurrentWeather().getTemperature()));
+                    double temp = weatherData.getCurrentWeather().getTemperature();
+                    int roundedTemp = (temp % 1.0 >= 0.5) ? (int) Math.ceil(temp) : (int) Math.floor(temp);
                     
-                    views.setTextViewText(R.id.weather_desc, 
-                        weatherData.getWeatherDescription());
+                    String weatherDesc = weatherData.getWeatherDescription();
+                    views.setTextViewText(R.id.weather_temp,
+                            String.format(Locale.getDefault(), "%d°C", roundedTemp));
+                    
+                    views.setTextViewText(R.id.weather_desc, weatherDesc);
+                    
+                    // Eğer hava durumu "Bilinmiyor" ise refresh butonunu göster
+                    if ("Bilinmiyor".equals(weatherDesc)) {
+                        Log.e(TAG, "Hava durumu güncellenemedi weatherDesc Bilinmiyor" );
+                        showRefreshButton(views, context, appWidgetId);
+                    } else {
+                        views.setViewVisibility(R.id.weather_wifi_icon, View.GONE);
+                        views.setViewVisibility(R.id.weather_refresh_icon, View.GONE);
+                    }
                     
                     views.setImageViewResource(R.id.weather_icon, 
                         WeatherIcon.getWeatherIconResource(
@@ -402,18 +474,59 @@ public class PrayerTimesWidget extends AppWidgetProvider {
                             weatherData.getCurrentWeather().isDay()
                         )
                     );
-                    appWidgetManager.updateAppWidget(appWidgetId, views);
-                    scheduleWeatherUpdate(context);
-                    Log.d("PrayerTimesWidget", "Hava durumu güncellendi: " + weatherData.getWeatherDescription());
+                } else {
+                    Log.e(TAG, "Hava durumu güncellenemedi: getCurrentWeather null" );
+                    showRefreshButton(views, context, appWidgetId);
                 }
+                appWidgetManager.updateAppWidget(appWidgetId, views);
             }
 
             @Override
             public void onError(String error) {
-                Log.e("PrayerTimesWidget", "Hava durumu güncellenemedi: " + error);
-                views.setImageViewResource(R.id.weather_icon, WeatherIcon.UNKNOWN.getResourceId());
+                Log.e(TAG, "Hava durumu güncellenemedi: " + error);
+                showRefreshButton(views, context, appWidgetId);
+                appWidgetManager.updateAppWidget(appWidgetId, views);
             }
         });
+    }
+
+    // Refresh butonunu göstermek için yardımcı metod
+    private void showRefreshButton(RemoteViews views, Context context, int appWidgetId) {
+        views.setViewVisibility(R.id.weather_wifi_icon, View.VISIBLE);
+        views.setViewVisibility(R.id.weather_refresh_icon, View.VISIBLE);
+        
+        // Refresh butonu için intent oluştur
+        Intent refreshIntent = new Intent(context, PrayerTimesWidget.class);
+        refreshIntent.setAction(ACTION_REFRESH_WEATHER);
+        refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        
+        PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(
+                context,
+                appWidgetId,
+                refreshIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+        
+        // Refresh butonuna tıklama özelliği ekle
+        views.setOnClickPendingIntent(R.id.weather_refresh_icon, refreshPendingIntent);
+        Log.d(TAG, "Refresh button shown and click listener set");
+    }
+
+    // İnternet bağlantısı kontrolü için yardımcı metod
+    private boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivityManager != null) {
+            NetworkCapabilities capabilities = connectivityManager
+                    .getNetworkCapabilities(connectivityManager.getActiveNetwork());
+
+            if (capabilities != null) {
+                return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                        capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+            }
+        }
+        return false;
     }
 }
 

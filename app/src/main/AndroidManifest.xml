@@ -21,10 +21,14 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
 
-    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
-    <uses-feature android:name="android.hardware.sensor.compass" android:required="true" />
+    <uses-feature
+        android:name="android.hardware.sensor.accelerometer"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.sensor.compass"
+        android:required="true" />
 
-
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application
         android:allowBackup="true"
@@ -38,7 +42,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:usesCleartextTraffic="false"
         tools:targetApi="31">
-<!--      android:windowSoftInputMode="adjustPan" bu ayar klavye önde kalsın sadece zekat tarafında oyuzden eklendi   -->
+        <!--      android:windowSoftInputMode="adjustPan" bu ayar klavye önde kalsın sadece zekat tarafında oyuzden eklendi   -->
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"
@@ -49,20 +53,32 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".ui.VakitApi.AlarmReceiver" android:exported="false" />
+
+        <receiver
+            android:name=".ui.VakitApi.AlarmReceiver"
+            android:exported="false" />
         <receiver android:name=".ui.VakitApi.NotificationCancelReceiver" />
         <receiver android:name=".ui.VakitApi.DailyPrayerWorkerReceiver" />
+
         <activity
             android:name=".ui.main.NetworkCheckActivity"
-            android:exported="true">
-        </activity>
-        <activity android:name=".ui.game.InfoGameActivity"/>
-        <activity android:name=".ui.game.WordGameActivity"/>
-        <activity android:name=".ui.game.MatchesGameActivity"/>
-        <activity android:name=".ui.ibadet.KirkHadisActivity"/>
+            android:exported="true"></activity>
+        <activity android:name=".ui.game.InfoGameActivity" />
+        <activity android:name=".ui.game.WordGameActivity" />
+        <activity android:name=".ui.game.MatchesGameActivity" />
+        <activity android:name=".ui.ibadet.KirkHadisActivity" />
         <activity android:name=".ui.ibadet.IbadetDetailActivity" />
+        <activity android:name=".ui.ibadet.IbadetContentActivity" />
         <activity android:name=".ui.muze.MuzeDetailActivity" />
-        <activity android:name=".ui.main.SettingsActivity" android:label="@string/action_settings"/>
+        <activity
+            android:name=".ui.main.SettingsActivity"
+            android:label="@string/action_settings" />
+        <activity
+            android:name=".ui.monthlyCalender.MonthlyPrayerActivity"
+            android:label="@string/aylikNamazTakvim" />
+        <activity
+            android:name=".ui.islamicDays.IslamicDayActivity"
+            android:label="@string/islamicDays" />
 
 
         <meta-data
@@ -93,6 +109,19 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/prayer_times_widget_info" />
         </receiver>
+        <receiver
+            android:name=".ui.receiver.PrayerSoundReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".ui.Service.PrayerSoundControlService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>

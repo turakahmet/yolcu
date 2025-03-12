@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -132,34 +133,46 @@ public class PrayerNotificationService extends Service {
             RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.notification_collapsed);
             RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.notification_expanded);
 
-            Intent toggleIntent = new Intent(this, PrayerNotificationService.class);
-            toggleIntent.setAction("TOGGLE_EXPAND");
-            PendingIntent togglePendingIntent = PendingIntent.getService(
+
+            // Ana aktiviteyi açmak için Intent oluştur
+            Intent mainActivityIntent = new Intent(this, MainActivity.class);
+            mainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            mainActivityIntent.setAction(Intent.ACTION_MAIN);
+            mainActivityIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+
+            // PendingIntent oluştur
+            PendingIntent pendingIntent = PendingIntent.getActivity(
                     this,
                     0,
-                    toggleIntent,
+                    mainActivityIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
             );
+            PendingIntent emptyIntent = PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_IMMUTABLE);
 
-            collapsedView.setOnClickPendingIntent(R.id.notification_collapsed_root, togglePendingIntent);
-            expandedView.setOnClickPendingIntent(R.id.notification_expanded_root, togglePendingIntent);
+            collapsedView.setOnClickPendingIntent(R.id.notification_collapsed_root, emptyIntent);
+            expandedView.setOnClickPendingIntent(R.id.notification_expanded_root, pendingIntent);
 
-            collapsedView.setTextViewText(R.id.remainingTime, currentNamazVakiti.getNextPrayerTimeRemainingTimeFormatted(true));
+            String remainingTime =currentNamazVakiti.getNextPrayerTimeRemainingTimeFormatted(true);
+
+            collapsedView.setTextViewText(R.id.remainingTime,remainingTime);
             collapsedView.setTextViewText(R.id.remainingTimeLabel, String.format("sonra %s vakti", currentNamazVakiti.getNextPrayer().getName()));
             collapsedView.setTextViewText(R.id.nextPrayerInfoRemainCity, String.format("%s | %s: %s", cityName, currentNamazVakiti.getNextPrayer().getName(), currentNamazVakiti.getNextPrayer().getTime()));
             collapsedView.setTextViewText(R.id.hicriAy, "Hicri: "+currentNamazVakiti.getHicriDate());
 
-            setupExpandedView(expandedView, cityName, currentNamazVakiti.getNextPrayerTimeRemainingTimeFormatted(true));
+            setupExpandedView(expandedView, cityName, remainingTime);
 
             Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                     .setSmallIcon(R.drawable.crescent)
                     .setCustomContentView(collapsedView)
                     .setCustomBigContentView(expandedView)
-                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setOngoing(true)
                     .setAutoCancel(false)
                     .setShowWhen(false)
+                    .setContentIntent(pendingIntent)
                     .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                    .setColor(Color.GREEN)
                     .build();
 
             if (!isRunning) {

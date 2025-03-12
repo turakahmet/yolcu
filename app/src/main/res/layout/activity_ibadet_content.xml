@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/ibadetImageContent"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:elevation="8dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/k_hadis_15"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Dikey kaydırma için ScrollView -->
+    <com.myapp.yolcu.ui.ibadet.ZoomableScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"
+        android:padding="5dp"
+        android:paddingBottom="55dp"
+        app:layout_constraintTop_toBottomOf="@id/ibadetImageContent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ibadetContentConstraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/ibadetDetailContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:gravity="start"
+                android:text="@string/testYazisi"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/ibadetContentConstraintLayout" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.myapp.yolcu.ui.ibadet.ZoomableScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

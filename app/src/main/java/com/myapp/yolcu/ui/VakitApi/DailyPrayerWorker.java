@@ -1,6 +1,5 @@
 package com.myapp.yolcu.ui.VakitApi;
 
-import static com.myapp.yolcu.ui.main.MainActivity.LOCATION_PREFS;
 import static com.myapp.yolcu.ui.main.MainActivity.SETTINGS_PREFS;
 
 import android.app.AlarmManager;
@@ -10,7 +9,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -22,14 +20,10 @@ import androidx.work.WorkManager;
 
 import com.myapp.yolcu.R;
 import com.myapp.yolcu.ui.Service.SharedPrefsHelperService;
+import com.myapp.yolcu.ui.receiver.PrayerSoundReceiver;
 import com.myapp.yolcu.ui.widget.PrayerTimesWidget;
 
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -40,6 +34,7 @@ import android.annotation.SuppressLint;
 
 public class DailyPrayerWorker extends Worker {
     private SharedPrefsHelperService sharedPrefsHelperService;
+    private static final String TAG = "DailyPrayerWorker";
 
     public DailyPrayerWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -122,33 +117,12 @@ public class DailyPrayerWorker extends Worker {
 
 
     private void setPrayerAlarms(Context context, NamazVakiti namazVakiti) {
-        int notificationMinutes = sharedPrefsHelperService.getRadioButtonState("radioGroupVakit");
+        Calendar now = Calendar.getInstance();
+        SharedPrefsHelperService prefsHelper = new SharedPrefsHelperService(context, SETTINGS_PREFS);
+        int notificationMinutes = prefsHelper.getRadioButtonState("radioGroupVakit");
+        int notificationMinusSabahEzaniIcin = 0;
         Log.d("DailyPrayerWorker", "Bildirim süresi: " + notificationMinutes + " dakika önce");
-        
-        // İlk kurulum kontrolü
-        SharedPreferences prefs = context.getSharedPreferences(SETTINGS_PREFS, Context.MODE_PRIVATE);
-        boolean isFirstRun = !prefs.getBoolean("firstRunDefault", false);
-        
-        if (isFirstRun) {
-            Log.d("DailyPrayerWorker", "İlk kurulum tespit edildi, varsayılan ayarlar uygulanıyor");
-            // Varsayılan değerleri ayarla
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("switchNotificationAll", true);
-            editor.putBoolean("switchNotificationImsak", true);
-            editor.putBoolean("switchNotificationSabah", true);
-            editor.putBoolean("switchNotificationOgle", true);
-            editor.putBoolean("switchNotificationIkindi", true);
-            editor.putBoolean("switchNotificationAksam", true);
-            editor.putBoolean("switchNotificationYatsi", true);
-            editor.putBoolean("firstRunDefault", true);
-            editor.apply();
-        }
 
-        // Tüm bildirimlerin durumunu kontrol et
-        boolean allNotificationsEnabled = sharedPrefsHelperService.getSwitchState("switchNotificationAll");
-        Log.d("DailyPrayerWorker", "Tüm bildirimler aktif mi: " + allNotificationsEnabled);
-
-        // Vakit-Switch eşleştirmeleri
         String[][] prayerSwitchPairs = {
             {namazVakiti.getImsak(), "switchNotificationImsak", "İmsak"},
             {namazVakiti.getGunes(), "switchNotificationSabah", "Güneş"},
@@ -158,39 +132,13 @@ public class DailyPrayerWorker extends Worker {
             {namazVakiti.getYatsi(), "switchNotificationYatsi", "Yatsı"}
         };
 
-        Calendar now = Calendar.getInstance();
-        Log.d("DailyPrayerWorker", "Alarm kontrolleri başlıyor - Mevcut zaman: " + now.getTime());
-
         for (String[] prayerInfo : prayerSwitchPairs) {
             String prayerTime = prayerInfo[0];
             String switchKey = prayerInfo[1];
             String prayerName = prayerInfo[2];
 
-            // İlgili vaktin switch durumunu kontrol et
-            boolean switchState = sharedPrefsHelperService.getSwitchState(switchKey);
-            
-            Log.d("DailyPrayerWorker", String.format(
-                "Vakit kontrolü: %s\n" +
-                "Switch key: %s\n" +
-                "Switch durumu: %b\n" +
-                "Tüm bildirimler: %b\n" +
-                "Final durum: %b",
-                prayerName,
-                switchKey,
-                switchState,
-                allNotificationsEnabled,
-                (allNotificationsEnabled && switchState)
-            ));
-
-            // İlgili vaktin switch durumunu kontrol et
-            boolean isNotificationEnabled = allNotificationsEnabled && switchState;
-            
-            Log.d("DailyPrayerWorker", prayerName + " bildirimi durumu: " + isNotificationEnabled);
-
-            if (!isNotificationEnabled) {
-                Log.d("DailyPrayerWorker", prayerName + " bildirimi kapalı");
-                // Bu vakit için kurulu alarmı iptal et
-                cancelAlarmForPrayer(getApplicationContext(), prayerName);
+            if (!sharedPrefsHelperService.getSwitchState("switchNotificationAll") || 
+                !sharedPrefsHelperService.getSwitchState(switchKey)) {
                 continue;
             }
 
@@ -204,20 +152,34 @@ public class DailyPrayerWorker extends Worker {
                 if (prayerCal.after(now)) {
                     String message = getNotificationMessage(getApplicationContext(), prayerName);
                     scheduleAlarm(getApplicationContext(), message, prayerCal.getTime(), notificationMinutes, prayerName);
+                    // Ezan sesi için alarm (tam vaktinde)
+                    if(switchKey.equals("switchNotificationSabah"))
+                        notificationMinusSabahEzaniIcin = 60;
+                    else
+                        notificationMinusSabahEzaniIcin = 0;
+
+                    schedulePrayerSound(context, prayerCal.getTime(), prayerName,notificationMinusSabahEzaniIcin);
+
+                    Log.v(TAG, String.format(
+                            "%s vakti için alarmlar kuruldu:\n" +
+                                    "Ezan zamanı: %s",
+                            prayerName,
+                            prayerCal.getTime()
+                    ));
                 }
             } catch (Exception e) {
-                Log.e("DailyPrayerWorker", prayerName + " vakti için hata: " + e.getMessage());
+                Log.e(TAG, prayerName + " vakti için alarm kurulurken hata: " + e.getMessage());
             }
         }
     }
 
-    private void cancelAlarmForPrayer(Context context, String prayerName) {
+    private void cancelAlarmForPrayer(Context context, Date prayerTime, String prayerName) {
         try {
             Intent intent = new Intent(context, AlarmReceiver.class);
             intent.setAction("com.myapp.yolcu.ACTION_ALARM_NOTIFICATION");
             
             // Aynı request code'u kullanarak PendingIntent oluştur
-            int requestCode = (prayerName + Calendar.getInstance().get(Calendar.DAY_OF_YEAR)).hashCode();
+            int requestCode = generateNotificationId(prayerTime, prayerName).hashCode();
             
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context,
@@ -267,7 +229,7 @@ public class DailyPrayerWorker extends Worker {
     }
 
     @SuppressLint("ScheduleExactAlarm")
-    private void scheduleAlarm(Context context, String messageTemplate, Date prayerTime, 
+    private void scheduleAlarm(Context context, String messageTemplate, Date prayerTime,
                               int notificationMinutes, String prayerName) {
         try {
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -306,7 +268,7 @@ public class DailyPrayerWorker extends Worker {
                     pendingIntent
                 );
                 
-                Log.d("DailyPrayerWorker", String.format(
+                Log.w("DailyPrayerWorker", String.format(
                     "Alarm kuruldu: %s vakti için\n" +
                     "Namaz Vakti: %s\n" +
                     "Bildirim Zamanı: %s\n" +
@@ -451,6 +413,68 @@ public class DailyPrayerWorker extends Worker {
         Log.d("DailyPrayerWorker", "switchNotificationYatsi: " + 
             sharedPrefsHelperService.getSwitchState("switchNotificationYatsi"));
     }
+
+    @SuppressLint("ScheduleExactAlarm")
+    private void schedulePrayerSound(Context context, Date prayerTime, String prayerName, int notificationMinusSabahEzaniIcin) {
+        try {
+            SharedPrefsHelperService prefsHelper = new SharedPrefsHelperService(context, SETTINGS_PREFS);
+            int ezanType = prefsHelper.getSpinnerSelection("spinner_ezan_sound", 2);
+            int duaType = prefsHelper.getSpinnerSelection("spinner_ezan_dua", 2);
+
+            if (ezanType == 3 && duaType == 2) { // Her ikisi de kapalı
+                return;
+            }
+
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            if (alarmManager == null) return;
+
+            Intent intent = new Intent(context, PrayerSoundReceiver.class);
+            intent.putExtra("ezanType", ezanType);
+            intent.putExtra("duaType", duaType);
+            
+            Log.d(TAG, String.format(
+                "Ezan Sesi değerleri:\n" +
+                "ezanType: %d\n" +
+                "duaType: %d",
+                intent.getIntExtra("ezanType", -1),
+                intent.getIntExtra("duaType", -1)
+            ));
+
+            int requestCode = ("sound_" + prayerName + Calendar.getInstance().get(Calendar.DAY_OF_YEAR)).hashCode();
+            
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context,
+                requestCode,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+
+            Calendar notificationTime = Calendar.getInstance();
+            notificationTime.setTime(prayerTime);
+            notificationTime.add(Calendar.MINUTE, -notificationMinusSabahEzaniIcin);
+
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                notificationTime.getTimeInMillis(),
+                pendingIntent
+            );
+
+            Log.d(TAG, String.format(
+                    "Ezan sesi alarmı kuruldu:\n" +
+                            "Vakit: %s\n" +
+                            "Zaman: %s\n" +
+                            "Ezan Tipi: %d\n" +
+                            "Dua Tipi: %d",
+                    prayerName,
+                    notificationTime.getTime(),
+                    ezanType,
+                    duaType
+            ));
+        } catch (Exception e) {
+            Log.e(TAG, "Ezan sesi alarmı kurulurken hata: " + e.getMessage());
+        }
+    }
+
     @Override
     public void onStopped() {
         super.onStopped();

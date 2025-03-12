@@ -270,6 +270,8 @@ public class QiblaCompassFragment extends Fragment implements SensorEventListene
     }
 
     private void navigateToPreviousScreen() {
-        requireActivity().getOnBackPressedDispatcher().onBackPressed();
+        if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+            getParentFragmentManager().popBackStack(); // Önceki fragment'e dön
+        }
     }
 }

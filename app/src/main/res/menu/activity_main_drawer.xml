@@ -26,6 +26,17 @@
             android:title="@string/menu_muze" />
 
         <item
+            android:id="@+id/nav_monthly_prayer_calendar"
+            android:icon="@drawable/baseline_calendar_month_24"
+            android:title="@string/aylikNamazTakvim" />
+
+        <item
+            android:id="@+id/nav_dini_gunler"
+            android:icon="@drawable/baseline_today_24"
+            android:title="@string/diniTakvim" />
+
+
+        <item
             android:id="@+id/navigation_local_products"
             android:icon="@drawable/baseline_local_grocery_store_24"
             android:title="@string/local_products_title" />

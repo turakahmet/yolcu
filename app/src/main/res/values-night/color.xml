@@ -3,5 +3,7 @@
 
     <color name="lineColor">#FFFFFF</color>
     <color name="themeTextColor">@color/black</color>
-
+    <color name="monthly_row_gray">#424242</color>
+    <color name="monthly_row_orange">#4D3C1F</color>
+    <color name="icon_color">@android:color/white</color>
 </resources>

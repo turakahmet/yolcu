@@ -11,8 +11,12 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +32,7 @@ import com.myapp.yolcu.ui.VakitApi.AlarmReceiver;
 import com.myapp.yolcu.ui.VakitApi.DailyPrayerWorker;
 import com.myapp.yolcu.ui.VakitApi.DailyPrayerWorkerReceiver;
 import com.myapp.yolcu.ui.VakitApi.NamazVakiti;
+import com.myapp.yolcu.ui.receiver.PrayerSoundReceiver;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -40,9 +45,11 @@ import java.util.Objects;
 import java.util.Calendar;
 
 public class SettingsActivity extends AppCompatActivity {
-    private SwitchCompat switchNotificationAll, switchNotificationImsak, switchNotificationSabah, switchNotificationOgle, switchNotificationIkindi, switchNotificationAksam, switchNotificationYatsi, switchNotificationKerahat, switchNotificationSound, switchNotificationVakitHerzamanGoster;
+    private SwitchCompat switchNotificationAll, switchNotificationImsak, switchNotificationSabah, switchNotificationOgle, switchNotificationIkindi, switchNotificationAksam, switchNotificationYatsi, switchNotificationKerahat, switchNotificationSound, switchNotificationVakitHerzamanGoster, switchVakitSound;
     private SharedPrefsHelperService sharedPrefsHelperService;
     private RadioGroup radioGroupVakit;
+    private Spinner spinnerEzanSound, spinnerEzanDua;
+    private boolean isUserAction = true; // Kullanıcı aksiyonlarını takip etmek için flag
 
     private final Map<Integer, String> switchKeyMap = new HashMap<Integer, String>() {{
         put(R.id.switchNotification_Imsak, "switchNotificationImsak");
@@ -55,6 +62,7 @@ public class SettingsActivity extends AppCompatActivity {
     }};
 
     private static final int REQUEST_NOTIFICATION_PERMISSION = 123;
+    private static final String TAG = "SettingsActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +72,20 @@ public class SettingsActivity extends AppCompatActivity {
         initializeViews();
         sharedPrefsHelperService = new SharedPrefsHelperService(this, MainActivity.SETTINGS_PREFS);
         switchCompatClickListeners();
+        setupSpinners();
         loadSwitchStates();
         radioGroupVakit.setOnCheckedChangeListener((group, checkedId) -> changeRadioButton(checkedId));
 
+        // Switch durumunu yükle
+        boolean vakitSoundEnabled = sharedPrefsHelperService.isVakitSoundModeEnabled();
+        Log.d(TAG, "Vakit ses modu switch durumu yükleniyor: " + vakitSoundEnabled);
+        switchVakitSound.setChecked(vakitSoundEnabled);
+
+        // Switch listener'ı ekle
+        switchVakitSound.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Log.d(TAG, "Vakit ses modu switch değişti: " + isChecked);
+            sharedPrefsHelperService.setVakitSoundModeEnabled(isChecked);
+        });
     }
 
     private void changeRadioButton(int checkedId) {
@@ -129,8 +148,7 @@ public class SettingsActivity extends AppCompatActivity {
         Intent intent = new Intent(this, DailyPrayerWorkerReceiver.class);
         sendBroadcast(intent);
         
-        Toast.makeText(this, getString(R.string.prayer_times_updated), Toast.LENGTH_SHORT).show();
-        Log.d("SettingsActivity", "Prayer alarms updated with new timing: " + 
+        Log.d("SettingsActivity", "Prayer alarms updated with new timing: " +
             sharedPrefsHelperService.getRadioButtonState("radioGroupVakit") + " minutes");
     }
 
@@ -146,6 +164,9 @@ public class SettingsActivity extends AppCompatActivity {
         switchNotificationSound=findViewById(R.id.switchNotification_Sound);
         radioGroupVakit = findViewById(R.id.radioGroupVakit);
         switchNotificationVakitHerzamanGoster=findViewById(R.id.switchNotification_VakitHerzamanGoster);
+        spinnerEzanSound = findViewById(R.id.spinner_ezan_sound);
+        spinnerEzanDua = findViewById(R.id.spinner_ezan_dua);
+        switchVakitSound = findViewById(R.id.switchNotification_VakitSound);
     }
 
     private void switchCompatClickListeners() {
@@ -318,6 +339,23 @@ public class SettingsActivity extends AppCompatActivity {
 
         switchNotificationKerahat.setChecked(sharedPrefsHelperService.getSwitchState("switchNotificationKerahat"));
         switchNotificationSound.setChecked(sharedPrefsHelperService.getSwitchState("switchNotificationSound"));
+
+        // Spinner durumlarını yükle
+        int ezanSoundPosition = sharedPrefsHelperService.getSpinnerSelection("spinner_ezan_sound", 2);
+        int ezanDuaPosition = sharedPrefsHelperService.getSpinnerSelection("spinner_ezan_dua", 2);
+        
+        Log.d("SettingsActivity", "Yüklenen spinner pozisyonları - Ezan: " + ezanSoundPosition + ", Dua: " + ezanDuaPosition);
+        
+        // Spinner durumlarını yüklerken programatik değişiklik olduğunu belirt
+        isUserAction = false;
+        spinnerEzanSound.setSelection(ezanSoundPosition);
+        isUserAction = false;
+        spinnerEzanDua.setSelection(ezanDuaPosition);
+
+        // Eğer her iki ses de kapalıysa alarmları iptal et
+        if (ezanSoundPosition == 3 && ezanDuaPosition == 2) {
+            cancelAllPrayerSoundAlarms();
+        }
     }
 
     @SuppressWarnings("UnspecifiedImmutableFlag")
@@ -356,6 +394,127 @@ public class SettingsActivity extends AppCompatActivity {
             startService(serviceIntent);
         } else {
             stopService(serviceIntent);
+        }
+    }
+
+    private void setupSpinners() {
+        // Ezan sesi spinner'ı için adapter
+        ArrayAdapter<CharSequence> ezanSoundAdapter = new ArrayAdapter<>(this,
+            android.R.layout.simple_spinner_item,
+            new String[]{"Ezan", "Kısa ezan", "Bildirim", "Kapalı"});
+        ezanSoundAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerEzanSound.setAdapter(ezanSoundAdapter);
+
+        // Ezan duası spinner'ı için adapter
+        ArrayAdapter<CharSequence> ezanDuaAdapter = new ArrayAdapter<>(this,
+            android.R.layout.simple_spinner_item,
+            new String[]{"Ezan dua", "Ezan dua ve meal", "Kapalı"});
+        ezanDuaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerEzanDua.setAdapter(ezanDuaAdapter);
+
+        // Spinner değişiklik dinleyicileri
+        spinnerEzanSound.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            private boolean isUserInteracted = true; // Kullanıcının müdahale ettiğini anlamak için değişken
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (isUserInteracted) {
+                    isUserInteracted = false;
+                    return;
+                }
+                
+                // Seçimi kaydet
+                sharedPrefsHelperService.setSpinnerSelection("spinner_ezan_sound", position);
+                Log.d("SettingsActivity", "Ezan sesi seçimi değişti: " + position);
+
+                // Eğer "Kapalı" seçildiyse ve dua da kapalıysa alarmları iptal et
+                if (position == 3 && sharedPrefsHelperService.getSpinnerSelection("spinner_ezan_dua", 2) == 2) {
+                    cancelAllPrayerSoundAlarms();
+                } else {
+                    // Değilse alarmları güncelle
+                    setupNewPrayerAlarms();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+
+
+        });
+
+        spinnerEzanDua.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            private boolean isUserInteracted = true; // Kullanıcının müdahale ettiğini anlamak için değişken
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (isUserInteracted) {
+                    isUserInteracted = false;
+                    return;
+                }
+                
+                // Seçimi kaydet
+                sharedPrefsHelperService.setSpinnerSelection("spinner_ezan_dua", position);
+                Log.d("SettingsActivity", "Ezan duası seçimi değişti: " + position);
+
+                // Eğer "Kapalı" seçildiyse ve ezan da kapalıysa alarmları iptal et
+                if (position == 2 && sharedPrefsHelperService.getSpinnerSelection("spinner_ezan_sound", 2) == 3) {
+                    cancelAllPrayerSoundAlarms();
+                } else {
+                    // Değilse alarmları güncelle
+                    setupNewPrayerAlarms();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+    }
+
+    private void cancelAllPrayerSoundAlarms() {
+        Log.d("SettingsActivity", "Tüm ezan sesi alarmları iptal ediliyor");
+        
+        // Tüm namaz vakitleri için ses alarmlarını iptal et
+        if (NamazVakiti.getInstance().getImsak() != null) {
+            cancelPrayerSoundAlarm("İmsak");
+        }
+        if (NamazVakiti.getInstance().getGunes() != null) {
+            cancelPrayerSoundAlarm("Güneş");
+        }
+        if (NamazVakiti.getInstance().getOgle() != null) {
+            cancelPrayerSoundAlarm("Öğle");
+        }
+        if (NamazVakiti.getInstance().getIkindi() != null) {
+            cancelPrayerSoundAlarm("İkindi");
+        }
+        if (NamazVakiti.getInstance().getAksam() != null) {
+            cancelPrayerSoundAlarm("Akşam");
+        }
+        if (NamazVakiti.getInstance().getYatsi() != null) {
+            cancelPrayerSoundAlarm("Yatsı");
+        }
+
+    }
+
+    private void cancelPrayerSoundAlarm(String prayerName) {
+        try {
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            if (alarmManager == null) return;
+
+            Intent intent = new Intent(this, PrayerSoundReceiver.class);
+            int requestCode = ("sound_" + prayerName + Calendar.getInstance().get(Calendar.DAY_OF_YEAR)).hashCode();
+            
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                requestCode,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+
+            alarmManager.cancel(pendingIntent);
+            Log.d("SettingsActivity", prayerName + " vakti için ses alarmı iptal edildi");
+            
+        } catch (Exception e) {
+            Log.e("SettingsActivity", prayerName + " vakti için ses alarmı iptal edilirken hata: " + e.getMessage());
         }
     }
 }

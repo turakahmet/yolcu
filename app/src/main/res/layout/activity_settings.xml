@@ -392,7 +392,75 @@
                 app:layout_constraintTop_toTopOf="@+id/vakit_sound_setting_label" />
 
 
+            <!-- Ezan bildirim sesi Spinner -->
+            <TextView
+                android:id="@+id/ezan_spinner_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
+                android:text="Ezan bildirim sesi"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/vakit_sound_setting_label" />
 
+            <TextView
+                android:id="@+id/ezan_spinner_label_ek"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="(Medya Ses seviyesini kullanır)"
+                android:textSize="12sp"
+                android:textStyle="italic|bold"
+                android:textColor="@color/redAlertColor"
+                app:layout_constraintBottom_toBottomOf="@+id/ezan_spinner_label"
+                app:layout_constraintStart_toEndOf="@id/ezan_spinner_label"
+                app:layout_constraintTop_toTopOf="@+id/ezan_spinner_label" />
+
+            <Spinner
+                android:id="@+id/spinner_ezan_sound"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ezan_spinner_label" />
+
+            <!-- Ezan duası Spinner -->
+            <TextView
+                android:id="@+id/ezan_dua_spinner_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
+                android:text="Ezan duası"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spinner_ezan_sound" />
+
+            <TextView
+                android:id="@+id/ezan_dua_spinner_label_ek"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="(Medya Ses seviyesini kullanır)"
+                android:textSize="12sp"
+                android:textStyle="italic |bold"
+                android:textColor="@color/redAlertColor"
+                app:layout_constraintBottom_toBottomOf="@+id/ezan_dua_spinner_label"
+                app:layout_constraintStart_toEndOf="@id/ezan_dua_spinner_label"
+                app:layout_constraintTop_toTopOf="@+id/ezan_dua_spinner_label" />
+
+            <Spinner
+                android:id="@+id/spinner_ezan_dua"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ezan_dua_spinner_label" />
             <!--______-->
 
             <ImageView
@@ -417,7 +485,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/setting_timer_image"
-                app:layout_constraintTop_toBottomOf="@id/vakit_sound_setting_label" />
+                app:layout_constraintTop_toBottomOf="@id/spinner_ezan_dua" />
 
             <!-- çizgi -->
             <View

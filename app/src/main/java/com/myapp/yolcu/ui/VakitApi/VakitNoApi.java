@@ -15,6 +15,7 @@ import com.batoulapps.adhan2.model.Rounding;
 import com.batoulapps.adhan2.model.Shafaq;
 
 import java.text.Normalizer;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -24,6 +25,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class VakitNoApi {
 
@@ -148,5 +150,33 @@ public class VakitNoApi {
             e.printStackTrace();
             return null;  // Eğer bir hata oluşursa null döndür
         }
+    }
+
+    public NamazVakiti localMountlyPrayerTimes(double latitude, double longitude, Calendar calendar) {
+
+        DateComponents date = new DateComponents(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH) + 1,  // Java'da aylar 0'dan başladığı için 1 ekleniyor
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+
+
+        CalculationParameters params = CalculationMethod.TURKEY.getParameters().copy(18, 17, 0, CalculationMethod.TURKEY, Madhab.SHAFI, null, new PrayerAdjustments(), new PrayerAdjustments(0, -7, 5, 4, 6, 0), Rounding.NEAREST, Shafaq.GENERAL);
+        // Hanefi mezhebi için ayarla
+
+        // PrayerTimes nesnesini oluşturmak için Koordinatlar ve Parametreler
+        Coordinates coordinates = new Coordinates(latitude, longitude);
+        PrayerTimes prayerTimes = new PrayerTimes(coordinates, date, params);
+
+        namazVakiti = new NamazVakiti();
+        namazVakiti.setImsak(formatPrayerTime(String.valueOf(prayerTimes.getFajr())));
+        namazVakiti.setGunes(formatPrayerTime(String.valueOf(prayerTimes.getSunrise())));
+        namazVakiti.setOgle(formatPrayerTime(String.valueOf(prayerTimes.getDhuhr())));
+        namazVakiti.setIkindi(formatPrayerTime(String.valueOf(prayerTimes.getAsr())));
+        namazVakiti.setAksam(formatPrayerTime(String.valueOf(prayerTimes.getMaghrib())));
+        namazVakiti.setYatsi(formatPrayerTime(String.valueOf(prayerTimes.getIsha())));
+        SimpleDateFormat sdf = new SimpleDateFormat("d MMMM", new Locale("tr"));
+        namazVakiti.setMonthlyDay(sdf.format(calendar.getTime()));
+        return namazVakiti;
     }
 }

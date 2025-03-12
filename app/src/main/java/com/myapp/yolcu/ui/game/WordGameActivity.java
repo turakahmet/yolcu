@@ -155,7 +155,7 @@ public class WordGameActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (soundService != null) {
-            soundService.release();
+            soundService.cleanup();
         }
     }
     private void fetchQuestions() {

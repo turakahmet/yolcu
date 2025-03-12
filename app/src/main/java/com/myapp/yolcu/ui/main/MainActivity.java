@@ -2,8 +2,6 @@ package com.myapp.yolcu.ui.main;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,7 +14,6 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
@@ -63,10 +60,9 @@ import com.myapp.yolcu.ui.Service.GoldService;
 import com.myapp.yolcu.ui.Service.SoundService;
 import com.myapp.yolcu.ui.VakitApi.VakitNoApi;
 import com.myapp.yolcu.ui.VakitApi.NamazVakiti;
+import com.myapp.yolcu.ui.monthlyCalender.MonthlyPrayerActivity;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -161,6 +157,11 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
             // İzin varsa konumu al
             getLastLocation();
         }
+
+        remain_time_layout.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, MonthlyPrayerActivity.class);
+            startActivity(intent);
+        });
     }
 
     private boolean hasNotificationPermission() {
@@ -521,29 +522,6 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
                 .setNegativeButton(getString(R.string.cancel), null)
                 .show();
     }
-//
-//    private void showProfilePictureDialog() {
-//        // Resim seçeneklerini tanımla
-//        final int[] imageOptions = {R.drawable.man_1, R.id.man_2, R.id.women_1, R.id.women_2};
-//        final String[] imageNames = {"Man 1", "Man 2", "Woman 1", "Woman 2"};
-//
-//        // Görsel seçeneklerini gösteren bir AlertDialog oluştur
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("Select Profile Picture")
-//                .setItems(imageNames, (dialog, which) -> {
-//                    // Seçilen resmi al
-//                    int selectedImage = imageOptions[which];
-//
-//                    // Resmi ShapeableImageView'e ayarla
-//                    userAvatar.setImageResource(selectedImage);
-//
-//                    // SharedPreferences'a kaydet
-//                    SharedPreferences.Editor editor = userPrefs.edit();
-//                    editor.putInt("profile_picture", selectedImage);
-//                    editor.apply();
-//                })
-//                .show();
-//    }
 
     // Menü oluşturma
     @Override
@@ -563,9 +541,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        // Menü öğelerine tıklanma işlemleri
         if (item.getItemId() == R.id.action_settings) {
-            // Ayarlar ekranını aç
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             return true;

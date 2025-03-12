@@ -472,7 +472,7 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="kerahat_vakti">Kerahat Vaktlerini Göster</string>
     <string name="sound_setting">Uygulama Sesleri</string>
     <string name="vakit_sound_setting">Namazda Titreşime Al</string>
-    <string name="app_version" >1.0.1</string>
+    <string name="app_version">1.0.1</string>
     <string name="prayer_times_updated">Namaz Vakitleri Güncellendi</string>
     <string name="prayer_times_updated_body">Namaz vakitleri güncellendi. Yeniden kurulum gerekiyor.</string>
     <string name="vakitHerzamanGoster">Bildirimleri Her Zaman Göster</string>
@@ -482,4 +482,28 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="open_local_products_app">Uygulamayı Aç</string>
     <string name="app_logo_description">widget logo</string>
     <string name="weather_icon_description">weather label</string>
+    <string name="tempatura_default">0°C</string>
+    <string name="testYazisiVakit">Vakit Hesaplanıyor</string>
+    <string name="aylik_vakitler">Namaz Takvimi</string>
+    <string name="prayer_time_image_desc">Aylik vakit arkaplan resim</string>
+    <string name="aylikNamazTakvim">Namaz Takvimi</string>
+    <string name="diniTakvim">Dini Günler</string>
+    <string name="islamicDays">Dini Günler</string>
+    <string name="yaklasanTarihYok">Yaklaşan Tarih Bulunamadı!</string>
+    <string name="ibadetCard_2">İslam’ın ve İmanın Şartları</string>
+    <string name="ibadetCard_3">Farz İbadetler</string>
+
+    <string-array name="ezan_sound_options">
+        <item>Ezan</item>
+        <item>Kısa ezan</item>
+        <item>Bildirim</item>
+        <item>Kapalı</item>
+    </string-array>
+
+    <!-- Ezan Duası Spinner Değerleri -->
+    <string-array name="ezan_dua_options">
+        <item>Ezan dua</item>
+        <item>Ezan dua ve meal</item>
+        <item>Kapalı</item>
+    </string-array>
 </resources>
