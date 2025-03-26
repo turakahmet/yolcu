@@ -7,7 +7,7 @@
     android:layout_margin="10dp"
     android:theme="@style/Theme.Yolcu"
     android:background="@drawable/ic_popup_background"
-    tools:context=".ui.main.MainActivity">
+    tools:context=".main.MainActivity">
 
     <ImageView
         android:id="@+id/imagePopUp"

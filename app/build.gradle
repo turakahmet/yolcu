@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.myapp.yolcu'
+    namespace 'com.islamyolu.app'
     compileSdk 35
 
     defaultConfig {
-        applicationId "com.myapp.yolcu"
+        applicationId "com.islamyolu.app"
         minSdk 27
         targetSdk 35
         versionCode 1
@@ -52,6 +52,7 @@ dependencies {
     //webservis ve loglama
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0' // String olarak çekmek için
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.squareup.okhttp3:okhttp:4.9.1'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.5.0'
@@ -72,6 +73,8 @@ dependencies {
 
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
+    //resimler icin
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'

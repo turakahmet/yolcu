@@ -4,168 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".ibadet.IbadetFragment">
 
-    <!-- Dikey kaydırma için ScrollView -->
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="5dp"
-        android:paddingBottom="55dp"
+    <ProgressBar
+        android:id="@+id/loadingIbadetFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewIbadet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-
-            <!-- Birinci CardView -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardViewIbadet_1"
-                android:layout_width="0dp"
-                android:layout_height="200dp"
-                android:layout_margin="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="8dp"
-                app:cardBackgroundColor="@color/pricarViewIbadetColor"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cardViewIbadetConstraintLayout_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:id="@+id/cardViewIbadetImage_1"
-                        android:layout_width="match_parent"
-                        android:layout_height="160dp"
-                        android:scaleType="centerCrop"
-                        android:paddingBottom="10dp"
-                        android:src="@drawable/hadis_40"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:ignore="ContentDescription" />
-
-                    <TextView
-                        android:id="@+id/cardViewIbadetLabel_1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:elevation="1dp"
-                        android:fontFamily="@font/tomorrow_b"
-                        android:layout_margin="10dp"
-                        android:gravity="center"
-                        android:text="@string/kirkhadis"
-                        android:textColor="@color/pricarViewIbadetHeaderColor"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toBottomOf="@id/cardViewIbadetConstraintLayout_1"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- İkinci CardView -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardViewIbadet_2"
-                android:layout_width="0dp"
-                android:layout_height="200dp"
-                android:layout_margin="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="8dp"
-                app:cardBackgroundColor="@color/pricarViewIbadetColor"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cardViewIbadet_1">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cardViewIbadetConstraintLayout_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:id="@+id/cardViewIbadetImage_2"
-                        android:layout_width="match_parent"
-                        android:layout_height="160dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ibadet_2"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:ignore="ContentDescription" />
-
-                    <TextView
-                        android:id="@+id/cardViewIbadetLabel_2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:elevation="1dp"
-                        android:fontFamily="@font/tomorrow_b"
-                        android:layout_margin="10dp"
-                        android:gravity="center"
-                        android:text="@string/ibadetCard_2"
-                        android:textColor="@color/pricarViewIbadetHeaderColor"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toBottomOf="@id/cardViewIbadetConstraintLayout_2"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- ucuncu CardView -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardViewIbadet_3"
-                android:layout_width="0dp"
-                android:layout_height="200dp"
-                android:layout_margin="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="8dp"
-                app:cardBackgroundColor="@color/pricarViewIbadetColor"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cardViewIbadet_2">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cardViewIbadetConstraintLayout_3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:id="@+id/cardViewIbadetImage_3"
-                        android:layout_width="match_parent"
-                        android:layout_height="160dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ibadet_3"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:ignore="ContentDescription" />
-
-                    <TextView
-                        android:id="@+id/cardViewIbadetLabel_3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:elevation="1dp"
-                        android:fontFamily="@font/tomorrow_b"
-                        android:layout_margin="10dp"
-                        android:gravity="center"
-                        android:text="@string/ibadetCard_3"
-                        android:textColor="@color/pricarViewIbadetHeaderColor"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toBottomOf="@id/cardViewIbadetConstraintLayout_3"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/Theme.Yolcu"
-    tools:context=".ui.game.InfoGameActivity">
+    tools:context=".game.InfoGameActivity">
 
     <!-- Altın Miktarı -->
     <ImageView
@@ -131,7 +131,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/guideline2"/>
+        app:layout_constraintBottom_toBottomOf="@id/guideline2" />
 
 
     <com.shuhart.stepview.StepView
@@ -154,8 +154,7 @@
         app:sv_doneCircleRadius="10dp"
         app:sv_selectedCircleRadius="10dp"
         app:sv_stepsNumber="15"
-        app:sv_stepNumberTextSize="12sp"
-        />
+        app:sv_stepNumberTextSize="12sp" />
     <!-- Soru sayısına göre dinamik yapabiliriz -->
 
 
@@ -326,7 +325,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/joker_hint"
         app:layout_constraintTop_toBottomOf="@+id/joker_text" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

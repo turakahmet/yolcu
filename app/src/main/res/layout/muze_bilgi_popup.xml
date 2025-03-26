@@ -8,7 +8,7 @@
     android:layout_margin="10dp"
     android:background="@drawable/ic_popup_background"
     android:theme="@style/Theme.Yolcu"
-    tools:context=".ui.main.MainActivity">
+    tools:context=".main.MainActivity">
 
     <TextView
         android:id="@+id/textHeader"
@@ -31,8 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textHeader"
-        app:layout_constraintBottom_toTopOf="@id/closeButton"
-        >
+        app:layout_constraintBottom_toTopOf="@id/closeButton">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/popupVerticalScrollConstraintLayout"

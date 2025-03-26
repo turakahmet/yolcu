@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Yolcu</string>
+    <string name="app_name">İslam Yolu</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -14,7 +14,7 @@
     <string name="menu_basari">Rozetler</string>
     <string name="empty_text">-</string>
     <string name="no_Internet">İnternet bağlantınızı kontrol edin</string>
-    <string name="konumMevcutDegil">Konum Alınamadı. Namaz vakitleri için konum açınız</string>
+    <string name="konumMevcutDegil">Konum Alınamadı! Namaz vakitleri için konum ve internet açınız</string>
     <string name="checkLocationAndInternet">internet ve konum bilgilerinizi açıktan sonra tekrar deneyiniz</string>
     <string name="no_Location">Bu şehir için URL bulunamadı</string>
     <string name="no_permit_location">Konum izni reddedildi</string>
@@ -491,7 +491,7 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="islamicDays">Dini Günler</string>
     <string name="yaklasanTarihYok">Yaklaşan Tarih Bulunamadı!</string>
     <string name="ibadetCard_2">İslam’ın ve İmanın Şartları</string>
-    <string name="ibadetCard_3">Farz İbadetler</string>
+    <string name="ibadetCard_3">Namaz İbadeti</string>
 
     <string-array name="ezan_sound_options">
         <item>Ezan</item>

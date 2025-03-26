@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Dikey kaydırma için ScrollView -->
-    <com.myapp.yolcu.ui.ibadet.ZoomableScrollView
+    <com.islamyolu.app.ibadet.ZoomableScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="5dp"
@@ -48,6 +48,6 @@
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.myapp.yolcu.ui.ibadet.ZoomableScrollView>
+    </com.islamyolu.app.ibadet.ZoomableScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

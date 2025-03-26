@@ -44,7 +44,7 @@
         tools:targetApi="31">
         <!--      android:windowSoftInputMode="adjustPan" bu ayar klavye önde kalsın sadece zekat tarafında oyuzden eklendi   -->
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".main.MainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.Yolcu.NoActionBar">
@@ -55,29 +55,29 @@
         </activity>
 
         <receiver
-            android:name=".ui.VakitApi.AlarmReceiver"
+            android:name=".VakitApi.AlarmReceiver"
             android:exported="false" />
-        <receiver android:name=".ui.VakitApi.NotificationCancelReceiver" />
-        <receiver android:name=".ui.VakitApi.DailyPrayerWorkerReceiver" />
+        <receiver android:name=".VakitApi.NotificationCancelReceiver" />
+        <receiver android:name=".VakitApi.DailyPrayerWorkerReceiver" />
 
         <activity
-            android:name=".ui.main.NetworkCheckActivity"
+            android:name=".main.NetworkCheckActivity"
             android:exported="true"></activity>
-        <activity android:name=".ui.game.InfoGameActivity" />
-        <activity android:name=".ui.game.WordGameActivity" />
-        <activity android:name=".ui.game.MatchesGameActivity" />
-        <activity android:name=".ui.ibadet.KirkHadisActivity" />
-        <activity android:name=".ui.ibadet.IbadetDetailActivity" />
-        <activity android:name=".ui.ibadet.IbadetContentActivity" />
-        <activity android:name=".ui.muze.MuzeDetailActivity" />
+        <activity android:name=".game.InfoGameActivity" />
+        <activity android:name=".game.WordGameActivity" />
+        <activity android:name=".game.MatchesGameActivity" />
+        <activity android:name=".ibadet.KirkHadisActivity" />
+        <activity android:name=".ibadet.IbadetDetailActivity" />
+        <activity android:name=".ibadet.IbadetContentActivity" />
+        <activity android:name=".muze.MuzeDetailActivity" />
         <activity
-            android:name=".ui.main.SettingsActivity"
+            android:name=".main.SettingsActivity"
             android:label="@string/action_settings" />
         <activity
-            android:name=".ui.monthlyCalender.MonthlyPrayerActivity"
+            android:name=".monthlyCalender.MonthlyPrayerActivity"
             android:label="@string/aylikNamazTakvim" />
         <activity
-            android:name=".ui.islamicDays.IslamicDayActivity"
+            android:name=".islamicDays.IslamicDayActivity"
             android:label="@string/islamicDays" />
 
 
@@ -85,13 +85,13 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
         <service
-            android:name=".ui.Service.PrayerNotificationService"
+            android:name=".Service.PrayerNotificationService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="location|dataSync" />
 
         <receiver
-            android:name=".ui.VakitApi.BootReceiver"
+            android:name=".VakitApi.BootReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -99,7 +99,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".ui.widget.PrayerTimesWidget"
+            android:name=".widget.PrayerTimesWidget"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -110,7 +110,7 @@
                 android:resource="@xml/prayer_times_widget_info" />
         </receiver>
         <receiver
-            android:name=".ui.receiver.PrayerSoundReceiver"
+            android:name=".receiver.PrayerSoundReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
@@ -119,7 +119,7 @@
         </receiver>
 
         <service
-            android:name=".ui.Service.PrayerSoundControlService"
+            android:name=".Service.PrayerSoundControlService"
             android:enabled="true"
             android:exported="false" />
     </application>

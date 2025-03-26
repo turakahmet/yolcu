@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="5dp"
-    tools:context=".ui.main.SettingsActivity">
+    tools:context=".main.SettingsActivity">
 
     <!-- Dikey kaydırma için ScrollView -->
     <ScrollView
@@ -56,8 +56,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/notificationLabel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/notificationLabel"
-                app:layout_constraintTop_toTopOf="@+id/notificationLabel"
-                />
+                app:layout_constraintTop_toTopOf="@+id/notificationLabel" />
 
             <TextView
                 android:id="@+id/all_notification_label"
@@ -270,8 +269,7 @@
                     android:layout_height="wrap_content"
                     android:text="5 dk"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    />
+                    android:textStyle="bold" />
 
                 <RadioButton
                     android:id="@+id/radioButtonVakitOn"
@@ -280,8 +278,7 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:text="10 dk"
-                    android:checked="true"
-                    />
+                    android:checked="true" />
 
                 <RadioButton
                     android:id="@+id/radioButtonVakitYirmi"
@@ -289,8 +286,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:text="20 dk"
-                    />
+                    android:text="20 dk" />
             </RadioGroup>
 
             <TextView
@@ -535,7 +531,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/contactButton"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintBottom_toBottomOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

@@ -1,12 +1,11 @@
 <!-- res/layout/activity_main.xml -->
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/Theme.Yolcu"
-    tools:context=".ui.game.WordGameActivity">
+    tools:context=".game.WordGameActivity">
 
     <!-- Altın Miktarı -->
     <ImageView
@@ -84,8 +83,7 @@
         app:sv_doneCircleRadius="10dp"
         app:sv_selectedCircleRadius="10dp"
         app:sv_stepsNumber="15"
-        app:sv_stepNumberTextSize="12sp"
-        />
+        app:sv_stepNumberTextSize="12sp" />
 
     <TextView
         android:id="@+id/questionTextView"
@@ -97,7 +95,7 @@
         android:fontFamily="sans-serif-black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/step_view_word_game"/>
+        app:layout_constraintTop_toBottomOf="@id/step_view_word_game" />
 
     <TextView
         android:id="@+id/questionSpaceHint"
@@ -110,7 +108,7 @@
         android:textStyle="bold"
         android:fontFamily="@font/tomorrow_b"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/questionTextView"/>
+        app:layout_constraintTop_toBottomOf="@id/questionTextView" />
 
     <GridLayout
         android:id="@+id/answerGrid"
@@ -122,7 +120,7 @@
         app:layout_constraintBottom_toBottomOf="@id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/questionSpaceHint"/>
+        app:layout_constraintTop_toBottomOf="@id/questionSpaceHint" />
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -143,7 +141,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/guideline2"
-        android:layout_margin="5dp"/>
+        android:layout_margin="5dp" />
+
     <TextView
         android:id="@+id/gifImageSuccessViewLabel"
         android:layout_width="wrap_content"
@@ -156,7 +155,7 @@
         android:layout_margin="5dp"
         android:fontFamily="@font/tomorrow_b"
         android:textColor="@color/colorPrimary"
-        android:textSize="18sp"/>
+        android:textSize="18sp" />
 
 
     <!-- Jokerler -->
@@ -229,7 +228,6 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
     <!-- Onayla button -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@id/confirmButtonLayout"
@@ -258,6 +256,7 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <Button
         android:id="@+id/confirmButton"
         android:layout_width="0dp"
@@ -268,7 +267,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/letterJokerButton"
         app:layout_constraintTop_toBottomOf="@+id/joker_text" /> <!-- Butonlar arasında boşluk -->
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
