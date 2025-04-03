@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -28,6 +29,9 @@ import com.islamyolu.app.Service.SharedPrefsHelperService;
 import com.islamyolu.app.VakitApi.AlarmReceiver;
 import com.islamyolu.app.VakitApi.DailyPrayerWorkerReceiver;
 import com.islamyolu.app.VakitApi.NamazVakiti;
+import com.islamyolu.app.feedback.BilgilendirmeActivity;
+import com.islamyolu.app.feedback.FeedbackActivity;
+import com.islamyolu.app.feedback.PrivacyActivity;
 import com.islamyolu.app.receiver.PrayerSoundReceiver;
 
 import java.util.Calendar;
@@ -39,6 +43,7 @@ public class SettingsActivity extends AppCompatActivity {
     private SharedPrefsHelperService sharedPrefsHelperService;
     private RadioGroup radioGroupVakit;
     private Spinner spinnerEzanSound, spinnerEzanDua;
+    private Button contactButton, privacyButton, bilgilendirmeButton;
     private boolean isUserAction = true; // Kullanıcı aksiyonlarını takip etmek için flag
 
     private final Map<Integer, String> switchKeyMap = new HashMap<Integer, String>() {{
@@ -49,6 +54,8 @@ public class SettingsActivity extends AppCompatActivity {
         put(R.id.switchNotification_Aksam, "switchNotificationAksam");
         put(R.id.switchNotification_Yatsi, "switchNotificationYatsi");
         put(R.id.switchNotification_VakitHerzamanGoster, "switchNotificationVakitHerzamanGoster");
+        put(R.id.switchNotification_Kerahat, "switchNotificationKerahat");
+        put(R.id.switchNotification_Sound, "switchNotificationSound");
     }};
 
     private static final int REQUEST_NOTIFICATION_PERMISSION = 123;
@@ -75,6 +82,21 @@ public class SettingsActivity extends AppCompatActivity {
         switchVakitSound.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Log.d(TAG, "Vakit ses modu switch değişti: " + isChecked);
             sharedPrefsHelperService.setVakitSoundModeEnabled(isChecked);
+        });
+
+        contactButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, FeedbackActivity.class);
+            startActivity(intent);
+        });
+
+        privacyButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, PrivacyActivity.class);
+            startActivity(intent);
+        });
+
+        bilgilendirmeButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, BilgilendirmeActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -157,6 +179,9 @@ public class SettingsActivity extends AppCompatActivity {
         spinnerEzanSound = findViewById(R.id.spinner_ezan_sound);
         spinnerEzanDua = findViewById(R.id.spinner_ezan_dua);
         switchVakitSound = findViewById(R.id.switchNotification_VakitSound);
+        contactButton = findViewById(R.id.contactButton);
+        privacyButton = findViewById(R.id.privacyButton);
+        bilgilendirmeButton = findViewById(R.id.bilgilendirmeButton);
     }
 
     private void switchCompatClickListeners() {

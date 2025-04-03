@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="5dp">
@@ -22,19 +23,19 @@
         android:id="@+id/radioGroupVarlikTipi"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_margin="5dp"
+        android:orientation="horizontal"
 
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/radioGroupLabel"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <RadioButton
             android:id="@+id/radioButtonVarliklar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Varlıklar"
-            android:checked="true" />
+            android:checked="true"
+            android:text="Varlıklar" />
 
         <RadioButton
             android:id="@+id/radioButtonBorclar"
@@ -42,6 +43,19 @@
             android:layout_height="wrap_content"
             android:text="Borçlar" />
     </RadioGroup>
+
+    <ImageButton
+        android:id="@+id/zekatInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@null"
+        android:src="@drawable/baseline_info_24_gray"
+        app:layout_constraintBottom_toBottomOf="@+id/radioGroupVarlikTipi"
+        app:layout_constraintEnd_toEndOf="@+id/radioGroupVarlikTipi"
+        app:layout_constraintTop_toTopOf="@+id/radioGroupVarlikTipi"
+        tools:ignore="ContentDescription" />
+
 
     <TextView
         android:id="@+id/spinnerIconLabel"
@@ -100,6 +114,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/spinnerAltTuru"
         app:layout_constraintEnd_toEndOf="@+id/spinnerAltTuru"
         app:layout_constraintTop_toTopOf="@+id/spinnerAltTuru" />
+
     <Spinner
         android:id="@+id/spinnerAltTuru"
         android:layout_width="0dp"
@@ -145,6 +160,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/kurBilgileriTutar"
         app:layout_constraintEnd_toEndOf="@+id/spinnerIcon"
         app:layout_constraintTop_toTopOf="@+id/kurBilgileriTutar" />
+
     <EditText
         android:id="@+id/editTextTutar"
         android:layout_width="match_parent"
@@ -189,9 +205,9 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/lineColor"
-        app:layout_constraintTop_toTopOf="@id/buttonPaylas"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/buttonPaylas" />
 
     <TextView
         android:id="@+id/toplamVarlik"
@@ -203,8 +219,8 @@
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/textViewZekatSonuc"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/buttonPaylas"/>
+        app:layout_constraintEnd_toStartOf="@id/buttonPaylas"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <TextView
@@ -219,8 +235,8 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/buttonPaylas"/>
+        app:layout_constraintEnd_toStartOf="@id/buttonPaylas"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/buttonPaylas"

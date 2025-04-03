@@ -52,7 +52,7 @@ public class ZekatHesaplaFragment extends Fragment {
     private TextView textViewZekatSonuc, toplamVarlik, spinnerAltTuruLabel, kurBilgileriTutarLabel, spinnerIconLabel;
     private ArrayAdapter<String> listAdapter;
     private final List<String> varlikListesi = new ArrayList<>();
-    private ImageButton buttonPaylas;
+    private ImageButton buttonPaylas, zekatInfo;
     private ImageView spinnerAltIcon;
     private CheckBox kurBilgileriDegistirCheckBox;
     private SoundService soundService;
@@ -84,6 +84,7 @@ public class ZekatHesaplaFragment extends Fragment {
         listViewVarliklar.setAdapter(listAdapter);
         kurBilgileriDegistirCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> checkControl(isChecked));
         buttonPaylas.setOnClickListener(v -> shareData());
+        zekatInfo.setOnClickListener(v -> zekatPopupInfo());
         radioGroupVarlikTipi.setOnCheckedChangeListener((group, checkedId) -> changeRadioButton(checkedId));
 
     }
@@ -139,6 +140,7 @@ public class ZekatHesaplaFragment extends Fragment {
         kurBilgileriTutarLabel = view.findViewById(R.id.kurBilgileriTutarLabel);
         radioGroupVarlikTipi = view.findViewById(R.id.radioGroupVarlikTipi);
         spinnerIconLabel = view.findViewById(R.id.spinnerIconLabel);
+        zekatInfo = view.findViewById(R.id.zekatInfo);
 
         // Butonları bağla
         buttonPaylas = view.findViewById(R.id.buttonPaylas);
@@ -557,6 +559,19 @@ public class ZekatHesaplaFragment extends Fragment {
         }
     }
 
+    private void zekatPopupInfo() {
+        // Yeni bir Dialog oluştur
+        mDialog = new Dialog(requireContext());
+        Objects.requireNonNull(mDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        // custom_popup.xml layoutunu dialog'a yükle
+        mDialog.setContentView(R.layout.zekat_info_popup);
+        // Dialog dışına tıklanıldığında kapansın
+        mDialog.setCancelable(true);
+        Button closeButton = mDialog.findViewById(R.id.closeButton);
+        closeButton.setOnClickListener(view -> mDialog.dismiss());
+
+        mDialog.show();
+    }
 
     private void shareData() {
         StringBuilder message = new StringBuilder();

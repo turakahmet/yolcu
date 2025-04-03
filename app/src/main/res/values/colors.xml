@@ -18,9 +18,9 @@
     <color name="wrongAnswer">#EF5350</color>
     <color name="endGameAnswer">#EF5350</color>
     <color name="correctAnswer">#9CCC65</color>
-    <color name="firstAnswer" >#FBC02D</color>
-    <color name="colorGray" >#9E9E9E</color>
-    <color name="colorAccent" >#FBC02D</color>
+    <color name="firstAnswer">#FBC02D</color>
+    <color name="colorGray">#9E9E9E</color>
+    <color name="colorAccent">#FBC02D</color>
     <color name="redAlertColor">#EF5350</color>
     <color name="carViewHeaderColor">#55999999</color>
     <color name="pricarViewIbadetColor">#7CB342</color>
@@ -35,7 +35,7 @@
     <color name="pastelRedColor">#EF9A9A</color>
     <color name="pastelRedColor_m">#EF5350</color>
     <!-- Widget Colors -->
-    <color name="widget_background">#FFFFFF</color>
+    <color name="widget_background">#80FFFFFF</color>
     <color name="widget_background_night">#2C2C2C</color>
     <color name="widget_text_color">#212121</color>
     <color name="widget_text_color_night">#FFFFFF</color>
@@ -54,6 +54,8 @@
     <color name="prayer_next_time_wigdet">#FFEA00</color>
     <color name="monthly_row_gray">#F5F5F5</color>
     <color name="monthly_row_orange">#FFCC80</color>
-    <color name="icon_color">@android:color/black</color>
+    <color name="icon_color">#424242</color>
+    <color name="themePrayerBarColor">@color/white</color>
+
 
 </resources>

@@ -15,7 +15,7 @@ import java.util.Objects;
 public class GoldService {
     private static final String PREF_NAME = "GamePreferences";
     private static final String GOLD_KEY = "userGold";
-    private static final int DEFAULT_GOLD = 5000;
+    private static final int DEFAULT_GOLD = 1000;
     private SharedPreferences sharedPreferences;
     private SoundService soundService;
 

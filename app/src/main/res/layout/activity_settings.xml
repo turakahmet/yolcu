@@ -504,7 +504,7 @@
                 android:text="İletişim"
                 android:textStyle="bold"
                 android:layout_margin="5dp"
-                app:layout_constraintEnd_toStartOf="@+id/privacyButton"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/settingIletisimLabel" />
 
@@ -513,25 +513,39 @@
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_margin="5dp"
-                android:textStyle="bold"
                 android:gravity="center"
-                android:text="Gizlilik ve Kullanım"
+                android:text="Gizlilik Politikası"
+                android:textStyle="bold"
+                android:textSize="11sp"
+                app:layout_constraintEnd_toStartOf="@+id/bilgilendirmeButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/contactButton" />
+
+            <Button
+                android:id="@+id/bilgilendirmeButton"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_margin="5dp"
+                android:gravity="center"
+                android:text="Bilgilendirme ve Sorumluluk Reddi"
+                android:textStyle="bold"
+                android:textSize="11sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/contactButton"
-                app:layout_constraintTop_toBottomOf="@id/settingIletisimLabel" />
+                app:layout_constraintStart_toEndOf="@id/privacyButton"
+                app:layout_constraintTop_toBottomOf="@+id/contactButton" />
 
             <TextView
                 android:id="@+id/versionTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:text="@string/app_version"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:layout_margin="5dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/contactButton"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/privacyButton" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

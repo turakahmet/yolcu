@@ -9,6 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/rounded_bottom"
         android:theme="@style/Theme.Yolcu.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
@@ -50,7 +51,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/remain_namaz_time_1"
+            android:background="@drawable/rounded_bottom"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -63,19 +64,26 @@
                 android:orientation="vertical"
                 android:padding="3dp">
 
+                <ImageView
+                    android:id="@+id/imsak_time_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/imsak_m_icon"
+                    app:tint="@color/icon_color" />
+
                 <TextView
                     android:id="@+id/imsak_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/imsak"
-                    android:textColor="@color/white" />
+                    android:textStyle="bold"
+                    android:text="@string/imsak" />
 
                 <TextView
                     android:id="@+id/imsak_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/empty_text"
-                    android:textColor="@color/white" />
+                    android:textStyle="bold"
+                    android:text="@string/empty_text" />
             </LinearLayout>
 
             <!-- Güneş -->
@@ -87,14 +95,20 @@
                 android:orientation="vertical"
                 android:padding="3dp">
 
+                <ImageView
+                    android:id="@+id/gunes_time_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:tint="@color/icon_color"
+                    android:src="@drawable/gunes_m_icon" />
+
                 <TextView
                     android:id="@+id/gunes_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textStyle="bold"
-                    android:text="@string/gunes"
-                    android:textColor="@color/white" />
+                    android:text="@string/gunes" />
 
                 <TextView
                     android:id="@+id/gunes_time"
@@ -102,8 +116,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textStyle="bold"
-                    android:text="@string/empty_text"
-                    android:textColor="@color/white" />
+                    android:text="@string/empty_text" />
             </LinearLayout>
 
             <!-- Öğle -->
@@ -116,21 +129,26 @@
                 android:padding="3dp"
                 android:elevation="4dp">
 
+                <ImageView
+                    android:id="@+id/ogle_time_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:tint="@color/icon_color"
+                    android:src="@drawable/ogle_m_icon" />
+
                 <TextView
                     android:id="@+id/ogle_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:text="@string/ogle"
-                    android:textColor="@color/white" />
+                    android:text="@string/ogle" />
 
                 <TextView
                     android:id="@+id/ogle_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:text="@string/empty_text"
-                    android:textColor="@color/white" />
+                    android:text="@string/empty_text" />
             </LinearLayout>
 
             <!-- İkindi -->
@@ -142,21 +160,26 @@
                 android:orientation="vertical"
                 android:padding="3dp">
 
+                <ImageView
+                    android:id="@+id/ikindi_time_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:tint="@color/icon_color"
+                    android:src="@drawable/ikindi_m_icon" />
+
                 <TextView
                     android:id="@+id/ikindi_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:text="@string/ikindi"
-                    android:textColor="@color/white" />
+                    android:text="@string/ikindi" />
 
                 <TextView
                     android:id="@+id/ikindi_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:text="@string/empty_text"
-                    android:textColor="@color/white" />
+                    android:text="@string/empty_text" />
             </LinearLayout>
 
             <!-- Akşam -->
@@ -168,21 +191,26 @@
                 android:orientation="vertical"
                 android:padding="3dp">
 
+                <ImageView
+                    android:id="@+id/aksam_time_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:tint="@color/icon_color"
+                    android:src="@drawable/aksam_m_icon" />
+
                 <TextView
                     android:id="@+id/aksam_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:text="@string/aksam"
-                    android:textColor="@color/white" />
+                    android:text="@string/aksam" />
 
                 <TextView
                     android:id="@+id/aksam_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:text="@string/empty_text"
-                    android:textColor="@color/white" />
+                    android:text="@string/empty_text" />
             </LinearLayout>
 
             <!-- Yatsı -->
@@ -194,21 +222,26 @@
                 android:orientation="vertical"
                 android:padding="3dp">
 
+                <ImageView
+                    android:id="@+id/yatsi_time_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:tint="@color/icon_color"
+                    android:src="@drawable/yatsi_m_icon" />
+
                 <TextView
                     android:id="@+id/yatsi_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:text="@string/yatsi"
-                    android:textColor="@color/white" />
+                    android:text="@string/yatsi" />
 
                 <TextView
                     android:id="@+id/yatsi_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/empty_text"
-                    android:textStyle="bold"
-                    android:textColor="@color/white" />
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <!-- Konum -->
@@ -216,18 +249,23 @@
                 android:id="@+id/location_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/location_bg"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="3dp">
+
+                <ImageView
+                    android:id="@+id/location_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:tint="@color/icon_color"
+                    android:src="@drawable/appbar_location" />
 
                 <TextView
                     android:id="@+id/location_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/konum"
-                    android:textStyle="bold"
-                    android:textColor="@color/white" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/location_time"
@@ -235,8 +273,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/empty_text"
-                    android:textStyle="bold"
-                    android:textColor="@color/white" />
+                    android:textStyle="bold" />
             </LinearLayout>
             <!-- Konum refresh -->
             <LinearLayout

@@ -469,10 +469,10 @@ Hz. Muhammed\'in (s.a.v.) kullandığı kılıç, yay ve oklar, onun sade, güç
 \n\n
 Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir semboldür. Hem estetik güzelliği hem de manevi değeriyle Müslümanlar için büyük bir anlam taşır. Her yıl yenilenen bu kutsal örtü, İslam dünyasının Kâbe’ye olan bağlılığını ve saygısını ifade eder.
     </string>
-    <string name="kerahat_vakti">Kerahat Vaktlerini Göster</string>
+    <string name="kerahat_vakti">Kerahat Vakitlerini Göster</string>
     <string name="sound_setting">Uygulama Sesleri</string>
     <string name="vakit_sound_setting">Namazda Titreşime Al</string>
-    <string name="app_version">1.0.1</string>
+    <string name="app_version" translatable="false">1.0.1</string>
     <string name="prayer_times_updated">Namaz Vakitleri Güncellendi</string>
     <string name="prayer_times_updated_body">Namaz vakitleri güncellendi. Yeniden kurulum gerekiyor.</string>
     <string name="vakitHerzamanGoster">Bildirimleri Her Zaman Göster</string>
@@ -480,18 +480,50 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="local_products_description">Yerli ürünleri keşfedin ve bilinçli bir tüketici olun. Barkod tarayıcı ile ürünlerin yerli olup olmadığını öğrenin.</string>
     <string name="local_products_image">Yerli Ürünler İkonu</string>
     <string name="open_local_products_app">Uygulamayı Aç</string>
-    <string name="app_logo_description">widget logo</string>
-    <string name="weather_icon_description">weather label</string>
-    <string name="tempatura_default">0°C</string>
+    <string name="app_logo_description" translatable="false">widget logo</string>
+    <string name="weather_icon_description" translatable="false">weather label</string>
+    <string name="tempatura_default" translatable="false">0°C</string>
     <string name="testYazisiVakit">Vakit Hesaplanıyor</string>
     <string name="aylik_vakitler">Namaz Takvimi</string>
-    <string name="prayer_time_image_desc">Aylik vakit arkaplan resim</string>
+    <string name="prayer_time_image_desc" translatable="false">Aylik vakit arkaplan resim</string>
     <string name="aylikNamazTakvim">Namaz Takvimi</string>
     <string name="diniTakvim">Dini Günler</string>
     <string name="islamicDays">Dini Günler</string>
     <string name="yaklasanTarihYok">Yaklaşan Tarih Bulunamadı!</string>
-    <string name="ibadetCard_2">İslam’ın ve İmanın Şartları</string>
-    <string name="ibadetCard_3">Namaz İbadeti</string>
+    <string name="ibadetCard_2" translatable="false">İslam’ın ve İmanın Şartları</string>
+    <string name="ibadetCard_3" translatable="false">Namaz İbadeti</string>
+    <string name="introTitle" translatable="false">Giriş Başlık</string>
+    <string name="introDescription" translatable="false">Giriş Açıklama</string>
+    <string name="introStartButton">Başla</string>
+    <string name="intro_1" translatable="false">İslam Yolu ile Manevi Yolculuğa Başlayın!</string>
+    <string name="intro_1_desc" translatable="false">İbadetlerinizi Kolayca Takip Edin, Günlük Hatırlatmalar Alın!</string>
+    <string name="intro_2" translatable="false">Namaz Vakitlerini Bildirimler ve Widget ile Kaçırmayın, Kıble Yönünüzü Anında Bulun!</string>
+    <string name="intro_2_desc" translatable="false">Konumunuza Göre Güncel Namaz Saatleri ve Kıble Pusulası!</string>
+    <string name="intro_3" translatable="false">Yarışmalarla Katılarak ilminizi Pekiştirin!</string>
+    <string name="intro_3_desc" translatable="false">Eğlenerek Öğrenin ve Bilginizi Artırın!</string>
+    <string name="intro_4" translatable="false">Sürekli Güncellenen İlmi Bilgiler ve Hadisler</string>
+    <string name="intro_4_desc" translatable="false"> İbadetlerinizi Kolayca Öğrenin ve Hayatınıza Uygulayın</string>
+    <string name="intro_5" translatable="false">Altın, Döviz, Nakit Varlığınıza göre Zekât Hesaplama</string>
+    <string name="intro_5_desc" translatable="false">Güncel Kur Bilgileri ile Varlık Listenizi Oluşturun Zekâtınızı Kolayca Hesaplayın</string>
+    <string name="intro_6" translatable="false">İslam Tarihinin Benzersiz Kutsal Emanetlerini Keşfedin</string>
+    <string name="intro_6_desc" translatable="false">İslami Değerleri Dijital Ortamda İnceleyin. Görsel Anlatımlı İslami Değerlere Göz Atın</string>
+    <string name="intro_7" translatable="false">İhtiyaç Duyulan Pek Çok Bilgi için Reklamsız Tek Uygulama</string>
+    <string name="intro_7_desc" translatable="false">Uygulamanın Gelişiminde Bize Katılın</string>
+    <string name="feedBackHeader">İletişim ve Destek</string>
+    <string name="feedBackAd">Adınız</string>
+    <string name="feedBackAciklama">Açıklama</string>
+    <string name="feedBackGonder">Gönder</string>
+    <string name="feeedBackTopicLabel">Konu Başlığı</string>
+    <string name="FeedBackAciklama">Açıklama</string>
+    <string name="feedBackAltYazi" translatable="false">Teşekkürler…</string>
+    <string name="feedBackEmailSecimBaslik">Kullandığınız bir email uygulaması seçiniz</string>
+    <string name="feedBackEmailSecimYok">Bildirim göndermek için telefonunuzda kurulu bir e-mail uygulaması yok. Öncesinde bir e-mail uygulaması kurunuz</string>
+    <string name="feedbackInfo">Gönderilen mesajlara, belirttiğiniz e-posta adresi üzerinden geri dönüş yapılabilir. Lütfen doğru ve geçerli bir e-posta adresi kullandığınızdan emin olun.</string>
+    <string name="privacy_header">Gizlilik Politikası</string>
+    <string name="privacy_info" translatable="false">Bu Gizlilik Politikası, İslam Yolu mobil uygulamasının nasıl kişisel bilgilerinizi topladığını, kullandığını ve koruduğunu açıklamaktadır. Uygulama, kullanıcıların gizliliğine saygı duyar ve kullanıcı bilgilerini yalnızca belirtilen amaçlarla kullanır. Uygulama, kullanıcıların verilerini güvenli bir şekilde saklamak için gerekli önlemleri alır.\n\n1. Toplanan Bilgiler\nUygulama, aşağıdaki bilgileri toplayabilir:\n\n• Kişisel Bilgiler: Uygulama, herhangi bir kişisel hesap oluşturma işlemine ihtiyaç duymadan çalışmaktadır. Ancak, kullanıcılar profil bilgilerini (ad, yaş vb.) SharedPreferences aracılığıyla cihazın kendi hafızasında saklayabilirler.\n\n• Konum Verisi: Uygulama, kullanıcının namaz saati ve kıble yönü gibi bilgiler için konum verisini toplayabilir. Bu veriler, yalnızca kullanıcının bulunduğu konumda doğru namaz saati ve kıble yönünü sağlamak amacıyla kullanılır.\n\n• Cihaz Bilgileri: Uygulama, cihazın özelliklerine bağlı olarak bazı anonim cihaz bilgilerini (örneğin, cihaz türü, işletim sistemi versiyonu) toplayabilir.\n\n2. Verilerin Kullanımı\nToplanan veriler şu amaçlarla kullanılabilir:\n\n• Namaz saatleri ve kıble yönü gibi bilgilerin doğru şekilde gösterilmesi.\n\n• Uygulamanın performansını ve kullanıcı deneyimini iyileştirmek.\n\n• Kullanıcıların uygulamayı daha verimli kullanabilmesi için özelleştirme yapmak.\n\n3. Verilerin Paylaşımı\nUygulama, kullanıcıların kişisel bilgilerini hiçbir şekilde üçüncü taraflarla paylaşmaz. Kullanıcı verileri yalnızca yukarıda belirtilen amaçlarla kullanılacak olup, üçüncü şahıslarla herhangi bir veri paylaşımı yapılmaz.\n\n4. Verilerin Saklanması ve Güvenliği\nUygulama, kullanıcı bilgilerini cihazın yerel depolama alanında saklar. Bu veriler, yalnızca uygulamanın düzgün çalışması için gereklidir ve kullanıcılar tarafından manuel olarak silinebilir.\n\n5. Çerezler, Bildirimler ve Diğer İzleme Teknolojileri\nUygulama, kullanıcılara daha iyi bir deneyim sunabilmek amacıyla çerezler veya benzeri izleme teknolojileri kullanmaz.\n\n6. Üçüncü Taraf Bağlantıları\nUygulama, başka web siteleri veya üçüncü taraf servislerine bağlantılar içerebilir. Bu bağlantılar yalnızca bilgilendirme amacıyla sağlanmıştır. Uygulama, bu üçüncü taraf sitelerin gizlilik politikalarından sorumlu değildir.\n\n7. Çocukların Gizliliği\nUygulama, 13 yaş altındaki çocuklardan bilinçli olarak kişisel bilgi toplamaz. Eğer çocuğunuzun kişisel bilgilerini topladığımızı fark ederseniz, lütfen bizimle iletişime geçin. Bu durumda, ilgili bilgileri hemen sileceğiz.\n\n8. Politika Değişiklikleri\nBu gizlilik politikası, zaman zaman güncellenebilir. Herhangi bir değişiklik durumunda, güncellenmiş politika uygulamaya konulacaktır. Gizlilik politikasındaki değişiklikleri takip etmek için düzenli olarak bu sayfayı kontrol etmenizi öneririz. Kullanıcılar, uygulamayı kullanarak bu gizlilik politikasını kabul etmiş sayılırlar.\n\n9. İletişim\nGizlilik politikası ile ilgili herhangi bir sorunuz veya endişeniz varsa, lütfen bizimle iletişime geçin:\n\ne-posta Adresi\ntechturak@gmail.com</string>
+    <string name="bilgilendirmeHeader">Bilgilendirme ve Sorumluluk Reddi Beyanı</string>
+    <string name="bilgilendirmeInfo" translatable="false">İslam Yolu uygulaması, İslami değerler ışığında kullanıcılara çeşitli dini bilgiler, namaz saatleri, kıble yönü, zekat hesaplama, İslami yarışmalar ve dini günler gibi içerikler sunmak amacıyla geliştirilmiştir. Kullanıcılarımıza en iyi deneyimi sağlamak için çaba sarf etsek de, aşağıdaki durumlar için sorumluluk kabul etmediğimizi belirtmek isteriz:\n\n1. Bilgilerin Doğruluğu\nİslam Yolu uygulaması, kullanıcılarına İslami Yarışmalar, İslami bilgier, namaz saatleri, kıble yönü, dini günler ve zekat hesaplamaları gibi bilgiler sunmaktadır. Ancak, bu bilgiler yalnızca bilgilendirme amaçlıdır ve kesin doğruluğu garanti edilmemektedir. Namaz saatleri, yerel değişiklikler ve takvim farkları nedeniyle farklılık gösterebilir. Kullanıcıların doğru bilgilere ulaşabilmesi için, yerel dini otoritelerden veya resmi kaynaklardan teyit etmeleri önerilir.\n\n2. Konum Verisi ve Gizlilik\nUygulama, kullanıcının bulunduğu konum verisini kullanarak doğru namaz saatlerini ve kıble yönünü sağlamaktadır. Kullanıcıların konum verileri yalnızca uygulamanın bu özelliklerini sağlamak amacıyla kullanılmakta olup, üçüncü şahıslarla paylaşılmamaktadır. Ancak, konum verisinin doğruluğu, cihazın konum servislerinin doğru çalışmasına bağlıdır. İslam Yolu uygulaması, cihazın konum servislerinden kaynaklanabilecek hatalardan sorumlu değildir.\n\n3. Sorumluluk Reddi\nİslam Yolu uygulaması, sağladığı içeriklerin doğruluğunu sağlamak için çaba sarf etse de, herhangi bir yanlış bilgi veya hatalı içerik nedeniyle doğacak zararlardan sorumlu tutulamaz. Kullanıcılar, uygulamayı kullanırken oluşabilecek herhangi bir zarar veya kayıptan İslam Yolu uygulaması sahipleri ve geliştiricileri sorumlu tutulamaz.\n\n4. Teknik Hatalar ve Kesintiler\nUygulama, en iyi kullanıcı deneyimini sağlamak için sürekli olarak güncellenmekte ve iyileştirilmektedir. Ancak, zaman zaman teknik arızalar, sunucu kesintileri veya yazılım hataları nedeniyle uygulamanın bazı özelliklerinde geçici aksaklıklar yaşanabilir. Bu tür durumlar, İslam Yolu uygulamasının kontrolü dışındaki sebeplerden kaynaklanabilir ve uygulama geliştiricileri bu tür aksaklıklar için sorumluluk kabul etmez.\n\n5. Kullanıcı İçerikleri\nUygulama, kullanıcılar tarafından içerik paylaşımına olanak sağlamamaktadır. Uygulamanın sunduğu içerikler yalnızca uygulama geliştiricileri tarafından sağlanmakta olup, kullanıcıların içerik eklemeleri veya paylaşmaları mümkün değildir.\n\n6. Uygulamanın Amacı\nİslam Yolu uygulaması, İslam\'ın temel öğretilerini, namaz saatlerini, dini günleri ve diğer İslami içerikleri kullanıcılara sunmayı amaçlamaktadır. Ancak, uygulama herhangi bir dini otorite veya dinî bir kurum tarafından onaylanmış bir uygulama değildir ve bu nedenle içerikler, yalnızca genel bilgilendirme amaçlıdır.\n\n7. Kullanıcı Geri Bildirimleri ve Veriler\nKullanıcılar, İslam Yolu uygulamasındaki iletişim bölümünden öneri, şikayet, hata bildirimi ve genel bilgiler sağlayabilirler. Kullanıcıların sunduğu geri bildirimler, uygulamanın geliştirilmesi amacıyla kullanılabilir. Ancak, sağlanan geri bildirimlerin gizliliği ve güvenliği konusunda gerekli önlemler alınacaktır. Geri bildirimler, yalnızca uygulamanın iyileştirilmesi için kullanılacak olup, kullanıcı kimlikleri paylaşılmadan anonim şekilde değerlendirilebilir.\n\n8. Bildirimler\nİslam Yolu uygulaması, kullanıcıları önemli gelişmeler, dini günler, yeni içerikler veya hatırlatmalar hakkında bilgilendirmek amacıyla bildirimler gönderebilir. Kullanıcılar, bu bildirimleri diledikleri zaman kapatabilir veya özelleştirebilir. Ancak, bazı bildirimler uygulamanın doğru çalışabilmesi için gerekli olabilir.\n\n9. Widget Kullanımı\nUygulama, kullanıcılara widget özelliği sunar. Bu özellik, kullanıcıların uygulamayı her zaman açmadan, ekrandan hızlı bir şekilde namaz saatlerini, konum bilgisi, hava durumu veya diğer bilgileri görmelerini sağlar. Widget kullanımı, cihazın özelliklerine ve kullanıcının widget ayarlarına bağlıdır. Widget, kullanıcının cihazındaki verileri toplamaz veya dışa aktarmaz.\n\n10. Değişiklikler\nİslam Yolu uygulamasının içeriğinde ve bu bilgilendirme beyanında değişiklikler yapılabilir. Herhangi bir değişiklik durumunda, güncel beyan metni uygulama içinde yer alacak ve kullanıcıların bilgisine sunulacaktır. Kullanıcılar, uygulamayı kullanarak bu bilgilendirme ve sorumluluk reddi beyanını kabul etmiş sayılırlar.\n\nİletişim Bilgileri:\nEğer Bilgilendirme ve Sorumluluk Reddi Beyanı veya uygulamanın içeriği hakkında herhangi bir sorunuz veya öneriniz varsa, lütfen bizimle iletişime geçin:\n\ne-posta Adresi\ntechturak@gmail.com</string>
+    <string name="zekatInfo" translatable="false">\nZekât Nedir?\nZekât, İslam\'ın beş temel şartından biridir ve Müslümanların maddi varlıklarından belirli bir kısmını ihtiyaç sahiplerine vermesi farz kılınmıştır. Kelime anlamı olarak temizlik, artış ve bereket anlamına gelir. Zekât, kişinin malını temizler, bereketini artırır ve toplumsal dayanışmayı güçlendirir.\n\n📊 Zekât Kimlere Farzdır?\nZekât, şu şartları taşıyan Müslümanlara farzdır:\n✅ Müslüman olmak\n✅ Akıl ve baliğ olmak\n✅ Nisap miktarına ulaşan mala sahip olmak (Nisap, temel ihtiyaçlar ve borçlar çıkarıldıktan sonra geriye kalan servetin 80.18gr Altın yada değerinde mala sahip olmak)\n✅ Malların üzerinden bir yıl geçmiş olması (Zekât, genellikle yıllık olarak hesaplanır.)\n\n🔣 Zekât Miktarı Nasıl Hesaplanır?\nZekât oranı mal türüne göre değişebilir. En yaygın oranlar şunlardır:\n🔹 Altın ve gümüş: %2,5 (40’ta 1)\n🔹 Nakit para ve ticaret malları: %2,5\n🔹 Tarım ürünleri: %5 - %10 (Sulama yöntemine bağlı olarak değişir.)\n🔹 Küçükbaş ve büyükbaş hayvanlar: Hayvanların zekâtı, kendi cinsinden verilebileceği gibi değerleri üzerinden para olarak da verilebilir. Ancak fakirin yararına olanı tercih etmek daha uygundur.\n\n🎯 Zekât Kimlere Verilir?\nKur\'an-ı Kerim\'de Tevbe Suresi 60. ayette zekâtın verilmesi gereken 8 sınıf belirlenmiştir:\n✅Fakirler\n✅Yoksullar\n✅Borçlular\n✅Yolcular\n✅Köle ve esirlerin özgürlüğüne kavuşması için\n✅Allah yolunda olanlar\n✅Zekât toplamakla görevli memurlar\n✅Kalpleri İslam’a ısındırılması gerekenler\n\n🕌 Zekâtın Önemi\nZekât, bireyin malını temizlediği gibi, toplum içinde yardımlaşma, sosyal adalet ve ekonomik dengeyi sağlamaya yardımcı olur. Müslümanlar, zekât vererek hem ibadetlerini yerine getirir hem de ihtiyaç sahiplerine destek olur.\n\n⚠️ Bu hesaplama aracı bilgi amaçlıdır ve veriler güncel döviz kurlarıyla (altinkaynak.com servislerinden) hesaplanmaktadır. Gerekli veriler servisten çekilmektedir; ancak servis geçici olarak çalışmazsa, manuel giriş yaparak hesaplama yapabilirsiniz ve hesaplanan verileri paylaşabilirsiniz.\n\n⚠️ Uygulama, sağlanan bilgilerin doğruluğu veya eksiksizliği konusunda herhangi bir yasal sorumluluk kabul etmez. Kullanıcılar, zekât hesaplama sonuçlarını kendi sorumlulukları doğrultusunda değerlendirmelidir. Hesaplamalar kullanıcı sorumluluğunda olup uygulama sahipleri ve geliştiricileri sorumlu tutulamaz. Hesaplanan veriler anlık olarak hesaplanıp kaydetme işlemi yapılmamaktadır. \n\n⚠️ Önemli Not: Zekât hesaplamalarında, güncel altın ve döviz kurlarına göre hareket edilmelidir. Emin olmadığınız durumlarda bir İslam alimine veya uzmanına danışmanız tavsiye edilir.\n</string>
 
     <string-array name="ezan_sound_options">
         <item>Ezan</item>
@@ -505,5 +537,13 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
         <item>Ezan dua</item>
         <item>Ezan dua ve meal</item>
         <item>Kapalı</item>
+    </string-array>
+
+    <string-array name="feedback_topic">
+        <item>Bir konu seçiniz</item>
+        <item>Hata Bildirimi</item>
+        <item>Öneri</item>
+        <item>Şikayet</item>
+        <item>Diğer</item>
     </string-array>
 </resources>

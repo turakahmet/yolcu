@@ -11,13 +11,11 @@ import com.google.android.play.core.review.ReviewException;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
-import com.google.android.play.core.review.model.ReviewErrorCode;
 import com.islamyolu.app.Rozet.Badge;
 import com.islamyolu.app.Rozet.BadgeType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class BadgeService {
 
@@ -96,12 +94,13 @@ public class BadgeService {
                     Log.d("InAppReview", "İnceleme akışı tamamlandı");
                 });
             } else {
-                try {
-                    // Hata durumunda işlem yap
-                    @ReviewErrorCode int reviewErrorCode = ((ReviewException) Objects.requireNonNull(task.getException())).getErrorCode();
+                // Hata durumunda güvenli hata kontrolü
+                Exception exception = task.getException();
+                if (exception instanceof ReviewException) {
+                    int reviewErrorCode = ((ReviewException) exception).getErrorCode();
                     Log.e("InAppReview", "İnceleme isteği başarısız oldu. Hata kodu: " + reviewErrorCode);
-                } catch (Exception ignored) {
-
+                } else {
+                    Log.e("InAppReview", "Bilinmeyen hata: " + exception);
                 }
             }
         });

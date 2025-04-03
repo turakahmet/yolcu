@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/feedBackHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/feedBackHeader"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Konu Başlıkları ComboBox (Spinner) -->
+
+    <Spinner
+        android:id="@+id/topicSpinner"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_margin="15dp"
+        android:background="@drawable/spinner_background_2"
+        android:padding="8dp"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/feedBackHeader" />
+
+    <ImageView
+        android:id="@+id/spinnerAltIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Dropdown icon"
+        android:padding="8dp"
+        android:src="@drawable/baseline_keyboard_arrow_down_24"
+        app:layout_constraintBottom_toBottomOf="@+id/topicSpinner"
+        app:layout_constraintEnd_toEndOf="@+id/topicSpinner"
+        app:layout_constraintTop_toTopOf="@+id/topicSpinner" />
+
+    <!-- Kullanıcı adı TextInput -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/nameInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topicSpinner">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/nameInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/feedBackAd"
+            android:inputType="text"
+            android:singleLine="true" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <!-- Açıklama TextInput -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/descriptionInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nameInputLayout"
+        tools:layout_editor_absoluteY="112dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/descriptionInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:hint="@string/feedBackAciklama"
+            android:inputType="textMultiLine"
+            android:maxLength="500"
+            android:maxLines="10"
+            android:minLines="5" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/feedbackInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:text="@string/feedbackInfo"
+        android:textColor="@color/redAlertColor"
+        android:textStyle="bold|italic"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionInputLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Gönder Butonu -->
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/feedBackGonder"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/feedbackInfo" />
+</androidx.constraintlayout.widget.ConstraintLayout>
