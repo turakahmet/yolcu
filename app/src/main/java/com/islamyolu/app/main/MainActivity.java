@@ -47,7 +47,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.islamyolu.app.R;
 import com.islamyolu.app.Service.BadgeService;
 import com.islamyolu.app.Service.GoldService;
@@ -122,10 +121,6 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         initializeHeaderView();
         initialGoldAmount();
 //        checkInternetConnection();
-
-        // Toolbar ve Navigation ayarları
-        binding.appBarMain.fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
 
         // Refresh butonuna tıklama işlemi
         refreshButton.setOnClickListener(v -> {

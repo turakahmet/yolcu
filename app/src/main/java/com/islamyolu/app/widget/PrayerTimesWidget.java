@@ -37,6 +37,7 @@ public class PrayerTimesWidget extends AppWidgetProvider {
     private static final String ACTION_UPDATE = "com.myapp.yolcu.UPDATE_WIDGET";
     private static final String WEATHER_UPDATE_ACTION = "com.myapp.yolcu.UPDATE_WEATHER";
     private static final long WEATHER_UPDATE_INTERVAL = 3600000; // 1 saat
+    public static final String PACKAGE_NAME = "com.islamyolu.app";
     private final VakitNoApi vakitNoApi = new VakitNoApi();
     private RemoteViews views;
     private ImageView widget_logo;
@@ -57,20 +58,10 @@ public class PrayerTimesWidget extends AppWidgetProvider {
                 onUpdate(context, appWidgetManager, appWidgetIds);
             } else if (ACTION_REFRESH_WEATHER.equals(action)) {
                 Log.d(TAG, "Weather refresh button clicked");
-
-                // Widget ID'sini al
                 int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                         AppWidgetManager.INVALID_APPWIDGET_ID);
-
                 if (widgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-                    // Sadece tıklanan widget'ı güncelle
                     updateWidgetInBackground(context, widgetId);
-                } else {
-                    // Tüm widget'ları güncelle
-                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                    ComponentName thisWidget = new ComponentName(context, PrayerTimesWidget.class);
-                    int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-                    onUpdate(context, appWidgetManager, appWidgetIds);
                 }
             }
         }
@@ -92,6 +83,22 @@ public class PrayerTimesWidget extends AppWidgetProvider {
             setDefaultValues(views);
             appWidgetManager.updateAppWidget(appWidgetId, views);
 
+            // Go App butonunu tıklayınca uygulamayı başlatacak intent oluşturuluyor
+            Intent goAppIntent = context.getPackageManager().getLaunchIntentForPackage(PACKAGE_NAME);
+            if (goAppIntent != null) {
+                goAppIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent goAppPendingIntent = PendingIntent.getActivity(
+                        context,
+                        0,
+                        goAppIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                );
+
+                // Go App butonuna tıklama özelliği ekleniyor
+                views.setOnClickPendingIntent(R.id.go_app, goAppPendingIntent);
+            } else {
+                Log.e(TAG, "Uygulama bulunamadı");
+            }
             // Arka planda vakitleri yükle
             new Thread(() -> {
                 try {
@@ -118,6 +125,14 @@ public class PrayerTimesWidget extends AppWidgetProvider {
     private void updateWidgetViews(Context context, RemoteViews views, NamazVakiti namazVakiti,
                                    String cityName, AppWidgetManager appWidgetManager, int appWidgetId) {
         try {
+
+
+            int transparency = WidgetSettingsActivity.loadTransparencyPref(context, appWidgetId);
+            // Şeffaflık alpha hesapla
+            int alpha = 255 - (transparency * 255 / 100);
+            int baseColor = ContextCompat.getColor(context, R.color.widget_background);
+            int backgroundColor = Color.argb(alpha, Color.red(baseColor), Color.green(baseColor), Color.blue(baseColor));
+            views.setInt(R.id.widget_layout, "setBackgroundColor", backgroundColor);
             views.setTextViewText(R.id.widget_city_name, cityName);
             views.setTextViewText(R.id.widget_hijri_date, namazVakiti.getHicriDate());
 
@@ -189,7 +204,7 @@ public class PrayerTimesWidget extends AppWidgetProvider {
             views.setInt(panelId, "setBackgroundResource", R.drawable.bg_prayer_widget);
 
             // Text renklerini beyaz yap
-            views.setTextColor(labelId, Color.WHITE);
+            views.setTextColor(labelId, ContextCompat.getColor(context, R.color.current_prayer_widget_label));
             views.setTextColor(timeId, ContextCompat.getColor(context, R.color.prayer_next_time_wigdet));
         }
 
@@ -276,14 +291,12 @@ public class PrayerTimesWidget extends AppWidgetProvider {
         super.onEnabled(context);
         scheduleNextUpdate(context);
         views = new RemoteViews(context.getPackageName(), R.layout.prayer_times_widget);
-        // Önce tüm panelleri sıfırla
         resetAllPanelsAndTexts(views, context);
-        Log.d("PrayerTimesWidget", "Widget enabled");
+        Log.d(TAG, "Widget enabled");
 
-        // WeatherPrefs'i sıfırla (son güncelleme zamanını 0 yap)
         SharedPreferences prefs = context.getSharedPreferences("WeatherPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putLong("last_update", 0); // 0 yaparak hemen güncelleme yapmasını sağla
+        editor.putLong("last_update", 0);
         editor.apply();
     }
 

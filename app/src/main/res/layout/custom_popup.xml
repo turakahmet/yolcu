@@ -13,6 +13,7 @@
         android:id="@+id/imagePopUp"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:contentDescription="@string/bildirim_icon"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="18dp"
         android:src="@drawable/baseline_info_24" />

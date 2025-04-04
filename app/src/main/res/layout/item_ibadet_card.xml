@@ -2,11 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="200dp"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="16dp"
+    app:cardBackgroundColor="@color/pricarViewIbadetColor"
     app:cardCornerRadius="12dp"
-    app:cardElevation="8dp"
-    app:cardBackgroundColor="@color/pricarViewIbadetColor">
+    app:cardElevation="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,20 +15,20 @@
             android:id="@+id/cardViewIbadetImage"
             android:layout_width="match_parent"
             android:layout_height="160dp"
+            android:contentDescription="@string/bildirim_icon"
             android:scaleType="centerCrop"
             android:src="@drawable/loading"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/cardViewIbadetLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:elevation="1dp"
             android:fontFamily="@font/tomorrow_b"
-            android:layout_margin="10dp"
             android:gravity="center"
             android:text="@string/kirkhadis"
             android:textColor="@color/pricarViewIbadetHeaderColor"

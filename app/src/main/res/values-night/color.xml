@@ -6,8 +6,11 @@
     <color name="monthly_row_gray">#424242</color>
     <color name="monthly_row_orange">#4D3C1F</color>
     <color name="icon_color">@android:color/white</color>
+    <color name="widget_icon_color">#D3D3D3</color>
     <color name="themePrayerBarColor">#424242</color>
     <color name="widget_text_color">#D3D3D3</color>
     <color name="widget_background">#80000000</color>
+    <color name="current_prayer_widget">#D3D3D3</color>
+    <color name="current_prayer_widget_label">#212121</color>
 
 </resources>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,6 +11,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="30dp"
+        android:contentDescription="@string/altin_icon"
         android:src="@drawable/coin_2"
         app:layout_constraintEnd_toStartOf="@id/gold_amount_text_matches"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +24,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="35dp"
         android:fontFamily="@font/tomorrow_b"
-        android:text="500"
+        android:text="@string/default_value"
         android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@id/coinImage_matches"
         app:layout_constraintTop_toTopOf="parent" />
@@ -50,6 +50,7 @@
         android:layout_height="63dp"
         android:layout_margin="16dp"
         android:layout_marginTop="16dp"
+        android:contentDescription="@string/gerisayim_icon"
         android:src="@drawable/clock"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -81,119 +82,126 @@
         android:layout_margin="10dp"
         android:fontFamily="@font/tomorrow_b"
         android:gravity="center"
-        android:text="Aşağıdaki isimleri anlamları ile eşletiriniz"
+        android:text="@string/matches_game_info"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/guidelineStart" />
 
-    
-            <Button
-                android:id="@+id/m_esma_1"
-                style="@style/GreenOutMatchesGameButton"
-                android:layout_width="0dp"
-                android:layout_height="63dp"
-                android:layout_margin="3dp"
-                android:padding="5dp"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/matches_game_label" />
 
-            <Button
-                android:id="@+id/m_esma_2"
-                style="@style/GreenOutMatchesGameButton"
-                android:layout_width="0dp"
-                android:layout_height="63dp"
-                android:layout_margin="3dp"
-                android:padding="5dp"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/m_esma_1" />
+    <Button
+        android:id="@+id/m_esma_1"
+        style="@style/GreenOutMatchesGameButton"
+        android:layout_width="0dp"
+        android:layout_height="63dp"
+        android:layout_margin="3dp"
+        android:padding="5dp"
+        android:text="@string/testYazisiButton"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/matches_game_label" />
 
-            <Button
-                android:id="@+id/m_esma_3"
-                style="@style/GreenOutMatchesGameButton"
-                android:layout_width="0dp"
-                android:layout_height="63dp"
-                android:layout_margin="3dp"
-                android:padding="5dp"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/m_esma_2" />
+    <Button
+        android:id="@+id/m_esma_2"
+        style="@style/GreenOutMatchesGameButton"
+        android:layout_width="0dp"
+        android:layout_height="63dp"
+        android:layout_margin="3dp"
+        android:padding="5dp"
+        android:text="@string/testYazisiButton"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/m_esma_1" />
 
-            <Button
-                android:id="@+id/m_esma_4"
-                style="@style/GreenOutMatchesGameButton"
-                android:layout_width="0dp"
-                android:layout_height="63dp"
-                android:layout_margin="3dp"
-                android:padding="5dp"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/m_esma_3" />
+    <Button
+        android:id="@+id/m_esma_3"
+        style="@style/GreenOutMatchesGameButton"
+        android:layout_width="0dp"
+        android:layout_height="63dp"
+        android:layout_margin="3dp"
+        android:padding="5dp"
+        android:text="@string/testYazisiButton"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/m_esma_2" />
 
-
-            <!-- Ortada bir çizgi ekleyelim -->
-            <View
-                android:id="@+id/center_line"
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:background="@color/colorGray"
-                app:layout_constraintBottom_toTopOf="@id/m_answer_1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/m_esma_4" />
+    <Button
+        android:id="@+id/m_esma_4"
+        style="@style/GreenOutMatchesGameButton"
+        android:layout_width="0dp"
+        android:layout_height="63dp"
+        android:layout_margin="3dp"
+        android:padding="5dp"
+        android:text="@string/testYazisiButton"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/m_esma_3" />
 
 
-            <Button
-                android:id="@+id/m_answer_1"
-                style="@style/BlueOutMatchesGameButton"
-                android:layout_width="0dp"
-                android:layout_height="63dp"
-                android:layout_margin="3dp"
-                android:padding="5dp"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/m_answer_2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+    <!-- Ortada bir çizgi ekleyelim -->
+    <View
+        android:id="@+id/center_line"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@color/colorGray"
+        app:layout_constraintBottom_toTopOf="@id/m_answer_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/m_esma_4" />
 
-            <Button
-                android:id="@+id/m_answer_2"
-                style="@style/BlueOutMatchesGameButton"
-                android:layout_width="0dp"
-                android:layout_height="63dp"
-                android:layout_margin="3dp"
-                android:padding="5dp"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/m_answer_3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
 
-            <Button
-                android:id="@+id/m_answer_3"
-                style="@style/BlueOutMatchesGameButton"
-                android:layout_width="0dp"
-                android:layout_height="63dp"
-                android:layout_margin="3dp"
-                android:padding="5dp"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/m_answer_4"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+    <Button
+        android:id="@+id/m_answer_1"
+        style="@style/BlueOutMatchesGameButton"
+        android:layout_width="0dp"
+        android:layout_height="63dp"
+        android:layout_margin="3dp"
+        android:padding="5dp"
+        android:text="@string/testYazisiButton"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/m_answer_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/m_answer_2"
+        style="@style/BlueOutMatchesGameButton"
+        android:layout_width="0dp"
+        android:layout_height="63dp"
+        android:layout_margin="3dp"
+        android:padding="5dp"
+        android:text="@string/testYazisiButton"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/m_answer_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/m_answer_3"
+        style="@style/BlueOutMatchesGameButton"
+        android:layout_width="0dp"
+        android:layout_height="63dp"
+        android:layout_margin="3dp"
+        android:padding="5dp"
+        android:text="@string/testYazisiButton"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/m_answer_4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/m_answer_4"
@@ -202,12 +210,12 @@
         android:layout_height="63dp"
         android:layout_margin="3dp"
         android:padding="5dp"
+        android:text="@string/testYazisiButton"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

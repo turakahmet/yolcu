@@ -1,13 +1,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutPopUpEndGame"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5dp"
+    android:layout_gravity="center"
     android:layout_margin="5dp"
     android:background="@drawable/ic_popup_background"
-    android:layout_gravity="center">
+    android:padding="5dp">
 
     <ImageView
         android:id="@+id/imagePopUpEndGame"
@@ -15,6 +14,7 @@
         android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
+        android:contentDescription="@string/bildirim_icon"
         android:src="@drawable/ic_menu_gallery"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,6 +81,7 @@
         android:id="@+id/coinImage"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:contentDescription="@string/altin_icon"
         android:src="@drawable/coin_2"
         app:layout_constraintEnd_toStartOf="@+id/totalProfitLabel"
         app:layout_constraintStart_toStartOf="@+id/closeButtonEndGame"
@@ -92,7 +93,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:text="500 puan"
+        android:text="@string/default_value"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -105,7 +106,6 @@
         android:id="@+id/closeButtonEndGame"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/totalProfitLabel"
         android:layout_margin="15dp"
         android:gravity="center"
         android:text="@string/close"
@@ -113,5 +113,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@id/totalProfitLabel" />
 </androidx.constraintlayout.widget.ConstraintLayout>

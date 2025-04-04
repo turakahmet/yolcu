@@ -44,18 +44,20 @@
                         android:id="@+id/info_game_image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:contentDescription="@string/bilgi_oyunu_resmi"
                         android:scaleType="centerCrop"
                         android:src="@drawable/bilgi_oyunu" />
 
                     <TextView
                         android:id="@+id/bilgi_oyun_label"
-                        android:layout_width="150dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentBottom="true"
                         android:elevation="1dp"
                         android:fontFamily="@font/tomorrow_b"
                         android:gravity="center"
+                        android:maxWidth="150sp"
                         android:padding="3dp"
                         android:shadowColor="#000000"
                         android:shadowDx="2"
@@ -97,24 +99,25 @@
                         android:id="@+id/word_game_image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:contentDescription="@string/kelime_oyunu_resmi"
                         android:scaleType="centerCrop"
                         android:src="@drawable/kelime_oyunu" />
 
                     <TextView
                         android:id="@+id/kelime_oyun_label"
-                        android:layout_width="150sp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentBottom="true"
                         android:elevation="1dp"
                         android:fontFamily="@font/tomorrow_b"
                         android:gravity="center"
+                        android:maxWidth="150sp"
                         android:padding="3dp"
                         android:shadowColor="#000000"
                         android:shadowDx="2"
                         android:shadowDy="2"
                         android:shadowRadius="18"
-
                         android:text="@string/kelime_yarismasi"
                         android:textColor="@color/white"
                         android:textSize="30sp" />
@@ -151,13 +154,14 @@
                         android:id="@+id/matches_game_image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:contentDescription="@string/eslestirme_oyunu_resmi"
                         android:scaleType="centerCrop"
                         android:src="@drawable/esleme_kapak" />
 
                     <!-- Oyna Butonu -->
                     <TextView
                         android:id="@+id/matches_game_label"
-                        android:layout_width="150sp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentBottom="true"
@@ -166,6 +170,7 @@
                         android:elevation="1dp"
                         android:fontFamily="@font/tomorrow_b"
                         android:gravity="center"
+                        android:maxWidth="150sp"
                         android:padding="3dp"
                         android:shadowColor="#000000"
                         android:shadowDx="2"

@@ -34,8 +34,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/empty_text"
-                android:textSize="12sp"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/toolbarKalanSure"
@@ -68,6 +68,7 @@
                     android:id="@+id/imsak_time_icon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
+                    android:contentDescription="@string/testVakit_icon"
                     android:src="@drawable/imsak_m_icon"
                     app:tint="@color/icon_color" />
 
@@ -75,15 +76,15 @@
                     android:id="@+id/imsak_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="@string/imsak" />
+                    android:text="@string/imsak"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/imsak_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="@string/empty_text" />
+                    android:text="@string/empty_text"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <!-- Güneş -->
@@ -99,24 +100,25 @@
                     android:id="@+id/gunes_time_icon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    app:tint="@color/icon_color"
-                    android:src="@drawable/gunes_m_icon" />
+                    android:contentDescription="@string/testVakit_icon"
+                    android:src="@drawable/gunes_m_icon"
+                    app:tint="@color/icon_color" />
 
                 <TextView
                     android:id="@+id/gunes_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textStyle="bold"
-                    android:text="@string/gunes" />
+                    android:text="@string/gunes"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/gunes_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textStyle="bold"
-                    android:text="@string/empty_text" />
+                    android:text="@string/empty_text"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <!-- Öğle -->
@@ -124,31 +126,32 @@
                 android:id="@+id/ogle_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:elevation="4dp"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="3dp"
-                android:elevation="4dp">
+                android:padding="3dp">
 
                 <ImageView
                     android:id="@+id/ogle_time_icon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    app:tint="@color/icon_color"
-                    android:src="@drawable/ogle_m_icon" />
+                    android:contentDescription="@string/testVakit_icon"
+                    android:src="@drawable/ogle_m_icon"
+                    app:tint="@color/icon_color" />
 
                 <TextView
                     android:id="@+id/ogle_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="@string/ogle" />
+                    android:text="@string/ogle"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/ogle_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="@string/empty_text" />
+                    android:text="@string/empty_text"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <!-- İkindi -->
@@ -164,22 +167,23 @@
                     android:id="@+id/ikindi_time_icon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    app:tint="@color/icon_color"
-                    android:src="@drawable/ikindi_m_icon" />
+                    android:contentDescription="@string/testVakit_icon"
+                    android:src="@drawable/ikindi_m_icon"
+                    app:tint="@color/icon_color" />
 
                 <TextView
                     android:id="@+id/ikindi_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="@string/ikindi" />
+                    android:text="@string/ikindi"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/ikindi_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="@string/empty_text" />
+                    android:text="@string/empty_text"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <!-- Akşam -->
@@ -195,22 +199,23 @@
                     android:id="@+id/aksam_time_icon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    app:tint="@color/icon_color"
-                    android:src="@drawable/aksam_m_icon" />
+                    android:contentDescription="@string/testVakit_icon"
+                    android:src="@drawable/aksam_m_icon"
+                    app:tint="@color/icon_color" />
 
                 <TextView
                     android:id="@+id/aksam_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="@string/aksam" />
+                    android:text="@string/aksam"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/aksam_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="@string/empty_text" />
+                    android:text="@string/empty_text"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <!-- Yatsı -->
@@ -226,15 +231,16 @@
                     android:id="@+id/yatsi_time_icon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    app:tint="@color/icon_color"
-                    android:src="@drawable/yatsi_m_icon" />
+                    android:contentDescription="@string/testVakit_icon"
+                    android:src="@drawable/yatsi_m_icon"
+                    app:tint="@color/icon_color" />
 
                 <TextView
                     android:id="@+id/yatsi_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="@string/yatsi" />
+                    android:text="@string/yatsi"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/yatsi_time"
@@ -257,8 +263,9 @@
                     android:id="@+id/location_icon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    app:tint="@color/icon_color"
-                    android:src="@drawable/appbar_location" />
+                    android:contentDescription="@string/testVakit_icon"
+                    android:src="@drawable/appbar_location"
+                    app:tint="@color/icon_color" />
 
                 <TextView
                     android:id="@+id/location_label"
@@ -282,16 +289,16 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:visibility="gone"
-                android:padding="3dp">
+                android:padding="3dp"
+                android:visibility="gone">
 
                 <ImageButton
                     android:id="@+id/refresh_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/baseline_refresh_24"
+                    android:background="@android:color/transparent"
                     android:contentDescription="@string/refresh_img"
-                    android:background="@android:color/transparent" />
+                    android:src="@drawable/baseline_refresh_24" />
 
             </LinearLayout>
         </LinearLayout>
@@ -300,15 +307,5 @@
 
     <include layout="@layout/content_main" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="TODO"
-        android:visibility="gone"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -62,6 +62,7 @@
 
         <activity
             android:name=".main.MainActivity"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.Yolcu.NoActionBar" />
         <activity android:name=".main.NetworkCheckActivity" />
         <activity android:name=".game.InfoGameActivity" />
@@ -107,7 +108,10 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.example.myapp.UPDATE_WIDGET" />
+                <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED" />
+                <action android:name="com.myapp.yolcu.UPDATE_WIDGET" />
+                <action android:name="com.myapp.yolcu.UPDATE_WEATHER" />
+                <action android:name="com.myapp.yolcu.REFRESH_WEATHER" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
@@ -126,6 +130,15 @@
             android:name=".Service.PrayerSoundControlService"
             android:enabled="true"
             android:exported="false" />
+
+        <activity
+            android:name=".widget.WidgetSettingsActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.Dialog">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

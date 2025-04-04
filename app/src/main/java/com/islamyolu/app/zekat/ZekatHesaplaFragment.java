@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -77,7 +78,6 @@ public class ZekatHesaplaFragment extends Fragment {
         initializeServices();
         setupVarlikTuruSpinner();
         setupEditTextFormatting();
-        setupVarlikEkleButton();
         nisapMiktarServistenAl();
 
         listAdapter = new CustomArrayAdapter(requireContext(), varlikListesi, this);
@@ -87,6 +87,16 @@ public class ZekatHesaplaFragment extends Fragment {
         zekatInfo.setOnClickListener(v -> zekatPopupInfo());
         radioGroupVarlikTipi.setOnCheckedChangeListener((group, checkedId) -> changeRadioButton(checkedId));
 
+        buttonVarlikEkle.setOnClickListener(v -> varlikEkle());
+        editTextTutar.setOnEditorActionListener((v, actionId, event) -> {
+            // Eğer "Tamam" butonuna basıldıysa
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_GO) {
+                // Yapılacak işlemi tetikle
+                varlikEkle();
+                return true;
+            }
+            return false;
+        });
     }
 
     private void nisapMiktarServistenAl() {
@@ -433,75 +443,73 @@ public class ZekatHesaplaFragment extends Fragment {
         return formatter.format(amount);
     }
 
-    private void setupVarlikEkleButton() {
-        buttonVarlikEkle.setOnClickListener(v -> {
-            String tutarStr = editTextTutar.getText().toString().replaceAll("[,.]", "");
-            try {
-                // Tutarı sayıya dönüştür
-                BigDecimal tutar = new BigDecimal(tutarStr);
-                BigDecimal kurDegeri = BigDecimal.ZERO;
-                if (tutar.compareTo(BigDecimal.ZERO) == 0)
-                    throw new NumberFormatException();
-                tutar = tutar.divide(new BigDecimal(100), 2, RoundingMode.DOWN);  // Kullanıcı inputunu kuruş olarak alıyoruz
-                String adetTutar = formatCurrency(tutar);
-                ;
-                if (kurBilgileriTutar != null && kurBilgileriTutar.getText() != null && !kurBilgileriTutar.getText().toString().isEmpty() && (spinnerVarlikTuru.getSelectedItem().toString().equals("Döviz") || spinnerVarlikTuru.getSelectedItem().toString().equals("Altın"))) {
-                    kurDegeri = new BigDecimal(kurBilgileriTutar.getText().toString().replaceAll("[.]", "").replaceAll(",", "."));
-                }
-                if (kurDegeri.compareTo(BigDecimal.ZERO) > 0) {
-                    tutar = tutar.multiply(new BigDecimal(kurBilgileriTutar.getText().toString().replaceAll("[.]", "").replaceAll(",", ".")));
-                } else if (spinnerVarlikTuru.getSelectedItemId() != 0) {
-                    Toast.makeText(getContext(), "Geçersiz kur değeri!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (tutar.toPlainString().length() > 14) {
-                    Toast.makeText(getContext(), "Geçersiz büyüklükte sayı değeri girildi!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                String formattedTutar = formatCurrency(tutar); // Formatlama işlemi
-
-                // Varlık türlerini al
-                String varlikTuru = spinnerVarlikTuru.getSelectedItem().toString();
-                String altTuru = spinnerAltTuru.getVisibility() == View.VISIBLE
-                        ? spinnerAltTuru.getSelectedItem().toString()
-                        : "";
-
-                String varlik;
-                // Formatlanmış tutarı ve türü birleştir
-                if (spinnerAltTuru.getVisibility() == View.VISIBLE) {
-                    String ziynetTip = "Tutar:";
-                    if (spinnerAltTuru.getSelectedItem().toString().contains("Bilezik") || spinnerAltTuru.getSelectedItem().toString().contains("Hurda") || spinnerAltTuru.getSelectedItem().toString().contains("Gümüş") || spinnerAltTuru.getSelectedItem().toString().contains("Ayar"))
-                        ziynetTip = "Gram:";
-                    else if (spinnerVarlikTuru.getSelectedItem().toString().equals("Altın")) {
-                        ziynetTip = "Adet:";
-                    }
-                    varlikTuru = varlikTuru + (altTuru.isEmpty() ? "" : " - " + altTuru);
-                    if (altTuru.equals("Gümüş")) {
-                        varlikTuru = altTuru;
-                    }
-                    varlik = varlikTuru + (!varlikMi ? "- Borç" : "") + ":\n" + "Kur değeri:" + kurBilgileriTutar.getText().toString() + "\n" + ziynetTip + adetTutar + "\n#" + formattedTutar + "₺";
-                } else {
-                    varlik = varlikTuru + (!varlikMi ? "- Borç" : "") + ":\n" + "#" + formattedTutar + "₺";
-
-                }
-                if (varlikMi) {
-                    varlik = varlik + "?1";
-                } else
-                    varlik = varlik + "?0";
-
-
-                // Yeni öğeyi listeye başa ekliyoruz
-                varlikListesi.add(0, varlik);
-                listAdapter.notifyDataSetChanged();  // Listeyi güncelle
-                editTextTutar.setText("");  // Text'i temizle
-
-                calculateZekat();  // Hesaplama işlemi
-
-            } catch (NumberFormatException e) {
-                Toast.makeText(getContext(), "Geçerli bir tutar girin!", Toast.LENGTH_SHORT).show();
+    private void varlikEkle() {
+        String tutarStr = editTextTutar.getText().toString().replaceAll("[,.]", "");
+        try {
+            // Tutarı sayıya dönüştür
+            BigDecimal tutar = new BigDecimal(tutarStr);
+            BigDecimal kurDegeri = BigDecimal.ZERO;
+            if (tutar.compareTo(BigDecimal.ZERO) == 0)
+                throw new NumberFormatException();
+            tutar = tutar.divide(new BigDecimal(100), 2, RoundingMode.DOWN);  // Kullanıcı inputunu kuruş olarak alıyoruz
+            String adetTutar = formatCurrency(tutar);
+            ;
+            if (kurBilgileriTutar != null && kurBilgileriTutar.getText() != null && !kurBilgileriTutar.getText().toString().isEmpty() && (spinnerVarlikTuru.getSelectedItem().toString().equals("Döviz") || spinnerVarlikTuru.getSelectedItem().toString().equals("Altın"))) {
+                kurDegeri = new BigDecimal(kurBilgileriTutar.getText().toString().replaceAll("[.]", "").replaceAll(",", "."));
             }
-        });
+            if (kurDegeri.compareTo(BigDecimal.ZERO) > 0) {
+                tutar = tutar.multiply(new BigDecimal(kurBilgileriTutar.getText().toString().replaceAll("[.]", "").replaceAll(",", ".")));
+            } else if (spinnerVarlikTuru.getSelectedItemId() != 0) {
+                Toast.makeText(getContext(), "Geçersiz kur değeri!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (tutar.toPlainString().length() > 14) {
+                Toast.makeText(getContext(), "Geçersiz büyüklükte sayı değeri girildi!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String formattedTutar = formatCurrency(tutar); // Formatlama işlemi
+
+            // Varlık türlerini al
+            String varlikTuru = spinnerVarlikTuru.getSelectedItem().toString();
+            String altTuru = spinnerAltTuru.getVisibility() == View.VISIBLE
+                    ? spinnerAltTuru.getSelectedItem().toString()
+                    : "";
+
+            String varlik;
+            // Formatlanmış tutarı ve türü birleştir
+            if (spinnerAltTuru.getVisibility() == View.VISIBLE) {
+                String ziynetTip = "Tutar:";
+                if (spinnerAltTuru.getSelectedItem().toString().contains("Bilezik") || spinnerAltTuru.getSelectedItem().toString().contains("Hurda") || spinnerAltTuru.getSelectedItem().toString().contains("Gümüş") || spinnerAltTuru.getSelectedItem().toString().contains("Ayar"))
+                    ziynetTip = "Gram:";
+                else if (spinnerVarlikTuru.getSelectedItem().toString().equals("Altın")) {
+                    ziynetTip = "Adet:";
+                }
+                varlikTuru = varlikTuru + (altTuru.isEmpty() ? "" : " - " + altTuru);
+                if (altTuru.equals("Gümüş")) {
+                    varlikTuru = altTuru;
+                }
+                varlik = varlikTuru + (!varlikMi ? "- Borç" : "") + ":\n" + "Kur değeri:" + kurBilgileriTutar.getText().toString() + "\n" + ziynetTip + adetTutar + "\n#" + formattedTutar + "₺";
+            } else {
+                varlik = varlikTuru + (!varlikMi ? "- Borç" : "") + ":\n" + "#" + formattedTutar + "₺";
+
+            }
+            if (varlikMi) {
+                varlik = varlik + "?1";
+            } else
+                varlik = varlik + "?0";
+
+
+            // Yeni öğeyi listeye başa ekliyoruz
+            varlikListesi.add(0, varlik);
+            listAdapter.notifyDataSetChanged();  // Listeyi güncelle
+            editTextTutar.setText("");  // Text'i temizle
+
+            calculateZekat();  // Hesaplama işlemi
+
+        } catch (NumberFormatException e) {
+            Toast.makeText(getContext(), "Geçerli bir tutar girin!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void calculateZekat() {

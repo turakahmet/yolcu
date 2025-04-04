@@ -71,7 +71,7 @@ public class WordGameActivity extends AppCompatActivity {
     private List<Question> finalQuestions;
     private StepView stepView;
     private final int JOKER_LETTER = 100;
-    private final int ADD_COIN = 50;
+    private final int ADD_COIN = 30;
     private ConstraintLayout costCoinLayout, confirmButtonLayout;
     private GoldService goldService;
     private SoundService soundService;

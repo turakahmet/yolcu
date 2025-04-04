@@ -12,7 +12,7 @@
         android:id="@+id/radioGroupLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Varlık Tipi"
+        android:text="@string/varlik_tipi"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/radioGroupVarlikTipi"
@@ -25,7 +25,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:orientation="horizontal"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/radioGroupLabel"
         app:layout_constraintTop_toTopOf="parent">
@@ -35,33 +34,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="Varlıklar" />
+            android:text="@string/varliklar" />
 
         <RadioButton
             android:id="@+id/radioButtonBorclar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Borçlar" />
+            android:text="@string/borclar" />
     </RadioGroup>
 
     <ImageButton
         android:id="@+id/zekatInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_margin="5dp"
         android:background="@null"
+        android:contentDescription="@string/bildirim_icon"
         android:src="@drawable/baseline_info_24_gray"
         app:layout_constraintBottom_toBottomOf="@+id/radioGroupVarlikTipi"
         app:layout_constraintEnd_toEndOf="@+id/radioGroupVarlikTipi"
-        app:layout_constraintTop_toTopOf="@+id/radioGroupVarlikTipi"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintTop_toTopOf="@+id/radioGroupVarlikTipi" />
 
 
     <TextView
         android:id="@+id/spinnerIconLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Varlık Türü"
+        android:text="@string/varlik_turu"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/spinnerVarlikTuru"
@@ -72,7 +71,7 @@
         android:id="@+id/spinnerIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Dropdown icon"
+        android:contentDescription="@string/dropdown_icon"
         android:padding="8dp"
         android:src="@drawable/baseline_keyboard_arrow_down_24"
         app:layout_constraintBottom_toBottomOf="@+id/spinnerVarlikTuru"
@@ -96,7 +95,7 @@
         android:id="@+id/spinnerAltTuruLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Döviz Türü"
+        android:text="@string/doviz_turu"
         android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="visible"
@@ -108,7 +107,7 @@
         android:id="@+id/spinnerAltIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Dropdown icon"
+        android:contentDescription="@string/dropdown_icon"
         android:padding="8dp"
         android:src="@drawable/baseline_keyboard_arrow_down_24"
         app:layout_constraintBottom_toBottomOf="@+id/spinnerAltTuru"
@@ -133,7 +132,8 @@
         android:id="@+id/kurBilgileriTutarLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Kur Değeri"
+        android:labelFor="@id/kurBilgileriTutar"
+        android:text="@string/kur_degeri"
         android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="visible"
@@ -144,19 +144,20 @@
     <EditText
         android:id="@+id/kurBilgileriTutar"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:enabled="false"
         android:inputType="numberDecimal"
         android:maxLength="10"
         app:layout_constraintEnd_toStartOf="@+id/kurBilgileriDegistirCheckBox"
         app:layout_constraintStart_toStartOf="@+id/spinnerVarlikTuru"
-        app:layout_constraintTop_toBottomOf="@id/spinnerAltTuru" />
+        app:layout_constraintTop_toBottomOf="@id/spinnerAltTuru"
+        tools:ignore="Autofill" />
 
     <CheckBox
         android:id="@+id/kurBilgileriDegistirCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Değiştir"
+        android:text="@string/degistir"
         app:layout_constraintBottom_toBottomOf="@+id/kurBilgileriTutar"
         app:layout_constraintEnd_toEndOf="@+id/spinnerIcon"
         app:layout_constraintTop_toTopOf="@+id/kurBilgileriTutar" />
@@ -164,8 +165,9 @@
     <EditText
         android:id="@+id/editTextTutar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tutar"
+        android:layout_height="48dp"
+        android:hint="@string/tutar_etiket"
+        android:importantForAutofill="no"
         android:inputType="numberDecimal"
         android:maxLength="14"
         app:layout_constraintEnd_toEndOf="parent"
@@ -176,29 +178,22 @@
         android:id="@+id/buttonVarlikEkle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Varlık Ekle"
+        android:text="@string/varlik_ekle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/editTextTutar" />
 
-    <ScrollView
-        android:id="@+id/listViewContainer"
+
+    <ListView
+        android:id="@+id/listViewVarliklar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:fillViewport="true"
-        app:layout_constraintBottom_toTopOf="@+id/toplamVarlik"
+        android:layout_marginTop="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/horizantalLine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonVarlikEkle">
+        app:layout_constraintTop_toBottomOf="@id/buttonVarlikEkle" />
 
-        <ListView
-            android:id="@+id/listViewVarliklar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
-
-    </ScrollView>
 
     <View
         android:id="@+id/horizantalLine"
@@ -215,7 +210,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="1dp"
         android:paddingTop="5dp"
-        android:text="Varlık Toplam: 0"
+        android:text="@string/varlikYazisi_etiket"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/textViewZekatSonuc"
@@ -228,7 +223,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="1dp"
-        android:text="Zekat tutar: 0"
+        android:text="@string/zekatYazisi_etiket"
         android:textColor="@color/redAlertColor"
         android:textSize="15sp"
         android:textStyle="bold"
@@ -240,11 +235,10 @@
 
     <ImageButton
         android:id="@+id/buttonPaylas"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="5dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:background="@null"
-        android:contentDescription="exportimage"
+        android:contentDescription="@string/liste_paylas"
         android:scaleType="centerCrop"
         android:src="@drawable/baseline_sim_card_download_24"
         app:layout_constraintBottom_toBottomOf="parent"

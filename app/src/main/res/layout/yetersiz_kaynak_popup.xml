@@ -1,6 +1,5 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutPopUpYetersizKaynak"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,6 +7,7 @@
     android:layout_margin="5dp"
     android:background="@drawable/ic_popup_background"
     android:layout_gravity="center">
+
     <TextView
         android:id="@+id/hintPopUpTextYetersizKaynak"
         android:layout_width="match_parent"
@@ -29,11 +29,11 @@
         android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
+        android:contentDescription="@string/altin_icon"
         android:src="@drawable/coin_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/hintPopUpTextYetersizKaynak" />
-
 
 
     <!-- Kapat butonu -->
@@ -48,6 +48,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imagePopUpYetersizKaynak"
-        />
+        app:layout_constraintTop_toBottomOf="@id/imagePopUpYetersizKaynak" />
 </androidx.constraintlayout.widget.ConstraintLayout>

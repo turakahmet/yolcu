@@ -8,9 +8,10 @@
         android:id="@+id/ibadetImage"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:contentDescription="@string/top_image"
         android:elevation="8dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/k_hadis_15"
+        android:src="@drawable/empty_img"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,10 +23,10 @@
         android:layout_margin="5dp"
         android:padding="5dp"
         android:paddingBottom="55dp"
-        app:layout_constraintTop_toBottomOf="@id/ibadetImage"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ibadetImage">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ibadetConstraintLayout"
@@ -52,11 +53,11 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
                 android:text="@string/hadisinAnlami"
+                android:textColor="@color/redAlertColor"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@color/redAlertColor"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ibadetHeader" />
 
             <TextView
@@ -64,10 +65,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
+                android:gravity="start"
                 android:text="@string/testYazisi"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:gravity="start"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ibadetHeader_label" />
@@ -91,11 +92,11 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
                 android:text="@string/hadisidenDersCikaralim"
-                android:textSize="20sp"
                 android:textColor="@color/redAlertColor"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ibadetAciklama1_kaynak" />
 
             <TextView
@@ -103,12 +104,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
+                android:gravity="start"
                 android:text="@string/testYazisi"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:gravity="start"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ibadetAciklama2_label" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

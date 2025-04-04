@@ -17,6 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            android:contentDescription="@string/konum_icon"
             android:src="@drawable/baseline_location_on_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +27,7 @@
             android:id="@+id/city_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ankara"
+            android:text="@string/testYazisi"
             android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/imageView"
@@ -38,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="12 Şaban 1446"
+            android:text="@string/testTarihi"
             android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/hicriDateIcon"
@@ -50,6 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            android:contentDescription="@string/tarih_icon"
             android:src="@drawable/baseline_calendar_month_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -92,30 +94,32 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:baselineAligned="false"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="3dp">
 
             <!-- İmsak -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                tools:ignore="UselessParent">
 
                 <TextView
                     android:id="@+id/yaklasanaTarihLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Yaklaşan Önemli Tarih"
+                    android:text="@string/yaklasan_tarih"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/yaklasanaTarih"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Kadir Gecesi test"
+                    android:text="@string/testYazisi"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -123,8 +127,7 @@
                     android:id="@+id/yaklasanaTarihDetay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="27 MART"
-
+                    android:text="@string/testTarihi"
                     android:textSize="12sp"
                     android:textStyle="bold" />
             </LinearLayout>

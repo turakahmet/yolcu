@@ -77,9 +77,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Bağlanıyor..."
+                android:text="@string/baglaniyor_etiket"
                 android:textColor="@color/widget_text_color"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -91,16 +91,36 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/widget_next_prayer_label"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-condensed"
-                android:gravity="center"
-                android:text="@string/testYazisiVakit"
-                android:textColor="@color/widget_highlight_color"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <TextView
+                    android:id="@+id/widget_next_prayer_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:text="@string/testYazisiVakit"
+                    android:textColor="@color/widget_text_color"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/go_app"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="end"
+                    android:src="@drawable/forward"
+                    android:layout_marginEnd="5dp"
+                    android:contentDescription="@string/app_logo_description"
+                    android:visibility="visible"
+                    android:tint="@color/widget_icon_color"
+                    tools:ignore="UseAppTint" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/widget_next_prayer_time"
@@ -110,8 +130,12 @@
                 android:gravity="center"
                 android:maxLines="1"
                 android:text="@string/default_time_clock"
+                android:layout_marginEnd="5dp"
                 android:textColor="@color/widget_text_color"
                 android:textSize="48sp"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMaxTextSize="48sp"
+                android:autoSizeMinTextSize="38sp"
                 android:textStyle="bold" />
 
 
@@ -124,7 +148,7 @@
         android:id="@+id/horizantal_line"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="12dp"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
@@ -160,7 +184,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/imsak"
-                android:textColor="@color/widget_text_color"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -169,7 +192,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textColor="@color/widget_text_color"
                 android:textSize="14sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -336,7 +358,7 @@
             android:layout_height="15dp"
             android:gravity="center"
             android:src="@drawable/appbar_location"
-            android:tint="@color/icon_color"
+            android:tint="@color/widget_icon_color"
             tools:ignore="ContentDescription,UseAppTint" />
 
         <TextView
@@ -345,7 +367,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="start"
-            android:text="ANKARA"
+            android:text="@string/wdiget_test_city"
             android:textColor="@color/widget_text_color"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -356,7 +378,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
-            android:text="13 saban 1446"
+            android:text="@string/testTarihi"
             android:textColor="@color/widget_text_color"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -366,7 +388,7 @@
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:gravity="center"
-            android:tint="@color/icon_color"
+            android:tint="@color/widget_icon_color"
             android:src="@drawable/baseline_calendar_month_24"
             tools:ignore="ContentDescription,UseAppTint" />
     </LinearLayout>

@@ -450,8 +450,11 @@ public class InfoGameActivity extends AppCompatActivity {
 
     private void setupJokerClickListeners() {
         joker50.setOnClickListener(v -> handleJoker50());
+        costCoinLayout.setOnClickListener(v -> handleJoker50());
         jokerHint.setOnClickListener(v -> handleJokerHint());
+        costCoinLayout_2.setOnClickListener(v -> handleJokerHint());
         jokerDouble.setOnClickListener(v -> handleJokerDouble());
+        costCoinLayout_3.setOnClickListener(v -> handleJokerDouble());
     }
 
     private void handleJoker50() {

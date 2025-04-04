@@ -23,7 +23,7 @@
     <Spinner
         android:id="@+id/topicSpinner"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="48dp"
         android:layout_margin="15dp"
         android:background="@drawable/spinner_background_2"
         android:padding="8dp"
@@ -36,7 +36,7 @@
         android:id="@+id/spinnerAltIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Dropdown icon"
+        android:contentDescription="@string/dropdown_icon"
         android:padding="8dp"
         android:src="@drawable/baseline_keyboard_arrow_down_24"
         app:layout_constraintBottom_toBottomOf="@+id/topicSpinner"
@@ -58,6 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/feedBackAd"
+            android:maxLength="50"
             android:inputType="text"
             android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
