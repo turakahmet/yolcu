@@ -56,7 +56,7 @@ public class PrayerNotificationService extends Service {
         NotificationChannel channel = new NotificationChannel(
                 CHANNEL_ID,
                 "Namaz Vakitleri",
-                NotificationManager.IMPORTANCE_HIGH
+                NotificationManager.IMPORTANCE_DEFAULT
         );
         channel.setShowBadge(false);
         channel.enableLights(false);
@@ -85,7 +85,7 @@ public class PrayerNotificationService extends Service {
                 }
                 return START_STICKY;
             } else {
-                stopForeground(true);
+                stopForeground(Service.STOP_FOREGROUND_REMOVE);
                 stopSelf();
                 return START_NOT_STICKY;
             }

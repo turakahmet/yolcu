@@ -34,6 +34,7 @@
     <color name="lightPoolGrayColor">#E2E2E2</color>
     <color name="pastelRedColor">#EF9A9A</color>
     <color name="pastelRedColor_m">#EF5350</color>
+    <color name="pastelRedColor_close">#E57373</color>
     <!-- Widget Colors -->
     <color name="widget_background">#80FFFFFF</color>
     <color name="widget_background_night">#2C2C2C</color>
@@ -59,6 +60,11 @@
     <color name="widget_icon_color">#212121</color>
     <color name="themePrayerBarColor">@color/white</color>
     <color name="current_prayer_widget_label">#D3D3D3</color>
+
+    <color name="card_dashboard_color">#D3D3D3</color>
+
+    <color name="button_pressed">#B0BEC5</color> <!-- Gri ton -->
+    <color name="button_normal">#D3D3D3</color> <!-- Açık gri -->
 
 
 </resources>

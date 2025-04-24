@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/Theme.Yolcu"
+    tools:context=".game.GenericGameActivity">
+
+    <!-- Altın Miktarı -->
+    <ImageView
+        android:id="@+id/coinImage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="30dp"
+        android:contentDescription="@string/altin_icon"
+        android:src="@drawable/coin_2"
+        app:layout_constraintEnd_toStartOf="@id/gold_amount_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/gold_amount_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="35dp"
+        android:fontFamily="@font/tomorrow_b"
+        android:text="@string/default_value"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/coinImage"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/gold_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:fontFamily="@font/tomorrow_b"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/gold_amount_text"
+        app:layout_constraintStart_toEndOf="@id/gold_amount_text"
+        app:layout_constraintTop_toTopOf="@+id/gold_amount_text" />
+    <!-- Geri Sayım Sayacı -->
+
+    <ImageView
+        android:id="@+id/clockImage"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="16dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/gerisayim_icon"
+        android:src="@drawable/clock"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/timer_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/tomorrow_b"
+        android:text="@string/default_timer"
+        android:textColor="@color/infoGameText"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@id/clockImage"
+        app:layout_constraintEnd_toEndOf="@id/clockImage"
+        app:layout_constraintStart_toStartOf="@id/clockImage"
+        app:layout_constraintTop_toTopOf="@id/clockImage" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="620dp" />
+
+    <ImageView
+        android:id="@+id/dogruCevapSayisiLogo"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:contentDescription="@string/dogru_yanit_sayisi"
+        android:src="@drawable/baseline_check_circle_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/coinImage" />
+
+
+    <TextView
+        android:id="@+id/dogruCevapSayisi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:fontFamily="@font/tomorrow_b"
+        android:text="@string/default_value"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/dogruCevapSayisiLogo"
+        app:layout_constraintStart_toEndOf="@+id/dogruCevapSayisiLogo"
+        app:layout_constraintTop_toTopOf="@id/dogruCevapSayisiLogo" />
+
+
+    <!-- Soru Metni -->
+    <TextView
+        android:id="@+id/question_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/soru_yukleniyor"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/option_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline" />
+
+    <!-- Şıklar -->
+    <Button
+        android:id="@+id/option_1"
+        style="@style/GreenOutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:padding="15dp"
+        android:text="@string/testYazisiButton"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/option_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/option_2"
+        style="@style/GreenOutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:padding="15dp"
+        android:text="@string/testYazisiButton"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/option_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/option_3"
+        style="@style/GreenOutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:padding="15dp"
+        android:text="@string/testYazisiButton"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/option_4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/option_4"
+        style="@style/GreenOutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:padding="15dp"
+        android:text="@string/testYazisiButton"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <!-- Jokerler -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.75512993" />
+
+    <TextView
+        android:id="@+id/joker_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:fontFamily="@font/tomorrow_b"
+        android:text="@string/jokerler_label"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline2" />
+
+    <!-- Joker %50 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@id/costCoinLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/round_green_border"
+        android:elevation="3dp"
+        app:layout_constraintEnd_toEndOf="@id/joker_50"
+        app:layout_constraintStart_toStartOf="@+id/joker_50"
+        app:layout_constraintTop_toTopOf="@+id/joker_50">
+
+        <ImageView
+            android:id="@+id/costCoinImage"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/joker_icon"
+            android:src="@drawable/coin_1"
+            app:layout_constraintBottom_toBottomOf="@id/costCoinLayout"
+            app:layout_constraintEnd_toStartOf="@+id/costCoinLabel"
+            app:layout_constraintStart_toStartOf="@+id/costCoinLayout"
+            app:layout_constraintTop_toTopOf="@+id/costCoinLayout" />
+
+        <TextView
+            android:id="@+id/costCoinLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/tomorrow_b"
+            android:padding="10dp"
+            android:text="@string/default_cost_coin"
+            android:textColor="@color/infoGameText"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@id/costCoinLayout"
+            app:layout_constraintEnd_toEndOf="@id/costCoinLayout"
+            app:layout_constraintStart_toEndOf="@+id/costCoinImage"
+            app:layout_constraintTop_toTopOf="@+id/costCoinLayout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/joker_50"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/joker_1"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/joker_hint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/joker_text" />
+
+    <!-- Joker ipucu -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@id/costCoinLayout_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/round_green_border"
+        android:elevation="3dp"
+        app:layout_constraintEnd_toEndOf="@id/joker_hint"
+        app:layout_constraintStart_toStartOf="@+id/joker_hint"
+        app:layout_constraintTop_toTopOf="@+id/joker_hint">
+
+        <ImageView
+            android:id="@+id/costCoinImage_2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/joker_icon"
+            android:src="@drawable/coin_1"
+            app:layout_constraintBottom_toBottomOf="@id/costCoinLayout_2"
+            app:layout_constraintEnd_toStartOf="@+id/costCoinLabel_2"
+            app:layout_constraintStart_toStartOf="@+id/costCoinLayout_2"
+            app:layout_constraintTop_toTopOf="@+id/costCoinLayout_2" />
+
+        <TextView
+            android:id="@+id/costCoinLabel_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/tomorrow_b"
+            android:padding="10dp"
+            android:text="@string/default_cost_coin"
+            android:textColor="@color/infoGameText"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@id/costCoinLayout_2"
+            app:layout_constraintEnd_toEndOf="@id/costCoinLayout_2"
+            app:layout_constraintStart_toEndOf="@+id/costCoinImage_2"
+            app:layout_constraintTop_toTopOf="@+id/costCoinLayout_2" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/joker_hint"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/joker_2"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/joker_double"
+        app:layout_constraintStart_toEndOf="@+id/joker_50"
+        app:layout_constraintTop_toBottomOf="@+id/joker_text" />
+    <!-- Joker x2 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@id/costCoinLayout_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/round_green_border"
+        android:elevation="3dp"
+        app:layout_constraintEnd_toEndOf="@id/joker_double"
+        app:layout_constraintStart_toStartOf="@+id/joker_double"
+        app:layout_constraintTop_toTopOf="@+id/joker_double">
+
+        <ImageView
+            android:id="@+id/costCoinImage_3"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/joker_icon"
+            android:src="@drawable/coin_1"
+            app:layout_constraintBottom_toBottomOf="@id/costCoinLayout_3"
+            app:layout_constraintEnd_toStartOf="@+id/costCoinLabel_3"
+            app:layout_constraintStart_toStartOf="@+id/costCoinLayout_3"
+            app:layout_constraintTop_toTopOf="@+id/costCoinLayout_3" />
+
+        <TextView
+            android:id="@+id/costCoinLabel_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/tomorrow_b"
+            android:padding="10dp"
+            android:text="@string/default_cost_coin"
+            android:textColor="@color/infoGameText"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@id/costCoinLayout_3"
+            app:layout_constraintEnd_toEndOf="@id/costCoinLayout_3"
+            app:layout_constraintStart_toEndOf="@+id/costCoinImage_3"
+            app:layout_constraintTop_toTopOf="@+id/costCoinLayout_3" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <Button
+        android:id="@+id/joker_double"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/joker_3"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/joker_hint"
+        app:layout_constraintTop_toBottomOf="@+id/joker_text" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

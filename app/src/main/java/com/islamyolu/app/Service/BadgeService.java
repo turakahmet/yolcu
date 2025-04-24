@@ -45,6 +45,16 @@ public class BadgeService {
         return badges;
     }
 
+    public List<Badge> getDisableBadges() {
+        List<Badge> disableBadgeList = new ArrayList<>();
+        for (Badge badge : badges) {
+            if (!badge.isEnabled()) {
+                disableBadgeList.add(badge);
+            }
+        }
+        return disableBadgeList;
+    }
+
     public void enableBadge(BadgeType badgeType) {
         for (Badge badge : badges) {
             if (badge.getBadgeType() == badgeType && !sharedPreferences.getBoolean(badge.getBadgeType().name(), false)) {

@@ -3,7 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_dashboard">
+
+    <fragment
+        android:id="@+id/nav_dashboard"
+        android:name="com.islamyolu.app.main.Dashboard"
+        android:label="@string/menu_anasayfa"
+        tools:layout="@layout/fragment_dashboard">
+        <action
+            android:id="@+id/action_dashboardFragment_to_homeFragment"
+            app:destination="@id/nav_home" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_IslamicDayFragment"
+            app:destination="@id/nav_dini_gunler" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_IbadetFragment"
+            app:destination="@id/nav_gallery" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_home"

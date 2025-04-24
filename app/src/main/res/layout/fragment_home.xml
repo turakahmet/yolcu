@@ -192,6 +192,243 @@
 
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
+            <!-- dorduncu CardView -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/yarisma_kuran"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/matches_game">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <!-- Resim -->
+                    <ImageView
+                        android:id="@+id/yarisma_kuran_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/eslestirme_oyunu_resmi"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/kuran_yarisma_logo" />
+
+                    <!-- Oyna Butonu -->
+                    <TextView
+                        android:id="@+id/yarisma_kuran_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginTop="-1dp"
+                        android:layout_marginBottom="1dp"
+                        android:breakStrategy="simple"
+                        android:elevation="1dp"
+                        android:fontFamily="@font/tomorrow_b"
+                        android:gravity="center"
+                        android:maxWidth="150sp"
+                        android:padding="3dp"
+                        android:shadowColor="#000000"
+                        android:shadowDx="2"
+                        android:shadowDy="2"
+                        android:shadowRadius="18"
+                        android:text="@string/yarisma_kuran"
+                        android:textColor="@color/white"
+                        android:textSize="27sp" />
+
+                    <Button
+                        android:id="@+id/play_yarisma_kuran_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_margin="10dp"
+                        android:fontFamily="@font/tomorrow_b"
+                        android:text="@string/play" />
+
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+            <!-- besinci CardView -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/yarisma_siyer"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/yarisma_kuran">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <!-- Resim -->
+                    <ImageView
+                        android:id="@+id/yarisma_siyer_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/eslestirme_oyunu_resmi"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/siyer_nebi" />
+
+                    <!-- Oyna Butonu -->
+                    <TextView
+                        android:id="@+id/yarisma_siyer_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginTop="-1dp"
+                        android:layout_marginBottom="1dp"
+                        android:breakStrategy="simple"
+                        android:elevation="1dp"
+                        android:fontFamily="@font/tomorrow_b"
+                        android:gravity="center"
+                        android:maxWidth="150sp"
+                        android:padding="3dp"
+                        android:shadowColor="#000000"
+                        android:shadowDx="2"
+                        android:shadowDy="2"
+                        android:shadowRadius="18"
+                        android:text="@string/siyeri_nebi"
+                        android:textColor="@color/white"
+                        android:textSize="27sp" />
+
+                    <Button
+                        android:id="@+id/play_yarisma_siyer_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_margin="10dp"
+                        android:fontFamily="@font/tomorrow_b"
+                        android:text="@string/play" />
+
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+            <!-- besinci CardView -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/peygamberler_tarihi"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/yarisma_siyer">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <!-- Resim -->
+                    <ImageView
+                        android:id="@+id/peygamberler_tarihi_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/eslestirme_oyunu_resmi"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/peygamberler_tarihi" />
+
+                    <!-- Oyna Butonu -->
+                    <TextView
+                        android:id="@+id/peygamberler_tarihi_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginTop="-1dp"
+                        android:layout_marginBottom="1dp"
+                        android:breakStrategy="simple"
+                        android:elevation="1dp"
+                        android:fontFamily="@font/tomorrow_b"
+                        android:gravity="center"
+                        android:maxWidth="150sp"
+                        android:padding="3dp"
+                        android:shadowColor="#000000"
+                        android:shadowDx="2"
+                        android:shadowDy="2"
+                        android:shadowRadius="18"
+                        android:text="@string/peygamberler_tarihi"
+                        android:textColor="@color/white"
+                        android:textSize="18sp" />
+
+                    <Button
+                        android:id="@+id/play_peygamberler_tarihi_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_margin="10dp"
+                        android:fontFamily="@font/tomorrow_b"
+                        android:text="@string/play" />
+
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+            <!-- altinci CardView -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/islam_tarihi"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/peygamberler_tarihi"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <!-- Resim -->
+                    <ImageView
+                        android:id="@+id/islam_tarihi_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/eslestirme_oyunu_resmi"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/islam_tarihi" />
+
+                    <!-- Oyna Butonu -->
+                    <TextView
+                        android:id="@+id/islam_tarihi_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginTop="-1dp"
+                        android:layout_marginBottom="1dp"
+                        android:breakStrategy="simple"
+                        android:elevation="1dp"
+                        android:fontFamily="@font/tomorrow_b"
+                        android:gravity="center"
+                        android:maxWidth="150sp"
+                        android:padding="3dp"
+                        android:shadowColor="#000000"
+                        android:shadowDx="2"
+                        android:shadowDy="2"
+                        android:shadowRadius="18"
+                        android:text="@string/islam_tarihi"
+                        android:textColor="@color/white"
+                        android:textSize="30sp" />
+
+                    <Button
+                        android:id="@+id/play_islam_tarihi_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_margin="10dp"
+                        android:fontFamily="@font/tomorrow_b"
+                        android:text="@string/play" />
+
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

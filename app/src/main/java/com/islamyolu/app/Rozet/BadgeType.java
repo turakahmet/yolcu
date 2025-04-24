@@ -19,8 +19,23 @@ public enum BadgeType {
     ESMA_YARISMA_2("Feyz ve Bereket Rozeti", "'Esma-i Hüsna Keşfi' yarışmasında 66 adet doğru yanıt ver", R.drawable.medal_3),
     ESMA_YARISMA_3("Nur Yolu Rozeti", "'Esma-i Hüsna Keşfi' yarışmasında 99 adet doğru yanıt ver", R.drawable.medal_3),
     ESMA_YARISMA_4("Hakkın Yolunda Rozeti", "'Esma-i Hüsna Keşfi' yarışmasında yanlış eşleştirmeden 50 adet doğru yanıt ver", R.drawable.medal_3),
-    ESMA_YARISMA_5("Tefekkür Rozeti", "'Esma-i Hüsna Keşfi' yarışmasında yanlış eşleştirmeden tüm soruları yanıtla", R.drawable.medal_3),
-    ESMA_YARISMA_KAZANAN("Zikr Yolu Rozeti", "'Kelime-i Hikmet' yarışmasında tüm soruları doğru yanıtla", R.drawable.medal_3);
+    ESMA_YARISMA_5("Tefekkür Rozeti", "'Esma-i Hüsna Keşfi' yarışmasında yanlış eşleştirmeden tüm eşleştirmeleri doğru yanıtla", R.drawable.medal_3),
+    ESMA_YARISMA_KAZANAN("Zikr Yolu Rozeti", "'Kelime-i Hikmet' yarışmasında tüm eşleştirmeleri doğru yanıtla", R.drawable.medal_3),
+    KURAN_YARISMA_1("İrfan Yolcusu Rozeti", "'Kur-an Yolculuğu' yarışmasında Normal seviyede 10 adet doğru yanıt ver", R.drawable.medal_4),
+    KURAN_YARISMA_2("Takva Rozeti", "'Kur-an Yolculuğu' yarışmasında Zor seviyede 10 adet doğru yanıt ver", R.drawable.medal_4),
+    KURAN_YARISMA_3("Kalp Anahtarı Rozeti", "10 defa 'Kur-an Yolculuğu' yarışmasına katıl", R.drawable.medal_4),
+
+    SIYER_YARISMA_1("Darü’l-Erkam Rozeti", "'Siyer-i Nebi' yarışmasında Normal seviyede 10 adet doğru yanıt ver", R.drawable.medal_5),
+    SIYER_YARISMA_2("Veda Hutbesi Rozeti", "'Siyer-i Nebi' yarışmasında Zor seviyede 10 adet doğru yanıt ver", R.drawable.medal_5),
+    SIYER_YARISMA_3("Ashab-ı Suffa Rozeti ", "10 defa 'Siyer-i Nebi' yarışmasına katıl", R.drawable.medal_5),
+
+    PEYGAMBERLER_YARISMA_1("Tufan Bilgini Rozeti", "'Peygamberler Tarihi' yarışmasında Normal seviyede 10 adet doğru yanıt ver", R.drawable.medal_6),
+    PEYGAMBERLER_YARISMA_2("Ahir Zaman Rozeti", "'Peygamberler Tarihi' yarışmasında Zor seviyede 10 adet doğru yanıt ver", R.drawable.medal_6),
+    PEYGAMBERLER_YARISMA_3("Nebilerin İzinde Rozeti", "10 defa 'Peygamberler Tarihi' yarışmasına katıl", R.drawable.medal_6),
+
+    ISLAMTARIHI_YARISMA_1("Suffa Talebesi Rozeti", "'İslam Tarihi' yarışmasında Normal seviyede 10 adet doğru yanıt ver", R.drawable.medal_7),
+    ISLAMTARIHI_YARISMA_2("Kufe Bilgini Rozeti", "'İslam Tarihi' yarışmasında Zor seviyede 10 adet doğru yanıt ver", R.drawable.medal_7),
+    ISLAMTARIHI_YARISMA_3("Asr-ı Saadet Rozeti", "10 defa 'İslam Tarihi' yarışmasına katıl", R.drawable.medal_7);
 
     // Diğer rozetler
 

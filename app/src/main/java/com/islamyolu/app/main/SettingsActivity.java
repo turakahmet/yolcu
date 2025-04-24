@@ -18,6 +18,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
@@ -406,6 +407,13 @@ public class SettingsActivity extends AppCompatActivity {
 
         Intent serviceIntent = new Intent(this, PrayerNotificationService.class);
         if (isChecked) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 15 = API 34
+                new AlertDialog.Builder(this)
+                        .setTitle("Dikkat")
+                        .setMessage("Android 15 ve üzeri cihazlarda bu hizmet cihaz yeniden başladığında otomatik olarak çalışmaz. Cihaz yeniden başladığında bu servisi manuel olarak yeniden etkinleştirmeniz gerekir.")
+                        .setPositiveButton("Tamam", null)
+                        .show();
+            }
             startService(serviceIntent);
         } else {
             stopService(serviceIntent);

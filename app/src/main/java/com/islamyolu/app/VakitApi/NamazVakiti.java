@@ -1,8 +1,8 @@
 package com.islamyolu.app.VakitApi;
 
-import android.icu.util.IslamicCalendar;
 import android.util.Log;
 
+import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import com.islamyolu.app.Entity.PrayerNames;
 
 import java.time.LocalTime;
@@ -192,17 +192,18 @@ public class NamazVakiti {
 
     public String getHicriDate() {
         try {
-            IslamicCalendar hijriCalendar = new IslamicCalendar();
-            int day = hijriCalendar.get(IslamicCalendar.DAY_OF_MONTH);
-            int month = hijriCalendar.get(IslamicCalendar.MONTH) + 1;
-            int year = hijriCalendar.get(IslamicCalendar.YEAR);
+            UmmalquraCalendar cal = new UmmalquraCalendar();
 
-            String[] hijriMonths = {
+            int hijriDay = cal.get(Calendar.DAY_OF_MONTH);
+            int hijriMonth = cal.get(Calendar.MONTH); // 0-based
+            int hijriYear = cal.get(Calendar.YEAR);
+
+            String[] months = {
                     "Muharrem", "Safer", "Rebiülevvel", "Rebiülahir", "Cemaziyelevvel",
                     "Cemaziyelahir", "Recep", "Şaban", "Ramazan", "Şevval", "Zilkade", "Zilhicce"
             };
 
-            return day + " " + hijriMonths[month - 1] + " " + year;
+            return hijriDay + " " + months[hijriMonth] + " " + hijriYear;
         } catch (Exception e) {
             return "Hicri tarih hesaplanamadı";
         }

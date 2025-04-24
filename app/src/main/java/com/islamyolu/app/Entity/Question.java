@@ -1,19 +1,23 @@
 package com.islamyolu.app.Entity;
 
+import java.util.List;
+
 public class Question {
     private String soruMetni;  // Sorunun metni
     private int zorlukSeviyesi;  // Sorunun zorluk seviyesi: 1 - Kolay, 2 - Orta, 3 - Zor
     private String[] siklar;  // Sorunun 4 şıkkı
     private String dogruCevap;  // Sorunun doğru cevabı
     private String ipucu;  // Sorunun ipucu
+    private List<SoruTip> soruTipleri;//soru tipi
 
     // Constructor
-    public Question(String soruMetni, int zorlukSeviyesi, String[] siklar, String dogruCevap, String ipucu) {
+    public Question(String soruMetni, int zorlukSeviyesi, String[] siklar, String dogruCevap, String ipucu, List<SoruTip> soruTipleri) {
         this.soruMetni = soruMetni;
         this.zorlukSeviyesi = zorlukSeviyesi;
         this.siklar = siklar;
         this.dogruCevap = dogruCevap;
         this.ipucu = ipucu;
+        this.soruTipleri = soruTipleri;
     }
 
     // Getter ve Setter metotları
@@ -59,6 +63,14 @@ public class Question {
 
     public void setIpucu(String ipucu) {
         this.ipucu = ipucu;
+    }
+
+    public List<SoruTip> getSoruTipleri() {
+        return soruTipleri;
+    }
+
+    public void setSoruTipleri(List<SoruTip> soruTipleri) {
+        this.soruTipleri = soruTipleri;
     }
 
     // Zorluk seviyesini string olarak döndürmek için yardımcı bir metot
@@ -114,11 +126,20 @@ public class Question {
     }
 
     public boolean isDogruCevapWordGame() {
-        // Yasak karakterleri belirtiyoruz
-        String forbiddenChars = "[',\".\\-]"; // Tek tırnak, virgül, çift tırnak, nokta, tire
+        // Yasak karakterler
+        String forbiddenChars = "[',\".\\-\\(\\)]"; // Tek tırnak, virgül, çift tırnak, nokta, tire, parantez
 
-        // Eğer dogruCevap bu karakterlerden herhangi birini içeriyorsa false dönecek
-        return !dogruCevap.matches(".*" + forbiddenChars + ".*") && dogruCevap.replace(" ", "").length() < 12;
+        // "dogruCevap" yasak karakter içeriyor mu?
+        boolean hasForbiddenChars = dogruCevap.matches(".*" + forbiddenChars + ".*");
+
+        // "dogruCevap" boşluklar hariç 12 karakterden kısa mı?
+        boolean isShortAnswer = dogruCevap.replace(" ", "").length() < 12;
+
+        // "soruMetni" içinde 'aşağıdaki' veya 'hangisi' kelimeleri var mı?
+        boolean containsInvalidWords = soruMetni.toLowerCase().contains("aşağıdaki") || soruMetni.toLowerCase().contains("hangisi");
+
+        // Tüm koşulları kontrol et ve sonucu döndür
+        return !hasForbiddenChars && isShortAnswer && !containsInvalidWords;
     }
 
     public boolean isNumeric() {

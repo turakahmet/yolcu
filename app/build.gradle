@@ -10,8 +10,8 @@ android {
         applicationId "com.islamyolu.app"
         minSdk 27
         targetSdk 35
-        versionCode 1
-        versionName "1.0"
+        versionCode 7
+        versionName "1.0.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -78,6 +78,10 @@ dependencies {
 
     //intro indicator icin
     implementation 'com.tbuonomo:dotsindicator:5.0'
+
+    //hicri takvim icin
+    implementation 'com.github.msarhan:ummalqura-calendar:2.0.2'
+
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'

@@ -152,6 +152,12 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         }
 
         remain_time_layout.setOnClickListener(v -> {
+            getSharedPreferences(MainActivity.LOCATION_PREFS, MODE_PRIVATE);
+            String getCityNameFromPreferences = locationPrefs.getString("city_name", "");
+            if (getCityNameFromPreferences.isEmpty()) {
+                Toast.makeText(this, "Takvim için konum ayarı yapmalısınız.", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Intent intent = new Intent(MainActivity.this, MonthlyPrayerActivity.class);
             startActivity(intent);
         });
@@ -169,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_compass, R.id.nav_zekat, R.id.nav_muze, R.id.nav_rozet)
+                R.id.nav_dashboard, R.id.nav_home, R.id.nav_gallery, R.id.nav_compass, R.id.nav_zekat, R.id.nav_muze, R.id.nav_rozet)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);

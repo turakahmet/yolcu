@@ -133,4 +133,15 @@
     <string name="feedbackInfo">Sent messages can be returned via the e-mail address you provided. Please make sure you are using a correct and valid e-mail address.</string>
     <string name="privacy_header">Privacy Policy</string>
     <string name="bilgilendirmeHeader">Disclosure and Disclaimer</string>
+    <string name="gerisayim_icon">Countdown clock icon</string>
+    <string name="jokerler_label">Jokers</string>
+    <string name="joker_icon">joker icon</string>
+    <string name="joker_2">hint</string>
+    <string name="yaklasan_tarih">Upcoming Important Date</string>
+    <string name="matches_game_info">Match the following names with their meanings.</string>
+    <string name="medya_ses_seviyesini_etiket">(Uses Media Volume)</string>
+    <string name="ezan_duasi_etiket">Adhan prayer</string>
+    <string name="iletisim_bilgi_etiket">Contact and Information</string>
+    <string name="iletisim_etiket">Communication</string>
+    <string name="confirm">Confirm</string>
 </resources>

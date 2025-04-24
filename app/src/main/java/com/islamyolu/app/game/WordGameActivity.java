@@ -130,6 +130,7 @@ public class WordGameActivity extends AppCompatActivity {
 
     private void buttonClicker() {
         letterJokerButton.setOnClickListener(v -> giveLetter());
+        costCoinLayout.setOnClickListener(v -> giveLetter());
         confirmButton.setOnClickListener(v -> checkAnswer());
     }
 

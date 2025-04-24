@@ -64,7 +64,7 @@
     <string name="default_timer">00</string>
     <string name="default_value">0</string>
     <string name="default_time_clock">00:01</string>
-    <string name="default_time_clock_detail">00:00:00</string>
+    <string name="default_time_clock_detail" translatable="false">00:00:00</string>
     <string name="soru_yukleniyor">Soru yükleniyor</string>
     <string name="tamam">TAMAM</string>
     <string name="close">KAPAT</string>
@@ -525,70 +525,107 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="bilgilendirmeHeader">Bilgilendirme ve Sorumluluk Reddi</string>
     <string name="bilgilendirmeInfo" translatable="false">İslam Yolu uygulaması, İslami değerler ışığında kullanıcılara çeşitli dini bilgiler, namaz saatleri, kıble yönü, zekat hesaplama, İslami yarışmalar ve dini günler gibi içerikler sunmak amacıyla geliştirilmiştir. Kullanıcılarımıza en iyi deneyimi sağlamak için çaba sarf etsek de, aşağıdaki durumlar için sorumluluk kabul etmediğimizi belirtmek isteriz:\n\n1. Bilgilerin Doğruluğu\nİslam Yolu uygulaması, kullanıcılarına İslami Yarışmalar, İslami bilgier, namaz saatleri, kıble yönü, dini günler ve zekat hesaplamaları gibi bilgiler sunmaktadır. Ancak, bu bilgiler yalnızca bilgilendirme amaçlıdır ve kesin doğruluğu garanti edilmemektedir. Namaz saatleri, yerel değişiklikler ve takvim farkları nedeniyle farklılık gösterebilir. Kullanıcıların doğru bilgilere ulaşabilmesi için, yerel dini otoritelerden veya resmi kaynaklardan teyit etmeleri önerilir.\n\n2. Konum Verisi ve Gizlilik\nUygulama, kullanıcının bulunduğu konum verisini kullanarak doğru namaz saatlerini ve kıble yönünü sağlamaktadır. Kullanıcıların konum verileri yalnızca uygulamanın bu özelliklerini sağlamak amacıyla kullanılmakta olup, üçüncü şahıslarla paylaşılmamaktadır. Ancak, konum verisinin doğruluğu, cihazın konum servislerinin doğru çalışmasına bağlıdır. İslam Yolu uygulaması, cihazın konum servislerinden kaynaklanabilecek hatalardan sorumlu değildir.\n\n3. Sorumluluk Reddi\nİslam Yolu uygulaması, sağladığı içeriklerin doğruluğunu sağlamak için çaba sarf etse de, herhangi bir yanlış bilgi veya hatalı içerik nedeniyle doğacak zararlardan sorumlu tutulamaz. Kullanıcılar, uygulamayı kullanırken oluşabilecek herhangi bir zarar veya kayıptan İslam Yolu uygulaması sahipleri ve geliştiricileri sorumlu tutulamaz.\n\n4. Teknik Hatalar ve Kesintiler\nUygulama, en iyi kullanıcı deneyimini sağlamak için sürekli olarak güncellenmekte ve iyileştirilmektedir. Ancak, zaman zaman teknik arızalar, sunucu kesintileri veya yazılım hataları nedeniyle uygulamanın bazı özelliklerinde geçici aksaklıklar yaşanabilir. Bu tür durumlar, İslam Yolu uygulamasının kontrolü dışındaki sebeplerden kaynaklanabilir ve uygulama geliştiricileri bu tür aksaklıklar için sorumluluk kabul etmez.\n\n5. Kullanıcı İçerikleri\nUygulama, kullanıcılar tarafından içerik paylaşımına olanak sağlamamaktadır. Uygulamanın sunduğu içerikler yalnızca uygulama geliştiricileri tarafından sağlanmakta olup, kullanıcıların içerik eklemeleri veya paylaşmaları mümkün değildir.\n\n6. Uygulamanın Amacı\nİslam Yolu uygulaması, İslam\'ın temel öğretilerini, namaz saatlerini, dini günleri ve diğer İslami içerikleri kullanıcılara sunmayı amaçlamaktadır. Ancak, uygulama herhangi bir dini otorite veya dinî bir kurum tarafından onaylanmış bir uygulama değildir ve bu nedenle içerikler, yalnızca genel bilgilendirme amaçlıdır.\n\n7. Kullanıcı Geri Bildirimleri ve Veriler\nKullanıcılar, İslam Yolu uygulamasındaki iletişim bölümünden öneri, şikayet, hata bildirimi ve genel bilgiler sağlayabilirler. Kullanıcıların sunduğu geri bildirimler, uygulamanın geliştirilmesi amacıyla kullanılabilir. Ancak, sağlanan geri bildirimlerin gizliliği ve güvenliği konusunda gerekli önlemler alınacaktır. Geri bildirimler, yalnızca uygulamanın iyileştirilmesi için kullanılacak olup, kullanıcı kimlikleri paylaşılmadan anonim şekilde değerlendirilebilir.\n\n8. Bildirimler\nİslam Yolu uygulaması, kullanıcıları önemli gelişmeler, dini günler, yeni içerikler veya hatırlatmalar hakkında bilgilendirmek amacıyla bildirimler gönderebilir. Kullanıcılar, bu bildirimleri diledikleri zaman kapatabilir veya özelleştirebilir. Ancak, bazı bildirimler uygulamanın doğru çalışabilmesi için gerekli olabilir.\n\n9. Widget Kullanımı\nUygulama, kullanıcılara widget özelliği sunar. Bu özellik, kullanıcıların uygulamayı her zaman açmadan, ekrandan hızlı bir şekilde namaz saatlerini, konum bilgisi, hava durumu veya diğer bilgileri görmelerini sağlar. Widget kullanımı, cihazın özelliklerine ve kullanıcının widget ayarlarına bağlıdır. Widget, kullanıcının cihazındaki verileri toplamaz veya dışa aktarmaz.\n\n10. Değişiklikler\nİslam Yolu uygulamasının içeriğinde ve bu bilgilendirme beyanında değişiklikler yapılabilir. Herhangi bir değişiklik durumunda, güncel beyan metni uygulama içinde yer alacak ve kullanıcıların bilgisine sunulacaktır. Kullanıcılar, uygulamayı kullanarak bu bilgilendirme ve sorumluluk reddi beyanını kabul etmiş sayılırlar.\n\nİletişim Bilgileri:\nEğer Bilgilendirme ve Sorumluluk Reddi Beyanı veya uygulamanın içeriği hakkında herhangi bir sorunuz veya öneriniz varsa, lütfen bizimle iletişime geçin:\n\ne-posta Adresi\ntechturak@gmail.com</string>
     <string name="zekatInfo" translatable="false">\nZekât Nedir?\nZekât, İslam\'ın beş temel şartından biridir ve Müslümanların maddi varlıklarından belirli bir kısmını ihtiyaç sahiplerine vermesi farz kılınmıştır. Kelime anlamı olarak temizlik, artış ve bereket anlamına gelir. Zekât, kişinin malını temizler, bereketini artırır ve toplumsal dayanışmayı güçlendirir.\n\n📊 Zekât Kimlere Farzdır?\nZekât, şu şartları taşıyan Müslümanlara farzdır:\n✅ Müslüman olmak\n✅ Akıl ve baliğ olmak\n✅ Nisap miktarına ulaşan mala sahip olmak (Nisap, temel ihtiyaçlar ve borçlar çıkarıldıktan sonra geriye kalan servetin 80.18gr Altın yada değerinde mala sahip olmak)\n✅ Malların üzerinden bir yıl geçmiş olması (Zekât, genellikle yıllık olarak hesaplanır.)\n\n🔣 Zekât Miktarı Nasıl Hesaplanır?\nZekât oranı mal türüne göre değişebilir. En yaygın oranlar şunlardır:\n🔹 Altın ve gümüş: %2,5 (40’ta 1)\n🔹 Nakit para ve ticaret malları: %2,5\n🔹 Tarım ürünleri: %5 - %10 (Sulama yöntemine bağlı olarak değişir.)\n🔹 Küçükbaş ve büyükbaş hayvanlar: Hayvanların zekâtı, kendi cinsinden verilebileceği gibi değerleri üzerinden para olarak da verilebilir. Ancak fakirin yararına olanı tercih etmek daha uygundur.\n\n🎯 Zekât Kimlere Verilir?\nKur\'an-ı Kerim\'de Tevbe Suresi 60. ayette zekâtın verilmesi gereken 8 sınıf belirlenmiştir:\n✅Fakirler\n✅Yoksullar\n✅Borçlular\n✅Yolcular\n✅Köle ve esirlerin özgürlüğüne kavuşması için\n✅Allah yolunda olanlar\n✅Zekât toplamakla görevli memurlar\n✅Kalpleri İslam’a ısındırılması gerekenler\n\n🕌 Zekâtın Önemi\nZekât, bireyin malını temizlediği gibi, toplum içinde yardımlaşma, sosyal adalet ve ekonomik dengeyi sağlamaya yardımcı olur. Müslümanlar, zekât vererek hem ibadetlerini yerine getirir hem de ihtiyaç sahiplerine destek olur.\n\n⚠️ Bu hesaplama aracı bilgi amaçlıdır ve veriler güncel döviz kurlarıyla (altinkaynak.com servislerinden) hesaplanmaktadır. Gerekli veriler servisten çekilmektedir; ancak servis geçici olarak çalışmazsa, manuel giriş yaparak hesaplama yapabilirsiniz ve hesaplanan verileri paylaşabilirsiniz.\n\n⚠️ Uygulama, sağlanan bilgilerin doğruluğu veya eksiksizliği konusunda herhangi bir yasal sorumluluk kabul etmez. Kullanıcılar, zekât hesaplama sonuçlarını kendi sorumlulukları doğrultusunda değerlendirmelidir. Hesaplamalar kullanıcı sorumluluğunda olup uygulama sahipleri ve geliştiricileri sorumlu tutulamaz. Hesaplanan veriler anlık olarak hesaplanıp kaydetme işlemi yapılmamaktadır. \n\n⚠️ Önemli Not: Zekât hesaplamalarında, güncel altın ve döviz kurlarına göre hareket edilmelidir. Emin olmadığınız durumlarda bir İslam alimine veya uzmanına danışmanız tavsiye edilir.\n</string>
-    <string name="top_image">Üst başlık resmi</string>
-    <string name="altin_icon">Altın ikonu</string>
+    <string name="top_image" translatable="false">Üst başlık resmi</string>
+    <string name="altin_icon" translatable="false">Altın ikonu</string>
     <string name="gerisayim_icon">Geri sayım saat ikonu</string>
     <string name="jokerler_label">Jokerler</string>
-    <string name="joker_1">%50</string>
+    <string name="joker_1" translatable="false">%50</string>
     <string name="joker_icon">joker ikonu</string>
     <string name="joker_2">İpucu</string>
-    <string name="joker_3">x2</string>
-    <string name="testYazisiButton">Seçenek</string>
-    <string name="konum_icon">Konum ikonu</string>
-    <string name="testTarihi">12 Şaban 1446</string>
-    <string name="tarih_icon">tarih ikonu</string>
+    <string name="joker_3" translatable="false">x2</string>
+    <string name="testYazisiButton" translatable="false">Seçenek</string>
+    <string name="konum_icon" translatable="false">Konum ikonu</string>
+    <string name="testTarihi" translatable="false">12 Şaban 1446</string>
+    <string name="tarih_icon" translatable="false">tarih ikonu</string>
     <string name="yaklasan_tarih">Yaklaşan Önemli Tarih</string>
     <string name="matches_game_info">Aşağıdaki isimleri anlamları ile eşletiriniz</string>
-    <string name="testVakit_icon">Vakit icon</string>
-    <string name="bildirim_icon">Bildirim ikonu</string>
-    <string name="bildirimler_etiket">Bildirimler</string>
-    <string name="tum_bildirimler_etiket">Tüm Bildirimler</string>
-    <string name="vakit_oncesi_etiket">Vakit Öncesi Uyarı</string>
-    <string name="bes_dk_etiket">5 dk</string>
-    <string name="on_dk_etiket">10 dk</string>
-    <string name="yirmi_dk_etiket">20 dk</string>
-    <string name="ses_ayar_etiket">Ses Ayarı</string>
-    <string name="ezan_bildirim_sesi_etiket">Ezan bildirim sesi</string>
+    <string name="testVakit_icon" translatable="false">Vakit icon</string>
+    <string name="bildirim_icon" translatable="false">Bildirim ikonu</string>
+    <string name="bildirimler_etiket" translatable="false">Bildirimler</string>
+    <string name="tum_bildirimler_etiket" translatable="false">Tüm Bildirimler</string>
+    <string name="vakit_oncesi_etiket" translatable="false">Vakit Öncesi Uyarı</string>
+    <string name="bes_dk_etiket" translatable="false">5 dk</string>
+    <string name="on_dk_etiket" translatable="false">10 dk</string>
+    <string name="yirmi_dk_etiket" translatable="false">20 dk</string>
+    <string name="ses_ayar_etiket" translatable="false">Ses Ayarı</string>
+    <string name="ezan_bildirim_sesi_etiket" translatable="false">Ezan bildirim sesi</string>
     <string name="medya_ses_seviyesini_etiket">(Medya Ses seviyesini kullanır)</string>
     <string name="ezan_duasi_etiket">Ezan duası</string>
     <string name="iletisim_bilgi_etiket">İletişim ve Bilgi</string>
     <string name="iletisim_etiket">İletişim</string>
-    <string name="harf_kutucugu">Harf Kutuları</string>
-    <string name="onay_icon">Onay ikon</string>
+    <string name="harf_kutucugu" translatable="false">Harf Kutuları</string>
+    <string name="onay_icon" translatable="false">Onay ikon</string>
     <string name="confirm">Onayla</string>
-    <string name="previous_slide">Previous Slide</string>
-    <string name="next_slide">Next Slide</string>
-    <string name="dropdown_icon">Dropdown icon</string>
-    <string name="compass_arrow">pusula oku</string>
-    <string name="nasil_kullanilir_etiket">Nasıl Kullanılır?</string>
-    <string name="bilgi_oyunu_resmi">Bilgi Oyunu Resmi</string>
-    <string name="kelime_oyunu_resmi">kelime oyunu resmi</string>
-    <string name="eslestirme_oyunu_resmi">eslestirme oyunu resmi</string>
-    <string name="varlik_tipi">Varlık Tipi</string>
-    <string name="varliklar">Varlıklar</string>
-    <string name="borclar">Borçlar</string>
-    <string name="varlik_turu">Varlık Türü</string>
-    <string name="doviz_turu">Döviz Türü</string>
-    <string name="kur_degeri">Kur Değeri</string>
-    <string name="degistir">Değiştir</string>
-    <string name="tutar_etiket">Tutar</string>
-    <string name="varlik_ekle">Varlık Ekle</string>
-    <string name="liste_paylas">Listeyi paylaş ikon</string>
-    <string name="zekatYazisi_etiket">Zekat tutar: 0</string>
-    <string name="varlikYazisi_etiket">Varlık Toplam: 0</string>
-    <string name="loading">Yükleniyor, lütfen bekleyin...</string>
-    <string name="intro_logo">giriş logosu</string>
-    <string name="profil_resmi">Profil resmi</string>
-    <string name="rozet_icon">Rozet ikon</string>
-    <string name="loading_data">yükleniyor…</string>
-    <string name="baglaniyor_etiket">Bağlanıyor…</string>
-    <string name="wdiget_test_city">ANKARA</string>
-    <string name="widget_settings_title">Widget Ayarları</string>
-    <string name="transparency_value">Şeffaflık: %0</string>
-    <string name="widget_background_color">Arkaplan Rengi</string>
-    <string name="widget_beyaz">Beyaz</string>
-    <string name="wdiget_siyah">Siyah</string>
-    <string name="test_rozeti">Test Rozeti</string>
+    <string name="previous_slide" translatable="false">Previous Slide</string>
+    <string name="next_slide" translatable="false">Next Slide</string>
+    <string name="dropdown_icon" translatable="false">Dropdown icon</string>
+    <string name="compass_arrow" translatable="false">pusula oku</string>
+    <string name="nasil_kullanilir_etiket" translatable="false">Nasıl Kullanılır?</string>
+    <string name="bilgi_oyunu_resmi" translatable="false">Bilgi Oyunu Resmi</string>
+    <string name="kelime_oyunu_resmi" translatable="false">kelime oyunu resmi</string>
+    <string name="eslestirme_oyunu_resmi" translatable="false">eslestirme oyunu resmi</string>
+    <string name="varlik_tipi" translatable="false">Varlık Tipi</string>
+    <string name="varliklar" translatable="false">Varlıklar</string>
+    <string name="borclar" translatable="false">Borçlar</string>
+    <string name="varlik_turu" translatable="false">Varlık Türü</string>
+    <string name="doviz_turu" translatable="false">Döviz Türü</string>
+    <string name="kur_degeri" translatable="false">Kur Değeri</string>
+    <string name="degistir" translatable="false">Değiştir</string>
+    <string name="tutar_etiket" translatable="false">Tutar</string>
+    <string name="varlik_ekle" translatable="false">Varlık Ekle</string>
+    <string name="liste_paylas" translatable="false">Listeyi paylaş ikon</string>
+    <string name="zekatYazisi_etiket" translatable="false">Zekat tutar: 0</string>
+    <string name="varlikYazisi_etiket" translatable="false">Varlık Toplam: 0</string>
+    <string name="loading" translatable="false">Yükleniyor, lütfen bekleyin...</string>
+    <string name="intro_logo" translatable="false">giriş logosu</string>
+    <string name="profil_resmi" translatable="false">Profil resmi</string>
+    <string name="rozet_icon" translatable="false">Rozet ikon</string>
+    <string name="loading_data" translatable="false">yükleniyor…</string>
+    <string name="baglaniyor_etiket" translatable="false">Bağlanıyor…</string>
+    <string name="wdiget_test_city" translatable="false">ANKARA</string>
+    <string name="widget_settings_title" translatable="false">Widget Ayarları</string>
+    <string name="transparency_value" translatable="false">Şeffaflık: %0</string>
+    <string name="widget_background_color" translatable="false">Arkaplan Rengi</string>
+    <string name="widget_beyaz" translatable="false">Beyaz</string>
+    <string name="wdiget_siyah" translatable="false">Siyah</string>
+    <string name="test_rozeti" translatable="false">Test Rozeti</string>
+    <string name="compassHardwareInfo" translatable="false">Kıble Bulucu özelliğini kullanabilmek için cihazınızda pusula (compass) sensörü bulunması gerekmektedir. Ancak cihazınız bu özelliği desteklemiyor. Diğer tüm özellikleri kullanmaya devam edebilirsiniz.</string>
+    <string name="compassHardwareInfoHeader" translatable="false">Kıble Bulucu Desteklenmiyor</string>
+    <string name="ebabyicon" translatable="false">erkekbabyIcon</string>
+    <string name="kbabyicon" translatable="false">kızbabyIcon</string>
+    <string name="gunu_ismi" translatable="false">Günün ismi</string>
+    <string name="menu_anasayfa" translatable="false">Ana sayfa</string>
+    <string name="badgeInfo" translatable="false">Henüz bu rozeti kazanmadın</string>
+    <string name="nameRefresh" translatable="false">isim yenile icon</string>
+    <string name="isimtagAnlam" translatable="false">"Anlamı: "</string>
+    <string name="isim_aciklama" translatable="false">%1$s\n%2$s%3$s</string>
+    <string name="konum_verisi_bekliyor" translatable="false">Konum verisi bekliyor</string>
+    <string name="devamhadis" translatable="false">devamı…</string>
+    <string name="dahaazhadis" translatable="false">Daha az</string>
+    <string name="pzt" translatable="false">Pzt</string>
+    <string name="sal" translatable="false">Sal</string>
+    <string name="car" translatable="false">Car</string>
+    <string name="per" translatable="false">Per</string>
+    <string name="cum" translatable="false">Cum</string>
+    <string name="dashboard_ibadet_label" translatable="false">İbadet</string>
+    <string name="dashboard_takvim_label" translatable="false">Takvim</string>
+    <string name="dashboard_yarisma_label" translatable="false">Yarışma</string>
+    <string name="hadislogo" translatable="false">hadisLogo</string>
+    <string name="weatherRefresh" translatable="false">hava durum yenile buton</string>
+    <string name="hadis_header" translatable="false">Hadis-i Şerif</string>
+    <string name="yarisma_kuran" translatable="false">Kur’an Yolculuğu</string>
+    <string name="siyeri_nebi" translatable="false">Siyer-i Nebi</string>
+    <string name="peygamberler_tarihi" translatable="false">Peygamberler Tarihi</string>
+    <string name="islam_tarihi" translatable="false">İslam Tarihi</string>
+    <string name="gold_status_text" translatable="false">+%1$d</string>
+    <string name="gold_status_minus_text" translatable="false">-%1$d</string>
+    <string name="dogru_yanit_sayisi" translatable="false">dogru yanit sayisi</string>
+    <string name="setting_sure" translatable="false">Yarışma Süresi</string>
+    <string name="seviye_normal" translatable="false">Seviye: Normal</string>
+    <string name="_60s" translatable="false">60s</string>
+    <string name="_120s" translatable="false">120s</string>
+    <string name="_180s" translatable="false">180s</string>
+    <string name="seviye" translatable="false">Seviye</string>
 
     <string-array name="ezan_sound_options">
         <item>Ezan</item>
@@ -610,5 +647,454 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
         <item>Öneri</item>
         <item>Şikayet</item>
         <item>Diğer</item>
+    </string-array>
+
+    <string-array name="ebebek_isim">
+        <item>Ahmed#Övülmüş, çokça övülen. Peygamber Efendimizin isimlerinden biridir. (Saff 61/6)</item>
+        <item>Ali#Yüce, yüksek şerefli. Hz. Ali’nin adıdır. (Bakara 2/255 - \'Aliyy\')</item>
+        <item>Hasan#Güzel, iyilik sahibi. Hz. Ali’nin oğlunun adıdır.</item>
+        <item>Hüseyin#Küçük güzel, güzellikte üstün. Hz. Ali’nin diğer oğlunun adıdır.</item>
+        <item>Yusuf#Allaha ait, Allah tarafından artırılmış. Hz. Yusuf\'un adıdır. (Yusuf 12/4)</item>
+        <item>İbrahim#Babaların babası anlamında. Hz. İbrahim peygamberin adıdır. (Bakara 2/124)</item>
+        <item>İsmail#Allah’a teslim olmuş. Hz. İbrahim’in oğlu, peygamber. (Saffat 37/101)</item>
+        <item>Musa#Sudan çıkarılan. Hz. Musa peygamberin adıdır. (Bakara 2/51)</item>
+        <item>Harun#Dürüst, doğru sözlü. Hz. Musa’nın kardeşi, peygamber. (Taha 20/30)</item>
+        <item>Davud#Sevgili, Allah’ın sevgili kulu. Peygamberlerden. (Bakara 2/251)</item>
+        <item>Yahya#Hayat verilen, diri kılınan. Hz. Zekeriya\'nın oğlu. (Meryem 19/7)</item>
+        <item>Zekeriya#Allah’ın zikri, hatırlatıcı. Peygamberlerden. (Meryem 19/2)</item>
+        <item>Salih#Dürüst, düzgün, iyi insan. Salih kavmiyle gönderilen peygamber. (Hud 11/61)</item>
+        <item>Şuayb#Güçlü, görkemli. Medyen halkına gönderilen peygamber. (Hud 11/84)</item>
+        <item>Lut#Kusursuz, saf. Hz. İbrahim’in yeğeni, peygamber. (Araf 7/80)</item>
+        <item>Nuh#Kurtuluş. Büyük tufanla bilinen peygamber. (Hud 11/36)</item>
+        <item>İlyas#Allah’ın kulu. Peygamberlerden. (Saffat 37/123)</item>
+        <item>İdris#Dürüst, çalışkan. Sabırlı peygamber. (Meryem 19/56)</item>
+        <item>Zülkifl#Sabırlı kişi, kefil olan. Peygamberlerden. (Enbiya 21/85)</item>
+        <item>Ayub#Çokça tevazu gösteren, sabırlı. Sabır örneği peygamber. (Sad 38/41)</item>
+        <item>Süleyman#Selamet bulan. Hz. Davud’un oğlu. (Neml 27/15)</item>
+        <item>Talut#İsrailoğullarının ilk kralı. (Bakara 2/247)</item>
+        <item>Adem#Topraktan yaratılan, ilk insan ve peygamber. (Bakara 2/31)</item>
+        <item>Şit#Hediye, bağış. Hz. Adem’in oğludur. Hadis kaynaklarında geçer.</item>
+        <item>Enes#İçten sevgi, samimiyet. Sahabe Enes bin Malik’ten meşhur.</item>
+        <item>Bilal#Su kaynağı. İlk müezzin. (Hz. Bilal-i Habeşi)</item>
+        <item>Hamza#Aslan gibi güçlü. Hz. Muhammed’in amcası, şehit sahabe.</item>
+        <item>Ömer#Adaletli, dirayetli. Hz. Ömer, ikinci halife.</item>
+        <item>Osman#Temiz, saf. Hz. Osman, üçüncü halife.</item>
+        <item>Ebu Bekir#İlk Müslümanlardan, sadık dost. İlk halife.</item>
+        <item>Said#Mutlu, bahtiyar. Cennetle müjdelenmiş sahabelerden.</item>
+        <item>Süheyb#Kırmızımsı tenli, erken Müslüman olan sahabe.</item>
+        <item>Halid#Ebedi, sonsuz. Halid bin Velid, büyük komutan.</item>
+        <item>Amr#İnşa etmek, refah getiren. Amr bin As, fetih komutanı.</item>
+        <item>Yasir#Kolaylaştıran. Hz. Yasir, ilk Müslüman şehit ailesi.</item>
+        <item>Ammar#Dirençli, sağlam. Ammar bin Yasir, ilk Müslümanlardan.</item>
+        <item>Muaz#Korunan, muhafaza altında olan. Hz. Muaz bin Cebel.</item>
+        <item>Ka\'b#Yüksek yer, yüce hedef. Sahabe Ka’b bin Malik.</item>
+        <item>Huzeyfe#Korumacı, gözeten. Hz. Huzeyfe bin Yeman.</item>
+        <item>Zeyd#Allah tarafından artırılmış. Hz. Zeyd bin Harise.</item>
+        <item>Sa\'d#Mutluluk, saadet. Hz. Sa’d bin Ebi Vakkas.</item>
+        <item>Ubeyde#Kul, hizmet eden. Hz. Ubeyde bin Cerrah.</item>
+        <item>Barra#Bağışlayıcıya yönelen. Hz. Muhammed’in eşlerinden biri.</item>
+        <item>Selman#Temiz, güvenilir. Selman-ı Farisi.</item>
+        <item>Taha#‘Ey insan’ anlamında. Peygambere hitap. (Taha 20/1)</item>
+        <item>Yasin#‘Ey insan’ hitabı. Hz. Muhammed’e sesleniş. (Yasin 36/1)</item>
+        <item>Kasim#Bölüştüren, dağıtan. Hz. Muhammed’in oğlunun adı.</item>
+        <item>Tufeyl#Aydınlık getiren. Sahabe Tufeyl bin Amr.</item>
+        <item>Haris#Çiftçi, çalışan. İsim olarak geçer.</item>
+        <item>Miktad#Savaşçı, yiğit. Miktad bin Amr, ilk Müslümanlardan.</item>
+        <item>Usame#Aslan yavrusu. Usame bin Zeyd.</item>
+        <item>Sehl#Kolay, yumuşak huylu. Sahabe Sehl bin Sa’d.</item>
+        <item>Naim#Nimet içinde olan. Cennet nimetlerini çağrıştırır.</item>
+        <item>Rashid#Doğru yolda olan. Hidayet üzere.</item>
+        <item>Furkan#Doğruyu yanlıştan ayıran. Kuran’ın isimlerinden. (Furkan 25/1)</item>
+        <item>Burhan#Açık delil. (Nisa 4/174)</item>
+        <item>Hadi#Rehber, doğru yola ulaştıran. (Hacc 22/54)</item>
+        <item>Latif#En ince anlayışlı, lütuf sahibi. (Şura 42/19)</item>
+        <item>Basir#Gören, her şeyi gören. (Şura 42/11)</item>
+        <item>Aziz#İzzet sahibi, güçlü. (Bakara 2/129)</item>
+        <item>Kerim#Cömert, yüce. (İnfitar 82/6)</item>
+        <item>Alim#Her şeyi bilen. (Bakara 2/282)</item>
+        <item>Sabir#Sabırlı olan, dayanıklı. Kur’an’da sabır erdemi çokça vurgulanır.</item>
+        <item>Nasir#Yardım eden, destek olan. (Saff 61/14)</item>
+        <item>Munir#Işık saçan, aydınlatıcı. (Ahzab 33/46)</item>
+        <item>Rauf#Şefkatli, merhametli. (Tevbe 9/128)</item>
+        <item>Şakir#Şükreden, minnettar. (İnsan 76/3)</item>
+        <item>Şehid#Şahit olan, gözeten. (Ali İmran 3/98)</item>
+        <item>Azim#Sabreden, azimli. (Şura 42/43)</item>
+        <item>Hakim#Hikmet sahibi. (Bakara 2/129)</item>
+        <item>Hak#Hakkı temsil eden, gerçek. (Hac 22/6)</item>
+        <item>Adil#Adaletli, hakkaniyetli. (Maide 5/8)</item>
+        <item>Sami#Yüce, işiten. (Bakara 2/127)</item>
+        <item>Veli#Dost, koruyucu. (Bakara 2/257)</item>
+        <item>Gani#Zengin, hiçbir şeye muhtaç olmayan. (Tevbe 9/28)</item>
+        <item>Halil#Dost, candan dost. Hz. İbrahim’in sıfatıdır. (Nisa 4/125)</item>
+        <item>Emir#Komutan, lider. İslam tarihinde yaygın isim.</item>
+        <item>Raşid#Doğru yolu bulan, rehber. Raşid halifeler dönemi.</item>
+        <item>İkram#Cömertlik, ikramda bulunan. (İnsan 76/3)</item>
+        <item>İhsan#Güzellik, iyilikte bulunmak. (Nahl 16/90)</item>
+        <item>İhlas#Samimiyetle Allah’a bağlanma. (İhlas Suresi)</item>
+        <item>Beyan#Açıklama, anlatım. (Rahman 55/4)</item>
+        <item>Nurettin#Dinin nuru, İslam’ın aydınlığı.</item>
+        <item>Celaleddin#Dinin yüceliği, celal sahibi.</item>
+        <item>Ziya#Nur, parlaklık. Ziya Paşa’dan da tanınır.</item>
+        <item>Behzat#Saygı gören, asil.</item>
+        <item>Behçet#Neşe, sevinç.</item>
+        <item>Bedir#Dolunay, Bedir Savaşı’na atıf. (Al-i İmran 3/123)</item>
+        <item>Kadir#Güç sahibi. (Kadir 97/1)</item>
+        <item>Mahir#Usta, becerikli.</item>
+        <item>Mecid#Şan ve şeref sahibi. (Hud 11/73)</item>
+        <item>Sabit#Sağlam, kararlı. (İbrahim 14/24)</item>
+        <item>Tevfik#Başarı, Allah’ın yardımı.</item>
+        <item>Necip#Soylu, asil.</item>
+        <item>Necdet#Cesaret, yiğitlik.</item>
+        <item>Nedim#Dost, arkadaş.</item>
+        <item>Fazıl#Erdemli, faziletli.</item>
+        <item>Fazilet#Ahlak üstünlüğü, iyilik.</item>
+        <item>Baki#Sonsuz, kalıcı. (Rahman 55/27)</item>
+        <item>Vasfi#Nitelikli, özellik taşıyan.</item>
+        <item>Zühdi#Dünyaya bağlı olmayan, zühd ehli.</item>
+        <item>Refik#Dost, arkadaş. (Nisa 4/69)</item>
+        <item>Rıdvan#Allah’ın rızası. (Tevbe 9/21)</item>
+        <item>Erkam#Saygın kişi. Erkam’ın Evi (İslam tarihinde önemli).</item>
+        <item>Safvan#Saf, temiz. (Fetih 48/10)</item>
+        <item>Talha#Meyveli ağaç. Ashab-ı kiramdan.</item>
+        <item>Rübey#Küçük nehir, akarsu. Sahabe ismi.</item>
+        <item>Eymen#Sağ tarafta olan, uğurlu.</item>
+        <item>Evren#Kainat, alem.</item>
+        <item>Arif#Bilen, anlayan.</item>
+        <item>Eymen#Yüzü uğurlu, kutlu.</item>
+        <item>Ferid#Emsalsiz, tek.</item>
+        <item>Haydar#Aslan. Hz. Ali’nin lakabı.</item>
+        <item>İslam#Teslimiyet, barış dini.</item>
+        <item>İrfan#Bilgi, hikmet.</item>
+        <item>Kamil#Olgun, kemale ermiş.</item>
+        <item>Kemal#Olgunluk, tamamlanma.</item>
+        <item>Lokman#Bilge kişi, Lokman Suresi. (Lokman 31/12)</item>
+        <item>Mazhar#Beliren, tezahür eden.</item>
+        <item>Mücahit#Cihat eden, mücadele eden.</item>
+        <item>Mümtaz#Seçkin, üstün.</item>
+        <item>Müslim#Teslim olmuş, Müslüman. (Ali İmran 3/67)</item>
+        <item>Mümin#İnanan, iman eden. (Hucurat 49/15)</item>
+        <item>Nail#Erişen, kavuşan.</item>
+        <item>Nizam#Düzen, sistem.</item>
+        <item>Ömerhan#Adaletli hükümdar.</item>
+        <item>Özkan#Soyu temiz olan.</item>
+        <item>Reşat#Doğru yolda olan.</item>
+        <item>Samet#Her şeyin muhtaç olduğu, kendisi muhtaç olmayan. (İhlas 112/2)</item>
+        <item>Sancar#Keskin mızrak.</item>
+        <item>Sarp#Güçlü, sarsılmaz.</item>
+        <item>Sezai#Sezgi sahibi.</item>
+        <item>Sezgin#Sezgileri kuvvetli.</item>
+        <item>Süha#Küçük yıldız.</item>
+        <item>Şahin#Kartal türü, keskin bakışlı.</item>
+        <item>Şamil#Kapsayıcı, kuşatıcı.</item>
+        <item>Şevki#İstekli, arzulu.</item>
+        <item>Tamer#Tam ermiş, güçlü yiğit.</item>
+        <item>Tarık#Sabaha karşı doğan yıldız. (Tarık 86/1)</item>
+        <item>Tayyar#Uçan, hareketli.</item>
+        <item>Temel#Sağlam dayanak.</item>
+        <item>Tuncay#Parlayan ay gibi.</item>
+        <item>Uğur#Bereket, uğur getiren.</item>
+        <item>Uluç#Güçlü lider.</item>
+        <item>Umut#Beklenti, umut ışığı.</item>
+        <item>Uysal#Sakin, yumuşak huylu.</item>
+        <item>Ünal#Ad kazan, ün sahibi.</item>
+        <item>Vefa#Sadakat, bağlılık. (Fetih 48/10)</item>
+        <item>Vecdi#Coşku, vecd hali.</item>
+        <item>Vedat#Sevgi, dostluk.</item>
+        <item>Yalçın#Dik duran, sert.</item>
+        <item>Yavuz#Cesur, yiğit.</item>
+        <item>Yekta#Eşi benzeri olmayan.</item>
+        <item>Yektaer#Benzersiz yiğit.</item>
+        <item>Yektaali#Benzersiz yüce.</item>
+        <item>Yekvücut#Bir bütün halinde.</item>
+        <item>Yekda#Tek olan.</item>
+        <item>Zafer#Galibiyet, başarı.</item>
+        <item>Zekai#Zeka ile ilgili.</item>
+        <item>Zehri#Saf, berrak kişi.</item>
+        <item>Zeydallah#Allah’ın artırdığı.</item>
+        <item>Zülfikar#Hz. Ali’nin kılıcının adı.</item>
+        <item>Zühdallah#Dünyaya bağlı olmayan Allah dostu.</item>
+        <item>Zinnur#Işık taşıyan.</item>
+        <item>Zikirullah#Allah’ı zikretmek.</item>
+        <item>Ziyaullah#Allah’ın nuru.</item>
+        <item>Zübeyr#Kuvvetli, yiğit. (Hz. Zübeyr bin Avvam)</item>
+        <item>Zümrüt#Parlak yeşil değerli taş.</item>
+        <item>Züheyr#Parlayan, çiçek açan.</item>
+        <item>Şerif#Şerefli, onurlu.</item>
+        <item>Şadi#Sevinçli, neşeli.</item>
+        <item>Şahbaz#Kuvvetli, yiğit.</item>
+        <item>Şahver#Parlak şah, değerli kişi.</item>
+        <item>Şemseddin#Dinin güneşi.</item>
+        <item>Remzi#İşaret eden, simgesel anlam taşıyan.</item>
+        <item>Raufi#Şefkatli, merhametli.</item>
+        <item>Nurefşan#Nur saçan.</item>
+        <item>Hakkı#Hak olan, doğruluktan ayrılmayan.</item>
+        <item>Berkan#Parlayan yıldız gibi.</item>
+        <item>Behlül#Güler yüzlü, yardımsever.</item>
+        <item>Bayram#Kutlu gün.</item>
+        <item>Beyazıt#Adaletli padişah, yüce kişi.</item>
+        <item>Abdullah#Allah’ın kulu. (Meryem 19/30)</item>
+        <item>Abdurrahman#Rahman’ın kulu. (Tevbe 9/27)</item>
+        <item>Abdurrahim#Rahim’in kulu.</item>
+        <item>Abdulaziz#Aziz olanın kulu.</item>
+        <item>Abdulmelik#Melik’in (hükümdar) kulu.</item>
+        <item>Abdüsselam#Selam olanın kulu.</item>
+        <item>Abdülbaki#Baki olanın kulu.</item>
+        <item>Abdulkadir#Kadir olanın kulu.</item>
+        <item>Abdulgani#Zengin olanın kulu.</item>
+        <item>Abduşşükür#Şükredenin kulu.</item>
+        <item>Abdulvahid#Vahid olanın kulu, tek ve bir olanın kuludur.</item>
+        <item>Abdulkerim#Kerim olanın kulu, cömert ve değerli olanın kuludur.</item>
+        <item>Abdüllatif#Latif olanın kulu, ince ve nazik olanın kuludur.</item>
+        <item>Abdüssamet#Latif olanın kulu, ince ve nazik olanın kuludur.</item>
+        <item>Abdurrezzak#Rızık verenin kulu, hayatı sürdürenin kuludur.</item>
+        <item>Abdulhamid#Hamid olanın kulu, her türlü övgüyü hak edenin kuludur.</item>
+        <item>Cebrail#Allah\'ın kulu manasına gelir. Ayrıca peygambere vahiy getiren melektir ve dört büyük melek arasında yer alır.</item>
+        <item>Alperen#Hem din adamı hem komutan olan yiğit.</item>
+        <item>Nâbi#Haber getiren, peygamber</item>
+        <item>Nasih#Öğüt veren, nasihat eden</item>
+        <item>Nazif#Temiz, pak, nezih</item>
+        <item>Razi#Hoşnut olan, memnun kalan</item>
+        <item>Recai#Rica eden, yalvaran</item>
+        <item>Refet#Şefkat, merhamet, acıma</item>
+        <item>Reşad#Doğruluk, olgunluk, doğru yol</item>
+        <item>Reşit#Akıllı, olgun, doğru yolu bulan (Hucurat 7)</item>
+        <item>Rifat#Yükseklik, ululuk, değer</item>
+        <item>Rüstem#Güçlü, kuvvetli, yiğit (Eski İran kahramanı)</item>
+        <item>Necati#Kurtuluş, selamet</item>
+        <item>Necib#Soylu, değerli, seçkin</item>
+        <item>Mahmud#Övülmüş, beğenilmiş (Muhammed isminin kökeni)</item>
+        <item>İskender–Güçlü, kuvvetli (Zülkarneyn\'in ismi olarak da bilinir,Kehf 83–98)</item>
+        <item>Derviş#Allah\'a yönelmiş, dünyevi arzulardan uzak duran</item>
+        <item>Mustafa#Seçilmiş, güzide (Peygamber Efendimizin sıfatı)</item>
+        <item>Muttalip#İsteyen, arayan (Peygamber Efendimizin dedesinin ismi)</item>
+        <item>Mücahid#Allah yolunda mücadele eden</item>
+        <item>Mümin#İman eden, inanan (Haşr 23)</item>
+        <item>Müzaffer#Zafer kazanmış, galip gelmiş</item>
+        <item>Akif#İbadetine düşkün, kendini Allah\'a adamış</item>
+        <item>Mehmet#Peygamber Efendimiz Hz. Muhammed\'in adından türemiş Türkçe bir erkek adıdır. İsim önce Mehemmet olmuş, sonra Mehmet olarak okunmaya başlanmıştır. Türkiye\'de en çok kullanılan erkek adıdır.</item>
+        <item>İsa#"Salih, kurtarıcı", Allah’ın kudretiyle doğan ve insanları doğru yola iletmekle görevlendirilen peygamber.</item>
+        <item>Yakub#Takip eden, izleyen anlamına gelir. İshak Peygamber\'in oğludur ve İsrailoğulları\'nın atasıdır.</item>
+        <item>İshak#Gülen, sevinçli anlamına gelir. İbrahim Peygamber\'in Sara\'dan olan oğludur ve birçok peygamberin atasıdır.</item>
+        <item>Yunus#Balık sahibi anlamına gelir. Kavmini terk ettiği için balık tarafından yutulmuş ve sonra kurtulmuştur.</item>
+        <item>Muhammed#Çok övülen, tekrar tekrar hamd edilen anlamına gelir. Son peygamber ve İslam dininin kurucusudur.</item>
+        <item>Alparslan#Korkusuz, yiğit, kahraman, aynı zamanda Türklere Anadolu kapılarını açan büyük komutanın adıdır.</item>
+        <item>Emre#Yiğit olan, erkek olan, er olan yada Emir, emir buyurma anlamında</item>
+        <item>Nihat#Yaratılış, karakter, tabiat</item>
+        <item>Abdülcabbar#İstediğini zorla yaptıran Allah\'ın kulu.</item>
+        <item>Abdülmutallib#Muttalib\'in kulu.</item>
+        <item>Kazım#Öfkesini yenen.</item>
+        <item>Cihan#Dünya, alem.</item>
+        <item>Muzaffer#Zafer kazanmış, başarıya ulaşmış, yenmiş</item>
+        <item>Niyazi#Yalvarış, yakarış.</item>
+        <item>Muhsin#Dostluk, muhabbet, sevgi Sahabe ismidir.</item>
+        <item>Miraç#Göğe çıkan. Hz. Muhammed (S.A.S)in göğe çıktığı gece ki, recep ayının 27sine rastlayan kandil gecesidir. O gecede 5 vakit namaz farz kılınmıştır. Çıkma, yükselme</item>
+        <item>Regaip#Çok istek gören, rağbet gören, beğenilen.</item>
+        <item>Recep#Hicri kameri ayların yedincisi, üç ayların ilki.Haybetli, gösterişli</item>
+        <item>Şaban#Hicri, kameri ayların sekizincisi, üç ayların ikinci ayı.</item>
+        <item>Ramazan#Onbir ayın Sultanı olan ramazan ayı. Genelde bu ayda doğanlara bu isim konulur.Soyu dinç yiğit</item>
+        <item>Eşref#Şerefli, nurlu, itibarı çok yüksek olan kişi.</item>
+
+    </string-array>
+
+    <string-array name="kbebek_isim">
+        <item>Aden#Cennet bahçesi anlamına gelir. Kur\'an\'da "Cennetü\'l-Adn" olarak geçer.</item>
+        <item>Ahsen#En güzel, çok güzel. Kur\'an\'da "ahsenu\'l-hadîs" ifadesiyle geçer.</item>
+        <item>Aksa#En uzak yer. Mescid-i Aksa, Kur\'an\'da İsra Suresi\'nde geçer.</item>
+        <item>Amine#Güvenilir, emin kişi. Peygamber Efendimizin annesinin ismidir.</item>
+        <item>Ayşıl#Ay gibi parlayan, ışıl ışıl anlamındadır.</item>
+        <item>Azra#El değmemiş, bakire. Hz. Meryem\'e verilen bir isimdir.</item>
+        <item>Belinay#Cennetteki peygamber çiçeği anlamına gelir.</item>
+        <item>Benan#Parmak uçları. Kur\'an\'da Kıyamet Suresi 4. ayette geçer.</item>
+        <item>Bengisu#Ölümsüzlük suyu, ebedilik anlamındadır.</item>
+        <item>Beren#Güçlü, kuvvetli, akıllı kişi.</item>
+        <item>Berra#Doğru sözlü, hayır işleyen kimse.</item>
+        <item>Berre#Temizleyici, arındırıcı anlamına gelir.</item>
+        <item>Betül#İffetli, onurlu kadın. Hz. Meryem için kullanılır.</item>
+        <item>Büşra#Müjde, sevinçli haber. Kur\'an\'da birçok ayette geçer.</item>
+        <item>Buğlem#Cenneti müjdeleyen melek anlamındadır.</item>
+        <item>Burak#Hz. Muhammed\'in Miraç\'ta bindiği efsanevi atın adı.</item>
+        <item>Esra#Gece yürüyüşü. Kur\'an\'da İsra Suresi\'nde geçer.</item>
+        <item>Ecmel#Oldukça güzel, en güzel anlamındadır.</item>
+        <item>Ebrar#İyilik ve hayır seven kişiler. Kur\'an\'da Mutaffifin Suresi\'nde geçer.</item>
+        <item>Ecrin#Allah’ın hediyesi anlamındadır.</item>
+        <item>Eda#Davranış, tutum. Kur\'an\'da Bakara Suresi\'nde geçer.</item>
+        <item>Elif#Arap alfabesinin ilk harfi, ince ve uzun boylu kız.</item>
+        <item>Emel#İstenen, beklenen şey.</item>
+        <item>Erva#Temiz, ahlaklı kız. Çok güzel, genç.</item>
+        <item>Efide#Kalp anlamına gelir. Kur\'an\'da Ahkaf ve Secde surelerinde geçer.</item>
+        <item>Ecre#Ödül, mükafat. Kur\'an\'da birçok ayette geçer.</item>
+        <item>Esma#İsimler. Allah’ın güzel isimleri anlamında "Esmaül Hüsna" olarak bilinir.</item>
+        <item>Evsa#Emreden insan. Kur\'an\'da Meryem Suresi\'nde geçer.</item>
+        <item>Evla#Daha iyi, daha layık olan.</item>
+        <item>İkra#Oku. Kur\'an\'ın ilk inen ayeti "İkra"dır.</item>
+        <item>Serap#Hayal, yanılsama. Kur\'an\'da Nebe Suresi 20. ayette geçer.</item>
+        <item>Beyza#Günahsız, ak, beyaz. Kur\'an\'da Taha Suresi\'nde geçer.</item>
+        <item>Hamiyet#Koruma, kollama. Kur\'an\'da Gasiye Suresi\'nde geçer.</item>
+        <item>Asel#Cennetteki bal. Kur\'an\'da Muhammed Suresi\'nde geçer.</item>
+        <item>Anife#Gençlik çağının başlaması. Kur\'an\'da Muhammed Suresi\'nde geçer.</item>
+        <item>Sara#Prenses. Hz. İbrahim\'in eşinin ismidir.</item>
+        <item>Saliha#Elverişli, uygun. Allah\'ın emirlerini yerine getiren kişi.</item>
+        <item>Saye#Sahip çıkan kişi.</item>
+        <item>Seher#Sabahın güneş doğmadan önceki vakti.</item>
+        <item>Sena#Övgü, şükür. Işık, şimşek parıltısı.</item>
+        <item>Serra#Kolaylık, genişlik.</item>
+        <item>Selva#Kuş, bıldırcın. Kur\'an\'da Bakara Suresi\'nde geçer.</item>
+        <item>Sultan#Padişah, hükümdar. Hükümdar ailesinden olan kadınlar.</item>
+        <item>Sidre#Cennetteki ağaçlardan biri. Kur\'an\'da Necm Suresi\'nde geçer.</item>
+        <item>Şifa#Bedensel ve ruhsal hastalığın son bulması. Kur\'an\'da İsra Suresi\'nde geçer.</item>
+        <item>Şura#Danışma, meşveret. Kur\'an\'da Şura Suresi\'nde geçer.</item>
+        <item>Şüheda#Şehitler. Kur\'an\'da Al-i İmran Suresi\'nde geçer.</item>
+        <item>Tamay#Dolunay anlamındadır.</item>
+        <item>Tayyibe#Temiz, hoş. Kur\'an\'da Tevbe Suresi\'nde geçer.</item>
+        <item>Tuana#Cennete düşen ilk yağmur tanesi.</item>
+        <item>Tuba#En iyi, en güzel. Cennette bulunduğuna inanılan ağaç.</item>
+        <item>Tuğba#Cennette bulunduğuna inanılan ağaç.</item>
+        <item>Tuğyan#Azgınlık, taşkınlık. Kur\'an\'da birçok ayette geçer.</item>
+        <item>Vildan#Yeni doğmuş çocuk. Kur\'an\'da Vâkıa Suresi\'nde geçer.</item>
+        <item>Vicdan#İçsel duygu, doğruyu ve iyiyi yapma gücü.</item>
+        <item>Yağmur#Su buharının yoğunlaşmasıyla oluşan sıvı.</item>
+        <item>Yakut#Kırmızı renkli değerli taş. Cennetteki ziynetler arasında geçer. Kur\'an\'da Rahman Suresi 58. ayette "yakut ve mercan" olarak geçer.</item>
+        <item>Yasemin#Güzel kokulu bir çiçek. İslam kültüründe zarafeti ve temizliği simgeler.</item>
+        <item>Yüsra#Kolaylık, rahatlık. Kur\'an\'da İnşirah Suresi 5–6. ayetlerde "Her zorluktan sonra bir kolaylık vardır" şeklinde geçer.</item>
+        <item>Zahide#Dünya malına düşkün olmayan, kanaatkar kişi.</item>
+        <item>Zahra#Parlak, ışıklı. Hz. Fatıma\'nın lakabı olarak "Fatıma-tüz-Zehra" şeklinde kullanılır.</item>
+        <item>Zeynep#Babasının süsü. Peygamber Efendimizin kızının adı. Kur\'an\'da Ahzab Suresi 37. ayette geçer.</item>
+        <item>Zehra#Beyaz ve parlak kadın. Hz. Fatıma’nın lakabıdır.</item>
+        <item>Zekiye#Akıllı, anlayışlı. Kur\'an\'da Kehf Suresi\'nde geçer.</item>
+        <item>Zülal#Tatlı, saf su. Kur\'an\'da İnsan Suresi 17. ayette cennetteki içeceklerden biri olarak geçer.</item>
+        <item>Zümra#Topluluk, cemaat. Kur\'an\'da Zümer Suresi\'nde geçer.</item>
+        <item>Zümrüt#Yeşil renkli değerli taş. Cennet nimetleri arasında simgesel anlam taşır.</item>
+        <item>Zühre#Parlayan yıldız, Venüs gezegeni. Güzellik ve ışığın sembolü.</item>
+        <item>Zübeyde#Seçkin, değerli kadın. Hz. Musa’nın annesinin adı olduğu rivayet edilir.</item>
+        <item>Zeyneb#Güzel koku yayan bitki. Peygamberimizin torunu ve kızıdır.</item>
+        <item>Zehra#Aydınlık, ışıklı. Hz. Fatıma\'nın lakabı.</item>
+        <item>Zeliha#Hz. Yusuf’a aşık olan Mısır valisinin eşi.</item>
+        <item>Zahra#Parlaklık, güzellik. İslami kaynaklarda geçer.</item>
+        <item>Zinnur#Nurlu, ışıklı kişi. Allah’ın nuruyla nurlanmış anlamındadır.</item>
+        <item>Zülfiye#Saçlı, saçları güzel kadın.</item>
+        <item>Zaria#Parlayan yıldız anlamına gelir. İslami literatürde zariflik ile ilişkilendirilir.</item>
+        <item>Zerna#Altın gibi değerli. Kürtçe ve Arapça kökenli.</item>
+        <item>Zeynepnur#Zeynep ve Nur isimlerinin birleşimi; süs ve ışık demektir.</item>
+        <item>Zeylani#Zenginlik ve güzelliğin sembolü. Zeylani kelimesi İmam-ı Gazali’nin eserlerinde geçer.</item>
+        <item>Zekavet#Parlak zeka, üstün akıl.</item>
+        <item>Zureyha#Güzel, alımlı kadın anlamında. Zeliha’nın farklı bir söyleniş biçimi.</item>
+        <item>Ziyana#Işık saçan, zarif ve güzel kız çocuğu anlamında kullanılır.</item>
+        <item>Zeyyan#Süsleyen, süs veren. Kur’an’da “züyyine” köküyle birçok yerde geçer.</item>
+        <item>Zühre#Venüs yıldızı, parlaklık ve güzellik timsali.</item>
+        <item>Zirve#En yüksek nokta, zirveye ulaşan.</item>
+        <item>Zahide#Kanaatkâr ve dünyaya meyletmeyen kadın.</item>
+        <item>Zahira#Parlak, görünür, açık anlamına gelir. Kur’an’da Zahir ismi Allah’ın isimlerinden biridir.</item>
+        <item>Zekiye#Temiz, saf, günahsız. Kur’an’da Kehf Suresi 74. ayette geçer.</item>
+        <item>Zarife#Nazik, zarif, ince yapılı.</item>
+        <item>Zayneb#Güzel koku yayan ağaç. Zeynep isminin farklı söylenişi.</item>
+        <item>Zerafet#Naziklik, incelik. İslam ahlakında önemli bir erdemdir.</item>
+        <item>Zernişan#Altın gibi parlayan, değerli kadın.</item>
+        <item>Zeynebülhüda#Doğruluk rehberi, doğru yolu gösteren süs.</item>
+        <item>Zinet#Süs, güzellik. Kur’an’da birçok ayette geçer (Araf 31).</item>
+        <item>Ziyade#Arttırılmış, bereketli. Kur’an’da Yunus 26’da geçer.</item>
+        <item>Zehha#Işıldayan, nur saçan kadın.</item>
+        <item>Zeynebzade#Zeynep’in soyundan gelen kız anlamında kullanılır.</item>
+        <item>Zaide#Artış, fazlalık anlamında.</item>
+        <item>Zayıka#Tadan kişi. Kur’an’da Al-i İmran 185: “Her nefis ölümü tadacaktır.”</item>
+        <item>Zeheb#Altın. Kur’an’da Âl-i İmran 14. ayette geçer.</item>
+        <item>Zevce#Eş, kadın eş. Kur’an’da birçok ayette eş anlamında geçer.</item>
+        <item>Zeyrek#Akıllı, uyanık, zeki kişi.</item>
+        <item>Zeynebşah#Zeynep ve Şah isimlerinin birleşimi; süslerin şahı anlamındadır.</item>
+        <item>Züleyha#Hz. Yusuf kıssasında geçen kadın karakter.</item>
+        <item>Abide#Yüksek, ulu, kalıcı ve sağlam karakterli kadın.</item>
+        <item>Aceze#Zayıf, güçsüz anlamındadır. Allah\'ın kudreti karşısında aciz olan kul.</item>
+        <item>Adile#Adaletli, doğru ve dürüst davranan kadın.</item>
+        <item>Afiya#Sağlık, esenlik. Kur’an’da doğrudan geçmese de hadislerde sıkça zikredilir: “Allah’tan afiyet isteyin.”</item>
+        <item>Ahter#Yıldız. Parlaklık ve yol göstericilik sembolüdür.</item>
+        <item>Akile#Aklı olan, akıllı kadın.</item>
+        <item>Aliye#Yüce, yüksek. Kur’an’da Allah’ın sıfatlarından biridir: “Aliyy’dir, yücedir.” (Bakara 255)</item>
+        <item>Amine#Güvenilir kadın. Peygamber Efendimizin annesinin adıdır.</item>
+        <item>Arife#Bilgili, irfan sahibi kadın. Arif kelimesinden türemiştir.</item>
+        <item>Asiye#İnançlı kadın. Firavun’un eşi olup mümin bir kadın olarak Kur’an’da Tahrim 11’de anılır.</item>
+        <item>Azize#Saygıdeğer, güçlü ve onurlu kadın. Allah’ın isimlerinden biri de “Aziz”dir.</item>
+        <item>Afra#Beyaz tenli, aydınlık kadın. Temizlik ve arılığı simgeler.</item>
+        <item>Alime#İlmi olan, bilgili kadın. “Âlim” kökünden gelir.</item>
+        <item>Atika#Saf, temiz, güzel yüzlü kadın. Sahabe kadınlarından biridir.</item>
+        <item>Ayşe#Yaşayan, hayat dolu kadın. Hz. Ayşe, Peygamberimizin eşi.</item>
+        <item>Aişe#Yaşayan, hayat dolu kadın. Hz. Ayşe, Peygamberimizin eşi.</item>
+        <item>Azra#El değmemiş, iffetli kadın.</item>
+        <item>Badea#Eşsiz güzellikte olan. Allah’ın yaratma sıfatı “Bedii” ile ilişkilendirilir.</item>
+        <item>Banu#Hanımefendi, asil kadın.</item>
+        <item>Basima#Gülümseyen. İslam’da tebessüm sadaka sayılır.</item>
+        <item>Berra#İyi huylu, dindar kadın. Peygamberimizin hanımlarından biridir.</item>
+        <item>Beyza#Bembeyaz, arı duru. Kur’an’da Taha 22’de Hz. Musa’nın mucizesiyle eli “beyaz” olur.</item>
+        <item>Billur#Parlak ve saf cam gibi kadın.</item>
+        <item>Burcu#Güzel koku yayan çiçek. Ferahlık ve temizlikle anılır.</item>
+        <item>Cahide#Çaba gösteren, gayretli kadın.</item>
+        <item>Cemile#Güzel kadın. Allah’ın isimlerinden biri “el-Cemil”dir: “Allah güzeldir ve güzelliği sever.”</item>
+        <item>Cennet#Cennetin adı, Kur’an’da yüzlerce ayette geçer. Allah’ın mükafat yurdu.</item>
+        <item>Ceyda#Boylu poslu, zarif kadın.</item>
+        <item>Cihan#Dünya, evren. Allah’ın yarattığı âlemi simgeler.</item>
+        <item>Derya#Deniz, ilim ve gönül zenginliği anlamına gelir.</item>
+        <item>Durriye#Parlayan, inci gibi kadın. “Durr” kelimesi inci anlamında Kur’an’da geçer (Rahman 22).</item>
+        <item>Dua#Yalvarış, yakarış. Kur’an’da birçok sure dua ile başlar ve biter.</item>
+        <item>Dürdane#İnci tanesi gibi değerli kadın.</item>
+        <item>Ebru#Yüz güzelliği, kaş şekli. Zarafet sembolüdür.</item>
+        <item>Ecrin#Allah’ın hediyesi. Kur’an’da “ecir” ödül anlamında birçok ayette geçer.</item>
+        <item>Edibe#Edepli, terbiyeli, güzel ahlaklı kadın.</item>
+        <item>Ela#Göz rengi olarak kullanılır. Zarafeti ve farklılığı simgeler.</item>
+        <item>Emine#Güvenilir, emin. Peygamberimizin lakabı “El-Emin”dir.</item>
+        <item>Esma#İsimler. “Esmaü’l-Hüsna” Allah’ın en güzel isimleri anlamındadır.</item>
+        <item>Fadime#Hz. Fatıma’nın bir başka söylenişi.</item>
+        <item>Fahriye#Övülen, şerefli kadın.</item>
+        <item>Fatıma#Hz. Muhammed’in kızı. İslam’da en değerli kadın isimlerinden biridir.</item>
+        <item>Feride#Eşi benzeri olmayan, tek kadın.</item>
+        <item>Feyza#Bolluk, bereket. Feyz kökünden gelir.</item>
+        <item>Firdevs#Cennetin en yüce katı. Kur’an’da Mü’minun 11’de geçer.</item>
+        <item>Gülbahar#Baharda açan gül gibi güzel kadın.</item>
+        <item>Gülsüm#Yüzü gülen, güler yüzlü kadın. Hz. Muhammed’in kızı Ümmü Gülsüm bu isimle anılır.</item>
+        <item>Hafsa#Hz. Ömer’in kızı ve Peygamberimizin hanımı.</item>
+        <item>Havva#İlk kadın, Hz. Adem’in eşi.</item>
+        <item>Hicran#Ayrılık, hasret. Tasavvufî anlamda Allah’a olan özlemi ifade eder.</item>
+        <item>Hümeyra#Peygamberimizin Hz. Ayşe’ye hitabı; pembemsi yanaklı kadın.</item>
+        <item>İffet#Temizlik, namus ve onur. İslam ahlakının temel unsurlarındandır.</item>
+        <item>İkram#İkram etme, cömertlik. Kur’an’da birçok yerde geçer.</item>
+        <item>İlknur#İlk doğan nur, aydınlık anlamında.</item>
+        <item>Kübra#Büyük, yüce. Kur’an’da “Kıyamet-i Kübra” gibi ifadelerde geçer.</item>
+        <item>Kevser#Cennette bir nehir, bolluk ve nimet. Kur’an’da Kevser Suresi\'nde geçer.</item>
+        <item>Leyla#Gece. Kur’an’da dolaylı olarak geçer: “Geceyi bir örtü kıldık.” (Nebe 10)</item>
+        <item>Mahinur#Ay gibi parlak kadın.</item>
+        <item>Mehlika#Ay yüzlü, güzellik timsali kadın.</item>
+        <item>Meryem#Hz. İsa’nın annesi. Kur’an’da Meryem Suresi onun adını taşır.</item>
+        <item>Münevver#Aydınlık, nur saçan. Allah’ın nuru ile nurlanmış kişi.</item>
+        <item>Naciye#Kurtulmuş, selamete ermiş kadın.</item>
+        <item>Nehir#Cennet ırmaklarını simgeler. Kur’an’da birçok ayette geçer (Bakara 25).</item>
+        <item>Nesibe#Sahabe kadınlarından biridir. Fedakâr ve kahraman bir mümin.</item>
+        <item>Nida#Sesleniş, çağrı. Kur’an’da birçok ayette “nada” köküyle geçer.</item>
+        <item>Nisa#Kadınlar. Kur’an’da bir sure ismi olarak geçer.</item>
+        <item>Nuray#Ay gibi parlak, ışık saçan.</item>
+        <item>Rabia#Dördüncü kız çocuğu anlamında. Tasavvuf ehli Rabia el-Adeviyye ile tanınır.</item>
+        <item>Ravza#Cennet bahçesi. Mescid-i Nebevi’deki “Ravza-i Mutahhara” ile bilinir.</item>
+        <item>Reyhan#Cennet bitkisi. Kur’an’da Rahman 12. ayette geçer.</item>
+        <item>Rukiye#Yükselmiş, yücelmiş. Peygamberimizin kızı.</item>
+        <item>Saide#Mutlu, bahtiyar. “Saadet” köküyle ilişkilidir.</item>
+        <item>Saliha#İyi, dürüst kadın. Kur’an’da “salih amel” çokça geçer.</item>
+        <item>Selma#Barış içinde, huzurlu. İslam barış anlamına gelir.</item>
+        <item>Şehide#Şahitlik eden, imanıyla can veren kadın.</item>
+        <item>Şifa#Şifa, iyileşme. Kur’an’da Yasin 69, Fussilet 44’te geçer.</item>
+        <item>Şükran#Teşekkür, şükretme. Kur’an’da Allah’a şükretme sıkça vurgulanır.</item>
+        <item>Sümeyye#İslam’da ilk kadın şehittir. Fedakârlığın timsali.</item>
+        <item>Tasnim#Cennet içeceği. Kur’an’da Mutaffifin 27. ayette geçer.</item>
+        <item>Tuba#Cennet ağacı. Kur’an’da Rad 29’da geçer.</item>
+        <item>Ülfet#Samimiyet, dostluk. Kur’an’da Haşr Suresi 9. ayette geçer.</item>
+        <item>Vuslat#Kavuşma, Allah’a yakınlık. Tasavvufî anlamda kullanılır.</item>
+        <item>Yasmin#Yasemin çiçeği, zariflik simgesi.</item>
+        <item>Safiyye#Temiz, arınmış, seçilmiş kadın. Peygamber Efendimizin eşlerinden biridir ve sahabe hanımlar arasında önemli yere sahiptir.</item>
+        <item>Atike#Temiz, pak, güzel koku yayan kadın. Sahabe hanımlar arasında bu ismi taşıyanlar vardır. Hz. Muhammed’in (s.a.v.) halasıdır.</item>
+        <item>Ümeyye#Küçük anne anlamına gelir. Arap toplumunda kullanılan eski bir isimdir. Ümeyyeoğulları kabilesiyle bağlantılıdır. Tarihî önemi vardır.</item>
+        <item>Amine#Güvende olan, korkusuz. Hz. Muhammed’in (s.a.v.) annesinin ismidir. İslam tarihinde çok kıymetlidir.</item>
+        <item>Hatice#Erken doğan, zamanından önce doğan. Hz. Muhammed’in (s.a.v.) ilk eşi ve İslam’ı ilk kabul eden kişidir. “Hatice-tül Kübra” olarak da bilinir.</item>
+        <item>Halime#Hz. Muhammed\'in süt annesi. Hilm ve sa\' hasletlerine sahip kişi anlamındadır. Peygamberimizin büyük saygı ve mettle andığı bir sahabedir.</item>
+        <item>Neziha#arınmış, kir ve çirkinden uzak</item>
+        <item>Ayşegül#Güleç, gül gibi renkli, canlı ve rahat ömür süren.</item>
+        <item>Ayten#Ay gibi parlak renkli.</item>
+        <item>Zülfiyar#Sevgilinin saçı.</item>
+        <item>Aybüke#ay ışığı,ay gibi parlak,ay yüzlü,ay benizli,akıllı zeki.</item>
+        <item>Aybike#ay ışığı,ay gibi parlak,ay yüzlü,ay benizli,akıllı zeki.</item>
     </string-array>
 </resources>

@@ -2,6 +2,8 @@ package com.islamyolu.app.weather;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class WeatherData {
     @SerializedName("latitude")
     private double latitude;
@@ -14,6 +16,9 @@ public class WeatherData {
 
     @SerializedName("current_weather")
     private CurrentWeather currentWeather;
+
+    @SerializedName("daily")
+    private DailyWeatherForecast daily;
 
     public static class CurrentWeather {
         @SerializedName("temperature")
@@ -38,14 +43,48 @@ public class WeatherData {
         }
     }
 
+    // Günlük tahminler
+    public static class DailyWeatherForecast {
+        @SerializedName("time")
+        private List<String> dates;
+
+        @SerializedName("weathercode")
+        private List<Integer> weatherCodes;
+
+        @SerializedName("temperature_2m_max")
+        private List<Double> maxTemperatures;
+
+        public List<String> getDates() {
+            return dates;
+        }
+
+        public List<Integer> getWeatherCodes() {
+            return weatherCodes;
+        }
+
+        public List<Double> getMaxTemperatures() {
+            return maxTemperatures;
+        }
+    }
+
+    public DailyWeatherForecast getDaily() {
+        return daily;
+    }
+
     public CurrentWeather getCurrentWeather() {
         return currentWeather;
     }
 
     public String getWeatherDescription() {
-        if (currentWeather == null) return "Bilinmiyor";
+        if (currentWeather == null && daily == null)
+            return "Bilinmiyor";
+        int value = 0;
+        if (currentWeather != null)
+            value = currentWeather.getWeatherCode();
+        else if (daily.getWeatherCodes() != null && !daily.getWeatherCodes().isEmpty() && daily != null)
+            value = daily.getWeatherCodes().get(0);
 
-        switch (currentWeather.getWeatherCode()) {
+        switch (value) {
             // Açık Hava (0)
             case 0:
                 return "Açık hava";

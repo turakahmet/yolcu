@@ -23,10 +23,13 @@
 
     <uses-feature
         android:name="android.hardware.sensor.accelerometer"
-        android:required="true" />
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.sensor.compass"
-        android:required="true" />
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.faketouch"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
@@ -68,6 +71,7 @@
         <activity android:name=".game.InfoGameActivity" />
         <activity android:name=".game.WordGameActivity" />
         <activity android:name=".game.MatchesGameActivity" />
+        <activity android:name=".game.GenericGameActivity" />
         <activity android:name=".ibadet.KirkHadisActivity" />
         <activity android:name=".ibadet.IbadetDetailActivity" />
         <activity android:name=".ibadet.IbadetContentActivity" />

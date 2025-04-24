@@ -59,7 +59,8 @@ public class IntroFragment extends Fragment {
                     prefs.edit().putBoolean("isIntroCompleted", true).apply();
 
                     // MainActivity'ye geç
-                    startActivity(new Intent(getActivity(), MainActivity.class));
+                    Intent intent = new Intent(requireContext(), MainActivity.class);
+                    startActivity(intent);
                     requireActivity().finish();
                 });
             }

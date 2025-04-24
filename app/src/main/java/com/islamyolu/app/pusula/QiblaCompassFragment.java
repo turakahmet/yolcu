@@ -1,6 +1,5 @@
 package com.islamyolu.app.pusula;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -28,7 +27,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -68,6 +66,7 @@ public class QiblaCompassFragment extends Fragment implements SensorEventListene
     private QiblaDirectionView qiblaDirectionView;
     private Button compassInfoButton;
     private Dialog mDialog;
+    private boolean locationCheckDone = false;
 
 
     @Nullable
@@ -89,6 +88,8 @@ public class QiblaCompassFragment extends Fragment implements SensorEventListene
     }
 
     private void initializeLocationService() {
+        if (locationCheckDone) return; // Tekrar girmesini engelle
+
         locationService = LocationService.getInstance(requireContext());
         locationService.checkLocationPermission(requireActivity(), () -> {
             if (locationService.isLocationEnabled()) {
@@ -107,29 +108,39 @@ public class QiblaCompassFragment extends Fragment implements SensorEventListene
                     }
                 });
             } else {
-                // Konum servisi kapalıysa, kullanıcıyı ayarlara yönlendirin.
-                new AlertDialog.Builder(requireContext())
-                        .setTitle(getString(R.string.location_service_closed_header))
-                        .setMessage(getString(R.string.location_service_closed_message))
-                        .setPositiveButton(getString(R.string.evet), (dialog, which) -> {
-                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivity(intent);
-                        })
-                        .setNegativeButton(getString(R.string.hayir), (dialog, which) -> navigateToPreviousScreen())
-                        .setCancelable(false)
-                        .show();
+                showLocationSettingsDialog();
+
             }
-        }, () -> {
-            // Konum izni verilmediyse, izin istemek için kullanıcıyı bilgilendirin.
-            new AlertDialog.Builder(requireContext())
-                    .setTitle(getString(R.string.location_permission_required_header))
-                    .setMessage(getString(R.string.location_permission_required_message))
-                    .setPositiveButton(getString(R.string.tamam), (dialog, which) -> ActivityCompat.requestPermissions(requireActivity(),
-                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                            LOCATION_PERMISSION_REQUEST_CODE))
-                    .setCancelable(false)
-                    .show();
-        });
+        }, this::showPermissionDialog);
+    }
+
+    private void showLocationSettingsDialog() {
+        // Konum servisi kapalıysa, kullanıcıyı ayarlara yönlendirin.
+        new AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.location_service_closed_header))
+                .setMessage(getString(R.string.location_service_closed_message))
+                .setPositiveButton(getString(R.string.evet), (dialog, which) -> {
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intent);
+                })
+                .setNegativeButton(getString(R.string.hayir), (dialog, which) -> navigateToPreviousScreen())
+                .setCancelable(false)
+                .show();
+    }
+
+    private void showPermissionDialog() {
+        if (getContext() == null) return;
+        locationCheckDone = true;
+        // Konum izni verilmediyse, izin istemek için kullanıcıyı bilgilendirin.
+        new AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.location_permission_required_header))
+                .setMessage(getString(R.string.location_permission_required_message))
+                .setPositiveButton(getString(R.string.tamam), (dialog, which) -> {
+                    // Sadece geri dön
+                    navigateToPreviousScreen();
+                })
+                .setCancelable(false)
+                .show();
     }
 
     private void initializeViews(View view) {
@@ -139,6 +150,17 @@ public class QiblaCompassFragment extends Fragment implements SensorEventListene
         sensorManager = (SensorManager) requireContext().getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        if (accelerometer == null || magnetometer == null) {
+            // Uyarı ver ve kıble bulucu özelliğini pasifleştir
+            new AlertDialog.Builder(view.getContext())
+                    .setTitle(R.string.compassHardwareInfoHeader)
+                    .setMessage(R.string.compassHardwareInfo)
+                    .setPositiveButton(R.string.tamam, (dialog, which) -> {
+                        navigateToPreviousScreen();
+                    })
+                    .setCancelable(false)
+                    .show();
+        }
         loadingLocationCompass = view.findViewById(R.id.loadingLocationCompass);
         qiblaDirectionView = view.findViewById(R.id.qiblaDirectionView);
         compassInfoButton = view.findViewById(R.id.compassInfoButton);
@@ -162,7 +184,9 @@ public class QiblaCompassFragment extends Fragment implements SensorEventListene
     @Override
     public void onResume() {
         super.onResume();
-        initializeLocationService();
+        if (!locationCheckDone) {
+            initializeLocationService();
+        }
         if (sensorManager != null) {
             sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
             sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
@@ -272,6 +296,8 @@ public class QiblaCompassFragment extends Fragment implements SensorEventListene
     private void navigateToPreviousScreen() {
         if (getParentFragmentManager().getBackStackEntryCount() > 0) {
             getParentFragmentManager().popBackStack(); // Önceki fragment'e dön
+        } else {
+            requireActivity().finish(); // Eğer geri yığın yoksa activity'i kapat
         }
     }
 }
