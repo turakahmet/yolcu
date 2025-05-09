@@ -32,6 +32,17 @@
         app:layout_constraintStart_toEndOf="@+id/coinImage"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/gold_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:fontFamily="@font/tomorrow_b"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/gold_amount_text"
+        app:layout_constraintStart_toEndOf="@id/gold_amount_text"
+        app:layout_constraintTop_toTopOf="@+id/gold_amount_text" />
     <!-- Geri Sayım Sayacı -->
 
     <ImageView

@@ -1,6 +1,6 @@
 package com.islamyolu.app.VakitApi;
 
-import static com.islamyolu.app.main.MainActivity.sharedPrefsHelperService;
+import static com.islamyolu.app.main.MainActivity.SETTINGS_PREFS;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
@@ -18,7 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+import com.islamyolu.app.Entity.PrayerNames;
 import com.islamyolu.app.R;
+import com.islamyolu.app.Service.SharedPrefsHelperService;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -50,7 +52,7 @@ public class PrayerTimesFetcher extends Service {
     private AtomicInteger namazVakitTip = new AtomicInteger(0);
     private NamazVakiti namazVakiti;
     private final int kerahatVakti = 45;
-
+    private SharedPrefsHelperService sharedPrefsHelperService;
 
     public PrayerTimesFetcher(Context context, TextView imsakTime, TextView gunesTime, TextView ogleTime, TextView ikindiTime, TextView aksamTime, TextView yatsiTime, LinearLayout imsakTimeLayout, LinearLayout gunesTimeLayout, LinearLayout ogleTimeLayout, LinearLayout ikindiTimeLayout, LinearLayout aksamTimeLayout, LinearLayout yatsiTimeLayout, LinearLayout locationRefreshLayout, TextView kalanSureTextView, LinearLayout remain_time_layout, TextView toolbarKalanSureLabel) {
         this.context = context;
@@ -72,6 +74,7 @@ public class PrayerTimesFetcher extends Service {
         this.locationRefreshLayout = locationRefreshLayout;
         this.remain_time_layout = remain_time_layout;
         this.toolbarKalanSureLabel = toolbarKalanSureLabel;
+        sharedPrefsHelperService = new SharedPrefsHelperService(context, SETTINGS_PREFS);
     }
 
     // Namaz vakitlerini çekmek için method
@@ -233,7 +236,7 @@ public class PrayerTimesFetcher extends Service {
             namazVakitTip.set(6);
             namazVakiti.setGecerliVakit(NamazVakiti.GecerliVakit.IMSAK);
         } else if (currentTime.isAfter(LocalTime.MIDNIGHT)) {
-            Log.d("PrayerTimesFetcher", "Namaz Vakti tetiklendi! imsak vakti");
+            Log.d("PrayerTimesFetcher", "Namaz Vakti tetiklendi! Test");
             imsakTimeLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.current_namaz_time));
             vakit = LocalTime.parse(imsakTime.getText());
             toolbarKalanSureLabel.setText(R.string.imsak_kalan);
@@ -258,14 +261,21 @@ public class PrayerTimesFetcher extends Service {
 
 
                 // Eğer mevcut zaman namaz vaktini geçmişse
-                if (currentTime.isAfter(nextPrayerTime) && namazVakitTip.get() == 6) {
-                    nextPrayerTime = nextPrayerTime.plusDays(1);
-                    namazVakitTip.set(0);
-                }
+//                if (currentTime.isAfter(nextPrayerTime) && namazVakitTip.get() == 6) {
+//                    nextPrayerTime = nextPrayerTime.plusDays(1);
+//                    namazVakitTip.set(0);
+//                }
+                if (PrayerNames.IMSAK.getValue().equals(namazVakiti.getNextPrayer().getName())) {
+                    if ((currentTime.isAfter(LocalDateTime.of(currentTime.toLocalDate(), LocalTime.parse(namazVakiti.getYatsi()))) && currentTime.isBefore(LocalDateTime.of(currentTime.toLocalDate().plusDays(1), LocalTime.MIDNIGHT)))) {
+                        nextPrayerTime = nextPrayerTime.plusDays(1);
 
+                    }
+//                    nextPrayerTime = nextPrayerTime.plusDays(1);
+                }
 
                 // Kalan süreyi hesaplayın
                 Duration duration = Duration.between(currentTime, nextPrayerTime);
+                namazVakiti.setKalanSure(duration);
 
                 if (!duration.isNegative() && !duration.isZero()) {
                     long hours = duration.toHours();
@@ -329,6 +339,7 @@ public class PrayerTimesFetcher extends Service {
         handler.post(runnable);
     }
 
+
     private LocalTime parseTime(String time) {
         try {
             // String zamanını "HH:mm" formatına göre LocalTime'a dönüştür
@@ -345,16 +356,20 @@ public class PrayerTimesFetcher extends Service {
         return null;
     }
 
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        handler.post(runnable); // Fetch işlemini başlat
+//        handler.post(runnable); // Fetch işlemini başlat
         return START_STICKY; // Servisi devam ettir
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacks(runnable); // Fetch işlemini durdur
+        if (handler != null && runnable != null) {
+            handler.removeCallbacks(runnable);
+        }
+//        handler.removeCallbacks(runnable); // Fetch işlemini durdur
     }
 
 }

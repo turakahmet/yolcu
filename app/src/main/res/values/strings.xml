@@ -41,6 +41,7 @@
     <string name="aksam_kalan">Akşam vaktine kalan</string>
     <string name="yatsi_kalan">Yatsı vaktine kalan</string>
     <string name="imsak_kalan">İmsak vaktine kalan</string>
+    <string name="kalan_label">vaktine kalan</string>
 
     <string name="sabah_namazi">Sabah Namazı</string>
     <string name="ogle_namazi">Öğle Namazı</string>
@@ -626,6 +627,12 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="_120s" translatable="false">120s</string>
     <string name="_180s" translatable="false">180s</string>
     <string name="seviye" translatable="false">Seviye</string>
+    <string name="devam_et">Devam Et</string>
+    <string name="pes_et">Pes Et</string>
+    <string name="total_gold_fail_popup">Sahip olduğun altın</string>
+    <string name="yanlis_yanit">Yanlış Cevap !</string>
+    <string name="hataliYanitMesaj">%1$d altın kullanarak devam etmek istermisin?</string>
+    <string name="yetersiz_kaynak_label_short">Yetersiz Altın!</string>
 
     <string-array name="ezan_sound_options">
         <item>Ezan</item>

@@ -1,0 +1,163 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutPopUpEndGame"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="5dp"
+    android:background="@drawable/ic_popup_background"
+    android:padding="5dp">
+
+
+    <TextView
+        android:id="@+id/hintPopUpTextEndGame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:text="@string/yanlis_yanit"
+        android:textColor="@color/pastelRedColor_m"
+        android:textSize="33sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imagePopUpEndGame"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:contentDescription="@string/bildirim_icon"
+        android:src="@drawable/yes_or_no"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hintPopUpTextEndGame" />
+
+    <TextView
+        android:id="@+id/correctAnswerCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:text="1000 altın kullanarak devam etmek istermisin?"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imagePopUpEndGame" />
+
+
+    <!-- Geri sayım çubuğu -->
+    <ProgressBar
+        android:id="@+id/countdownProgressBar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:indeterminate="false"
+        android:max="7"
+        android:progress="7"
+        android:progressDrawable="@drawable/circular_progress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/correctAnswerCount" /> <!-- Çemberin görseli -->
+
+    <!-- Geri sayım sayacı -->
+    <TextView
+        android:id="@+id/countdownText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="7"
+        android:textColor="@android:color/black"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/countdownProgressBar"
+        app:layout_constraintEnd_toEndOf="@+id/countdownProgressBar"
+        app:layout_constraintStart_toStartOf="@+id/countdownProgressBar"
+        app:layout_constraintTop_toTopOf="@+id/countdownProgressBar" />
+
+    <TextView
+        android:id="@+id/correctAnswerCountLevelLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:text="@string/total_gold_fail_popup"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/countdownProgressBar" />
+
+    <LinearLayout
+        android:id="@+id/guncelAltin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/correctAnswerCountLevelLabel">
+
+        <ImageView
+            android:id="@+id/coinImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:contentDescription="@string/altin_icon"
+            android:src="@drawable/coin_2" />
+
+        <TextView
+            android:id="@+id/totalProfitLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/default_value"
+            android:gravity="center"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+    <!-- Kapat butonu -->
+    <LinearLayout
+        android:id="@+id/buttonPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guncelAltin">
+
+        <Button
+            android:id="@+id/redEtButtonEndGame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/pes_et"
+            android:textStyle="bold"
+            android:backgroundTint="@color/pastelRedColor_m"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/totalProfitLabel" />
+
+        <Button
+            android:id="@+id/kabulEtButtonEndGame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/devam_et"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/totalProfitLabel" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

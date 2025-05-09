@@ -1,6 +1,6 @@
 package com.islamyolu.app.Service;
 
-import static com.islamyolu.app.main.MainActivity.sharedPrefsHelperService;
+import static com.islamyolu.app.main.MainActivity.SETTINGS_PREFS;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +17,7 @@ public class SoundService {
     private CompletionCallback completionCallback;
     private boolean isPlaying = false;
     private boolean isCleaningUp = false;
+    private SharedPrefsHelperService sharedPrefsHelperService;
 
     public static synchronized SoundService getInstance(Context context) {
         if (instance == null) {
@@ -54,11 +55,12 @@ public class SoundService {
     // Ses oynatma metodu - uzun sesler için
     private void playLongSound(int soundResourceId, MediaPlayer.OnCompletionListener completionListener) {
         try {
-            if (sharedPrefsHelperService == null)
-                return;
-            else if (!sharedPrefsHelperService.getSwitchState("switchNotificationSound"))
-                return;
+            sharedPrefsHelperService = new SharedPrefsHelperService(getInstance().context, SETTINGS_PREFS);
+            if (!sharedPrefsHelperService.getSwitchState("switchNotificationSound")) {
+                Log.d(TAG, soundResourceId + "switchNotificationSound kapalı");
 
+                return;
+            }
             Log.d(TAG, "playLongSound başlatılıyor - soundResourceId: " + soundResourceId);
 
             // Daha önce bir MediaPlayer nesnesi çalışıyorsa, önce durdur ve serbest bırak
@@ -127,10 +129,13 @@ public class SoundService {
 
     // Kısa sesler için orijinal playSound metodu
     private void playSound(int soundResourceId) {
-        if (sharedPrefsHelperService == null)
-            return;
-        else if (!sharedPrefsHelperService.getSwitchState("switchNotificationSound"))
-            return;
+        if (sharedPrefsHelperService == null && context != null)
+            sharedPrefsHelperService = new SharedPrefsHelperService(context.getApplicationContext(), SETTINGS_PREFS);
+        else {
+            assert sharedPrefsHelperService != null;
+            if (!sharedPrefsHelperService.getSwitchState("switchNotificationSound"))
+                return;
+        }
 
         if (mediaPlayer != null) {
             mediaPlayer.release();

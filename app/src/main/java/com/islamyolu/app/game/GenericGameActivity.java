@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -20,7 +21,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -60,6 +63,7 @@ public class GenericGameActivity extends AppCompatActivity {
 
     private List<Question> questionList;
     private int currentQuestionIndex = 0;
+    private int hataliYanitSayisiCarpani = 1;
     private int timeLeft = 0; // 60 saniye geri sayım süresi
     private final Handler handler = new Handler(Looper.getMainLooper());
     private boolean joker50Used = false;
@@ -68,14 +72,17 @@ public class GenericGameActivity extends AppCompatActivity {
     private boolean firstAnswerSelected = false;
     private boolean ciftCevapKullanildi = false;
 
+
     private final int JOKER_YUZDE_50 = 120;
     private final int JOKER_IPUCU = 180;
     private final int JOKER_CIFT_CEVAP = 200;
     private final int ADD_COIN_EASY_Q = 80;
     private final int ADD_COIN_MEDIUM_Q = 100;
     private final int ADD_COIN_HARD_Q = 150;
+    private final int HATALI_YANIT_DEVAM = 1000;
 
-    private Dialog loadingDialog, mDialog;
+
+    private Dialog loadingDialog, mDialog, fDialog;
 
     private Question currentQuestion;
     private int correctAnswerIndex;
@@ -453,7 +460,85 @@ public class GenericGameActivity extends AppCompatActivity {
     private void handleIncorrectAnswer(Button selectedButton, Question currentQuestion) {
         selectedButton.setBackgroundColor(ContextCompat.getColor(this, R.color.wrongAnswer)); // Yanlış cevap seçilen buton
         highlightCorrectAnswer(currentQuestion);
-        handler.postDelayed(() -> endGamePopup(currentQuestion, false, false, false, true), 2000);
+        if (currentQuestion.getZorlukSeviyesi() >= 2) {
+            handler.postDelayed(() -> hataliCevapPopup(currentQuestion), 2000);
+        } else {
+            handler.postDelayed(() -> endGamePopup(currentQuestion, false, false, false, true), 2000);
+        }
+    }
+
+    private void hataliCevapPopup(Question currentQuestion) {
+        ProgressBar countdownProgressBar;
+        TextView countdownText, totalProfitLabel;
+        CountDownTimer countDownTimer;
+        stopTimer();
+        fDialog = new Dialog(GenericGameActivity.this);
+        fDialog.setContentView(R.layout.hatali_yanit_pop_up);
+        fDialog.setCancelable(false);
+        Objects.requireNonNull(fDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        int hataliYanitDeger = Math.multiplyExact(HATALI_YANIT_DEVAM, hataliYanitSayisiCarpani);
+
+        TextView correctAnswerCount = fDialog.findViewById(R.id.correctAnswerCount);
+        correctAnswerCount.setText(getString((R.string.hataliYanitMesaj), hataliYanitDeger));
+
+        Button kabulEtButtonEndGame = fDialog.findViewById(R.id.kabulEtButtonEndGame);
+        Button redEtButtonEndGame = fDialog.findViewById(R.id.redEtButtonEndGame);
+        countdownProgressBar = fDialog.findViewById(R.id.countdownProgressBar);
+        countdownText = fDialog.findViewById(R.id.countdownText);
+        countdownText.setText(String.valueOf(timeLeft));
+        totalProfitLabel = fDialog.findViewById(R.id.totalProfitLabel);
+        totalProfitLabel.setText(String.valueOf(goldService.getGoldAmount()));
+
+
+        // 7 saniye boyunca geri sayım yapacak bir CountDownTimer
+        countDownTimer = new CountDownTimer(7000, 1000) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                // Geri sayımın kaç saniye kaldığını TextView'de göster
+                int secondsLeft = (int) (millisUntilFinished / 1000);
+                countdownText.setText(String.valueOf(secondsLeft));
+
+                // Geri sayım çubuğunu güncelle
+                countdownProgressBar.setProgress(secondsLeft);
+            }
+
+            @Override
+            public void onFinish() {
+                // Geri sayım bittiğinde yapılacak işlemler
+                if (fDialog != null && fDialog.isShowing()) {
+                    countdownText.setText("0");
+                    countdownProgressBar.setProgress(0);
+                    endGamePopup(currentQuestion, false, false, false, true);
+                }
+
+                // Burada başka bir işlem yapabilirsiniz (örneğin, oyuna devam et)
+            }
+        };
+
+        countDownTimer.start(); // Geri sayımı başlat
+
+        kabulEtButtonEndGame.setOnClickListener(v -> {
+            if (goldService.getGoldAmount() >= hataliYanitDeger) {
+                countDownTimer.cancel();
+                goldService.minusGoldAmount(hataliYanitDeger);
+                saveGoldAmountText();
+                goldAnimationMinus(hataliYanitDeger);
+                hataliYanitSayisiCarpani++;
+                nextQuestionFailAnswer();
+                fDialog.dismiss();
+                startTimer();
+            } else {
+                Toast.makeText(fDialog.getContext(), R.string.yetersiz_kaynak_label_short, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        redEtButtonEndGame.setOnClickListener(v -> {
+            countDownTimer.cancel();
+            endGamePopup(this.currentQuestion, false, false, false, true);
+        });
+
+        fDialog.show();
     }
 
     private void highlightCorrectAnswer(Question currentQuestion) {
@@ -793,6 +878,15 @@ public class GenericGameActivity extends AppCompatActivity {
             currentQuestionIndex++;
             showQuestion();
         }, 2000);
+    }
+
+    // 3 saniye bekle ve sonraki soruya geç
+    private void nextQuestionFailAnswer() {
+        handler.postDelayed(() -> {
+            resetButtonColors();
+            currentQuestionIndex++;
+            showQuestion();
+        }, 500);
     }
 
     @Override

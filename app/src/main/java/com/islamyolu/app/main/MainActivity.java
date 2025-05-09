@@ -81,8 +81,6 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
     // SharedPreferences için tanımlar
     private SharedPreferences locationPrefs;
     private SharedPreferences userPrefs;
-    private SharedPreferences settingsPrefs;
-    public static SharedPrefsHelperService sharedPrefsHelperService;
 
     public static final String LOCATION_PREFS = "location_prefs";
     private static final String USER_PREFS = "user_prefs";
@@ -106,15 +104,13 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         setContentView(binding.getRoot());
 
         // SharedPreferences ve servisler
+        SharedPrefsHelperService sharedPrefsHelperService = new SharedPrefsHelperService(getApplicationContext(), SETTINGS_PREFS);
         locationPrefs = getSharedPreferences(LOCATION_PREFS, Context.MODE_PRIVATE);
         userPrefs = getSharedPreferences(USER_PREFS, Context.MODE_PRIVATE);
-        sharedPrefsHelperService = new SharedPrefsHelperService(this, SETTINGS_PREFS);
         sharedPrefsHelperService.defaultSettingPreference();
-
 
         // FusedLocationProviderClient başlatma
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
 
         initializeViews();
         initializeServices();

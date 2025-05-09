@@ -1,11 +1,16 @@
 package com.islamyolu.app.game;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -15,7 +20,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -47,7 +54,7 @@ import retrofit2.Response;
 
 public class InfoGameActivity extends AppCompatActivity {
     private TextView timerText;
-    private TextView questionText;
+    private TextView questionText, gold_status;
     private Button option1, option2, option3, option4;
     private Button joker50, jokerHint, jokerDouble;
     private TextView goldAmountText;
@@ -55,6 +62,7 @@ public class InfoGameActivity extends AppCompatActivity {
 
     private List<Question> questionList;
     private int currentQuestionIndex = 0;
+    private int hataliYanitSayisiCarpani = 1;
     private int timeLeft = 150; // 60 saniye geri sayım süresi
     private final Handler handler = new Handler(Looper.getMainLooper());
     private boolean joker50Used = false;
@@ -66,11 +74,12 @@ public class InfoGameActivity extends AppCompatActivity {
     private final int JOKER_YUZDE_50 = 120;
     private final int JOKER_IPUCU = 180;
     private final int JOKER_CIFT_CEVAP = 200;
-    private final int ADD_COIN_EASY_Q = 100;
-    private final int ADD_COIN_MEDIUM_Q = 180;
-    private final int ADD_COIN_HARD_Q = 200;
+    private final int ADD_COIN_EASY_Q = 80;
+    private final int ADD_COIN_MEDIUM_Q = 100;
+    private final int ADD_COIN_HARD_Q = 150;
+    private final int HATALI_YANIT_DEVAM = 1000;
 
-    private Dialog loadingDialog, mDialog;
+    private Dialog loadingDialog, mDialog, fDialog;
 
     private Question currentQuestion;
     private int correctAnswerIndex;
@@ -83,6 +92,7 @@ public class InfoGameActivity extends AppCompatActivity {
     private BadgeService badgeService;
     private boolean jokerKullanmamaRozet = true;
     private int profit = 0;
+    private boolean isAnimationRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,7 +172,7 @@ public class InfoGameActivity extends AppCompatActivity {
         stepView = findViewById(R.id.step_view);
         // Animasyonu yükleyin
         buttonClickAnim = AnimationUtils.loadAnimation(this, R.anim.button_click_anim);
-
+        gold_status = findViewById(R.id.gold_status);
     }
 
 
@@ -326,18 +336,81 @@ public class InfoGameActivity extends AppCompatActivity {
     private void handleCorrectAnswer(Button selectedButton) {
         soundService.successAnswer();
         selectedButton.setBackgroundColor(ContextCompat.getColor(this, R.color.correctAnswer)); // Doğru cevap
+        gold_status.setTextColor(ContextCompat.getColor(this, R.color.correctAnswer));
         if (currentQuestion.getZorlukSeviyesi() == 1) {
             goldService.addGoldAmount(ADD_COIN_EASY_Q); // Doğru cevapta 100 altın ekle
             profit += ADD_COIN_EASY_Q;
+            gold_status.setText(getString(R.string.gold_status_text, ADD_COIN_EASY_Q));
         } else if (currentQuestion.getZorlukSeviyesi() == 2) {
             goldService.addGoldAmount(ADD_COIN_MEDIUM_Q);
             profit += ADD_COIN_MEDIUM_Q;
+            gold_status.setText(getString(R.string.gold_status_text, ADD_COIN_MEDIUM_Q));
         } else if (currentQuestion.getZorlukSeviyesi() == 3) {
             goldService.addGoldAmount(ADD_COIN_HARD_Q);
             profit += ADD_COIN_HARD_Q;
+            gold_status.setText(getString(R.string.gold_status_text, ADD_COIN_HARD_Q));
         }
+        goldAnimation();
         saveGoldAmountText();
         validationRozet(false);
+    }
+
+    private void goldAnimation() {
+        if (isAnimationRunning) {
+            // Animasyon zaten çalışıyor, yeni bir animasyon başlatma
+            return;
+        }
+        isAnimationRunning = true;
+        gold_status.setVisibility(View.VISIBLE);
+
+        // Giriş animasyonları: fade-in ve scale-in
+
+        ObjectAnimator fadeInLabel = ObjectAnimator.ofFloat(gold_status, "alpha", 0f, 1f);
+        ObjectAnimator scaleInXLabel = ObjectAnimator.ofFloat(gold_status, "scaleX", 0.8f, 1f);
+        ObjectAnimator scaleInYLabel = ObjectAnimator.ofFloat(gold_status, "scaleY", 0.8f, 1f);
+
+        // Çıkış animasyonları: fade-out ve scale-out
+        ObjectAnimator fadeOutLabel = ObjectAnimator.ofFloat(gold_status, "alpha", 1f, 0f);
+        ObjectAnimator scaleOutXLabel = ObjectAnimator.ofFloat(gold_status, "scaleX", 1f, 0.8f);
+        ObjectAnimator scaleOutYLabel = ObjectAnimator.ofFloat(gold_status, "scaleY", 1f, 0.8f);
+
+        // Giriş animasyonu süresi (500 ms)
+        fadeInLabel.setDuration(500);
+        scaleInXLabel.setDuration(500);
+        scaleInYLabel.setDuration(500);
+
+        // Çıkış animasyonu süresi (500 ms)
+        fadeOutLabel.setDuration(500);
+        scaleOutXLabel.setDuration(500);
+        scaleOutYLabel.setDuration(500);
+
+        // Giriş animasyonlarını aynı anda başlatmak için AnimatorSet kullan
+        AnimatorSet fadeInSet = new AnimatorSet();
+        fadeInSet.playTogether(fadeInLabel, scaleInXLabel, scaleInYLabel);
+        fadeInSet.start();
+
+        // 2 saniye sonra çıkış animasyonunu başlatmak için Handler kullan
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            AnimatorSet fadeOutSet = new AnimatorSet();
+            fadeOutSet.playTogether(fadeOutLabel, scaleOutXLabel, scaleOutYLabel);
+            fadeOutSet.start();
+
+            // Çıkış animasyonu bittiğinde görünürlükleri GONE yap
+            fadeOutSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    gold_status.setVisibility(View.GONE);
+                    isAnimationRunning = false; // Animasyon bitti, bayrağı sıfırla
+                }
+            });
+        }, 700); // Görünme süresi (2 saniye)
+
+    }
+
+    private void goldAnimationMinus(int value) {
+        gold_status.setTextColor(ContextCompat.getColor(this, R.color.wrongAnswer));
+        gold_status.setText(getString(R.string.gold_status_minus_text, value));
+        goldAnimation();
     }
 
     private void validationRozet(boolean yarismaKazandiMi) {
@@ -362,7 +435,85 @@ public class InfoGameActivity extends AppCompatActivity {
     private void handleIncorrectAnswer(Button selectedButton, Question currentQuestion) {
         selectedButton.setBackgroundColor(ContextCompat.getColor(this, R.color.wrongAnswer)); // Yanlış cevap seçilen buton
         highlightCorrectAnswer(currentQuestion);
-        handler.postDelayed(() -> endGamePopup(currentQuestion, false, false, false), 2000);
+        if (currentQuestion.getZorlukSeviyesi() >= 2) {
+            handler.postDelayed(() -> hataliCevapPopup(currentQuestion), 2000);
+        } else {
+            handler.postDelayed(() -> endGamePopup(currentQuestion, false, false, false), 2000);
+        }
+    }
+
+    private void hataliCevapPopup(Question currentQuestion) {
+        ProgressBar countdownProgressBar;
+        TextView countdownText, totalProfitLabel;
+        CountDownTimer countDownTimer;
+        stopTimer();
+        fDialog = new Dialog(InfoGameActivity.this);
+        fDialog.setContentView(R.layout.hatali_yanit_pop_up);
+        fDialog.setCancelable(false);
+        Objects.requireNonNull(fDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        int hataliYanitDeger = Math.multiplyExact(HATALI_YANIT_DEVAM, hataliYanitSayisiCarpani);
+
+        TextView correctAnswerCount = fDialog.findViewById(R.id.correctAnswerCount);
+        correctAnswerCount.setText(getString((R.string.hataliYanitMesaj), hataliYanitDeger));
+
+        Button kabulEtButtonEndGame = fDialog.findViewById(R.id.kabulEtButtonEndGame);
+        Button redEtButtonEndGame = fDialog.findViewById(R.id.redEtButtonEndGame);
+        countdownProgressBar = fDialog.findViewById(R.id.countdownProgressBar);
+        countdownText = fDialog.findViewById(R.id.countdownText);
+        countdownText.setText(String.valueOf(timeLeft));
+        totalProfitLabel = fDialog.findViewById(R.id.totalProfitLabel);
+        totalProfitLabel.setText(String.valueOf(goldService.getGoldAmount()));
+
+
+        // 7 saniye boyunca geri sayım yapacak bir CountDownTimer
+        countDownTimer = new CountDownTimer(7000, 1000) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                // Geri sayımın kaç saniye kaldığını TextView'de göster
+                int secondsLeft = (int) (millisUntilFinished / 1000);
+                countdownText.setText(String.valueOf(secondsLeft));
+
+                // Geri sayım çubuğunu güncelle
+                countdownProgressBar.setProgress(secondsLeft);
+            }
+
+            @Override
+            public void onFinish() {
+                // Geri sayım bittiğinde yapılacak işlemler
+                if (fDialog != null && fDialog.isShowing()) {
+                    countdownText.setText("0");
+                    countdownProgressBar.setProgress(0);
+                    endGamePopup(currentQuestion, false, false, false);
+                }
+
+                // Burada başka bir işlem yapabilirsiniz (örneğin, oyuna devam et)
+            }
+        };
+
+        countDownTimer.start(); // Geri sayımı başlat
+
+        kabulEtButtonEndGame.setOnClickListener(v -> {
+            if (goldService.getGoldAmount() >= hataliYanitDeger) {
+                countDownTimer.cancel();
+                goldService.minusGoldAmount(hataliYanitDeger);
+                saveGoldAmountText();
+                goldAnimationMinus(hataliYanitDeger);
+                hataliYanitSayisiCarpani++;
+                nextQuestionFailAnswer();
+                fDialog.dismiss();
+                startTimer();
+            } else {
+                Toast.makeText(fDialog.getContext(), R.string.yetersiz_kaynak_label_short, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        redEtButtonEndGame.setOnClickListener(v -> {
+            countDownTimer.cancel();
+            endGamePopup(this.currentQuestion, false, false, false);
+        });
+
+        fDialog.show();
     }
 
     private void highlightCorrectAnswer(Question currentQuestion) {
@@ -466,6 +617,7 @@ public class InfoGameActivity extends AppCompatActivity {
             costCoinLayout.setAlpha(0.0f);
             goldService.minusGoldAmount(JOKER_YUZDE_50);
             saveGoldAmountText();
+            goldAnimationMinus(JOKER_YUZDE_50);
             // Doğru cevabın indeksini kullanarak yanlış seçenekleri devre dışı bırak
             disableTwoWrongOptions(correctAnswerIndex);
         } else {
@@ -484,6 +636,7 @@ public class InfoGameActivity extends AppCompatActivity {
             costCoinLayout_2.setAlpha(0.0f);
             goldService.minusGoldAmount(JOKER_IPUCU);
             saveGoldAmountText();
+            goldAnimationMinus(JOKER_IPUCU);
             showHintPopup();
         } else {
             soundService.noUsedJokerEffect();
@@ -501,6 +654,7 @@ public class InfoGameActivity extends AppCompatActivity {
             costCoinLayout_3.setAlpha(0.0f);
             goldService.minusGoldAmount(JOKER_CIFT_CEVAP);
             saveGoldAmountText();
+            goldAnimationMinus(JOKER_CIFT_CEVAP);
             enableDoubleAnswer();
         } else {
             soundService.noUsedJokerEffect();
@@ -553,6 +707,12 @@ public class InfoGameActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void endGamePopup(Question currentQuestion, boolean sureDoldumu, boolean yarismaKazandiMi, boolean cikisYapildi) {
+        if (currentQuestion == null) {
+            currentQuestion = this.currentQuestion;
+        }
+        if (fDialog != null && fDialog.isShowing()) {
+            fDialog.dismiss();
+        }
         // Yeni bir Dialog oluştur
         stopTimer();
         mDialog = new Dialog(InfoGameActivity.this);
@@ -697,6 +857,14 @@ public class InfoGameActivity extends AppCompatActivity {
             currentQuestionIndex++;
             showQuestion();
         }, 2000);
+    }
+
+    // 3 saniye bekle ve sonraki soruya geç
+    private void nextQuestionFailAnswer() {
+        handler.postDelayed(() -> {
+            resetButtonColors();
+            showQuestion();
+        }, 500);
     }
 
     @Override
