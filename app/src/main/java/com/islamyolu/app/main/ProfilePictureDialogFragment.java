@@ -54,7 +54,6 @@ public class ProfilePictureDialogFragment extends DialogFragment {
         // GridView'e tıklama olayı ekle
         gridView.setOnItemClickListener((parent, view, position, id) -> {
             listener.onProfilePictureSelected(imageOptions[position]);
-            builder.setPositiveButton(getString(R.string.save), (dialog, which) -> listener.onProfilePictureSelected(imageOptions[position]));
         });
 
         builder.setView(gridView);

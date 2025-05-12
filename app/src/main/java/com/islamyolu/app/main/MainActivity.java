@@ -572,13 +572,11 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
     @Override
     public void onProfilePictureSelected(int resourceId) {
         soundService.commonButtonEffect();
-        // Seçilen resmi ayarla
-        userAvatar.setImageResource(resourceId);
-
         // SharedPreferences'a kaydet
         SharedPreferences.Editor editor = userPrefs.edit();
         editor.putInt("profile_picture", resourceId);
         editor.apply();
+        userAvatar.setImageResource(resourceId);
     }
 
     @Override

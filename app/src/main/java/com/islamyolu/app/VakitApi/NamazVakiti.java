@@ -6,7 +6,10 @@ import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import com.islamyolu.app.Entity.PrayerNames;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -211,6 +214,30 @@ public class NamazVakiti {
         }
     }
 
+    public NextPrayerTime getNextPrayerByLocalTime() {
+        LocalDateTime currentTime = LocalDateTime.now();
+        try {
+            if (currentTime.isAfter(formatStringtoLocalDateTime(getImsak())) && currentTime.isBefore(formatStringtoLocalDateTime(getGunes()))) {
+                return new NextPrayerTime(PrayerNames.GUNES.getValue(), getGunes());
+            } else if (currentTime.isAfter(formatStringtoLocalDateTime(getGunes())) && currentTime.isBefore(formatStringtoLocalDateTime(getOgle()))) {
+                return new NextPrayerTime(PrayerNames.OGLE.getValue(), getOgle());
+            } else if (currentTime.isAfter(formatStringtoLocalDateTime(getOgle())) && currentTime.isBefore(formatStringtoLocalDateTime(getIkindi()))) {
+                return new NextPrayerTime(PrayerNames.IKINDI.getValue(), getIkindi());
+            } else if (currentTime.isAfter(formatStringtoLocalDateTime(getIkindi())) && currentTime.isBefore(formatStringtoLocalDateTime(getAksam()))) {
+                return new NextPrayerTime(PrayerNames.AKSAM.getValue(), getAksam());
+            } else if (currentTime.isAfter(formatStringtoLocalDateTime(getAksam())) && currentTime.isBefore(formatStringtoLocalDateTime(getYatsi()))) {
+                return new NextPrayerTime(PrayerNames.YATSI.getValue(), getYatsi());
+            } else if (currentTime.isAfter(formatStringtoLocalDateTime(getYatsi()))) {
+                return new NextPrayerTime(PrayerNames.IMSAK.getValue(), getImsak());
+            } else {
+                return new NextPrayerTime(PrayerNames.IMSAK.getValue(), getImsak());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Sonraki namaz vakti hesaplama hatası: " + e.getMessage(), e);
+            return null;
+        }
+    }
+
 
     public NextPrayerTime getNextPrayer() {
         if (gecerliVakit == null) {
@@ -245,10 +272,23 @@ public class NamazVakiti {
     // TODO: 24.02.2025 eğer burası düzgün çalışmaz ise rolback et başka birsey yapmadan
     public String getNextPrayerTimeRemainingTimeFormatted(boolean saatDakikaSaniyeSeklinde) {
         try {
-            return formatRemainingTime(saatDakikaSaniyeSeklinde);
+            LocalDateTime currentTime = LocalDateTime.now();
+            LocalDateTime nextPrayerTime = formatStringtoLocalDateTime(getNextPrayerByLocalTime().getTime());
+
+            if (PrayerNames.IMSAK.getValue().equals(this.getNextPrayer().getName())) {
+                if ((currentTime.isAfter(LocalDateTime.of(currentTime.toLocalDate(), LocalTime.parse(getYatsi()))) && currentTime.isBefore(LocalDateTime.of(currentTime.toLocalDate().plusDays(1), LocalTime.MIDNIGHT)))) {
+                    nextPrayerTime = nextPrayerTime.plusDays(1);
+                }
+            }
+            Duration remainingTime = Duration.between(currentTime, nextPrayerTime);
+            if (remainingTime.isNegative()) {
+                Log.e(TAG, "remainingTime negatif oldu: " + remainingTime);
+                return "Yeni Vakit Hesaplanıyor";
+            }
+            return formatRemainingTime(remainingTime, saatDakikaSaniyeSeklinde);
         } catch (Exception e) {
             Log.e(TAG, "Kalan süre hesaplama hatası: " + e.getMessage(), e);
-            return "Süre hesaplanamadı";
+            return "Süre hesaplanamadı: hata kod N2";
         }
     }
 
@@ -276,10 +316,10 @@ public class NamazVakiti {
         }
     }
 
-    private String formatRemainingTime(boolean saatDakikaSaniyeSeklinde) {
-        long hours = kalanSure.toHours();
-        long minutes = kalanSure.toMinutes() % 60;
-        long seconds = kalanSure.getSeconds() % 60;
+    private String formatRemainingTime(Duration remainingTime, boolean saatDakikaSaniyeSeklinde) {
+        long hours = remainingTime.toHours();
+        long minutes = remainingTime.toMinutes() % 60;
+        long seconds = remainingTime.getSeconds() % 60;
         if (saatDakikaSaniyeSeklinde) {
             return String.format(Locale.getDefault(), "%02d:%02d:%02d",
                     hours, minutes, seconds);
@@ -287,6 +327,13 @@ public class NamazVakiti {
             return String.format(Locale.getDefault(), "%02d:%02d",
                     hours, minutes);
         }
+    }
+
+    private LocalDateTime formatStringtoLocalDateTime(String timeString) {
+        // Saat ve dakikayı LocalTime'a çevir
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime localTime = LocalTime.parse(timeString, timeFormatter);
+        return LocalDateTime.of(LocalDate.now(), localTime);
     }
 
     public Duration getKalanSure() {
