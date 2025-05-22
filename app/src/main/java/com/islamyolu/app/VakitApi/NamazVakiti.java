@@ -218,18 +218,25 @@ public class NamazVakiti {
         LocalDateTime currentTime = LocalDateTime.now();
         try {
             if (currentTime.isAfter(formatStringtoLocalDateTime(getImsak())) && currentTime.isBefore(formatStringtoLocalDateTime(getGunes()))) {
+                gecerliVakit = GecerliVakit.GUNES;
                 return new NextPrayerTime(PrayerNames.GUNES.getValue(), getGunes());
             } else if (currentTime.isAfter(formatStringtoLocalDateTime(getGunes())) && currentTime.isBefore(formatStringtoLocalDateTime(getOgle()))) {
+                gecerliVakit = GecerliVakit.OGLE;
                 return new NextPrayerTime(PrayerNames.OGLE.getValue(), getOgle());
             } else if (currentTime.isAfter(formatStringtoLocalDateTime(getOgle())) && currentTime.isBefore(formatStringtoLocalDateTime(getIkindi()))) {
+                gecerliVakit = GecerliVakit.IKINDI;
                 return new NextPrayerTime(PrayerNames.IKINDI.getValue(), getIkindi());
             } else if (currentTime.isAfter(formatStringtoLocalDateTime(getIkindi())) && currentTime.isBefore(formatStringtoLocalDateTime(getAksam()))) {
+                gecerliVakit = GecerliVakit.AKSAM;
                 return new NextPrayerTime(PrayerNames.AKSAM.getValue(), getAksam());
             } else if (currentTime.isAfter(formatStringtoLocalDateTime(getAksam())) && currentTime.isBefore(formatStringtoLocalDateTime(getYatsi()))) {
+                gecerliVakit = GecerliVakit.YATSI;
                 return new NextPrayerTime(PrayerNames.YATSI.getValue(), getYatsi());
             } else if (currentTime.isAfter(formatStringtoLocalDateTime(getYatsi()))) {
+                gecerliVakit = GecerliVakit.IMSAK;
                 return new NextPrayerTime(PrayerNames.IMSAK.getValue(), getImsak());
             } else {
+                gecerliVakit = GecerliVakit.IMSAK;
                 return new NextPrayerTime(PrayerNames.IMSAK.getValue(), getImsak());
             }
         } catch (Exception e) {
