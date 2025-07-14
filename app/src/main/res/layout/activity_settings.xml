@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="5dp"
+    android:fitsSystemWindows="true"
     tools:context=".main.SettingsActivity">
 
     <!-- Dikey kaydırma için ScrollView -->
@@ -457,6 +458,69 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ezan_dua_spinner_label" />
+
+            <!--______-->
+            <ImageView
+                android:id="@+id/setting_location_image"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="5dp"
+                android:contentDescription="@string/bildirim_icon"
+                android:src="@drawable/baseline_location_on_24"
+                app:layout_constraintBottom_toBottomOf="@+id/settingLocationLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/settingLocationLabel" />
+
+            <TextView
+                android:id="@+id/settingLocationLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/locationSettingLabel"
+                android:textColor="@color/pastelRedColor_m"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/setting_timer_image"
+                app:layout_constraintTop_toBottomOf="@id/spinner_ezan_dua" />
+
+            <!-- çizgi -->
+            <View
+                android:id="@+id/line_location"
+                android:layout_width="0dp"
+                android:layout_height="3dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@color/colorGray"
+                app:layout_constraintBottom_toBottomOf="@+id/settingLocationLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/settingLocationLabel"
+                app:layout_constraintTop_toTopOf="@+id/settingLocationLabel" />
+
+            <TextView
+                android:id="@+id/locationInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="5dp"
+                android:text="@string/locaitonInfoText"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/settingLocationLabel" />
+
+            <Button
+                android:id="@+id/settingLocationButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Güncelle"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/locationInfo" />
+
+
             <!--______-->
 
             <ImageView
@@ -481,7 +545,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/setting_timer_image"
-                app:layout_constraintTop_toBottomOf="@id/spinner_ezan_dua" />
+                app:layout_constraintTop_toBottomOf="@id/settingLocationButton" />
 
             <!-- çizgi -->
             <View

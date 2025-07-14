@@ -110,4 +110,8 @@ public class SharedPrefsHelperService {
         Log.d(TAG, "Vakit ses modu ayarı okunuyor: " + enabled);
         return enabled;
     }
+
+    public void setCityNameFromPreferences(String cityName) {
+        sharedPreferences.edit().putString("city_name", cityName).apply();
+    }
 }

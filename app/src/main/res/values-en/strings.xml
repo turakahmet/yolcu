@@ -42,6 +42,7 @@
     <string name="aksam_kalan">time left to Maghrib</string>
     <string name="yatsi_kalan">time left to Isha</string>
     <string name="imsak_kalan">time left to Fajr</string>
+    <string name="kalan_label">remaining time</string>
     <string name="sabah_namazi">Morning Prayer</string>
     <string name="ogle_namazi">Dhuhr Prayer</string>
     <string name="ikindi_namazi">Asr Prayer</string>
@@ -144,4 +145,14 @@
     <string name="iletisim_bilgi_etiket">Contact and Information</string>
     <string name="iletisim_etiket">Communication</string>
     <string name="confirm">Confirm</string>
+    <string name="devam_et">Continue</string>
+    <string name="pes_et">give up</string>
+    <string name="total_gold_fail_popup">The gold you have</string>
+    <string name="yanlis_yanit">Wrong Answer!</string>
+    <string name="hataliYanitMesaj">Would you like to continue using %1$d gold?</string>
+    <string name="yetersiz_kaynak_label_short">Not Enough Gold!</string>
+    <string name="locationSettingLabel">Location Information</string>
+    <string name="locaitonInfoText">Current City: %1$s</string>
+    <string name="loadingProcess">Processing please wait...</string>
+    <string name="sehirBulunamadi">City not found! Please grant location permissions, open location settings, and try again. If the error persists, please contact us.</string>
 </resources>

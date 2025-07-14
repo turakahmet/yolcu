@@ -111,6 +111,10 @@ public class Dashboard extends Fragment {
             weatherPanel.setVisibility(View.GONE);
             weatherFrame.setVisibility(View.VISIBLE);
         }
+        if (City.fromCityName(cityName) == null) {
+            Toast.makeText(getContext(), cityName + " Şehiri için hava durumu bilgisi alınamadı. Sorun devam ederse bizimle iletişime geçiniz.", Toast.LENGTH_LONG).show();
+            return;
+        }
         double latitude = Objects.requireNonNull(City.fromCityName(cityName)).getLatitude();
         double longitude = Objects.requireNonNull(City.fromCityName(cityName)).getLongitude();
         weatherService.getDailyWeatherAndForecastByDate(latitude, longitude, new WeatherService.WeatherCallback() {

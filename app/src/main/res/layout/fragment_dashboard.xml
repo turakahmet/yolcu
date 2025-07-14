@@ -119,7 +119,6 @@
                                 android:shadowDx="2"
                                 android:shadowDy="2"
                                 android:shadowRadius="18"
-                                android:text="@string/wdiget_test_city"
                                 android:textColor="#D3D3D3"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />

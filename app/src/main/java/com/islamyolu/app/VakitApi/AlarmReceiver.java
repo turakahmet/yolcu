@@ -1,5 +1,6 @@
 package com.islamyolu.app.VakitApi;
 
+import static com.islamyolu.app.VakitApi.NotificationConstants.FOREGROUND_NOTIFICATION_ID;
 import static com.islamyolu.app.main.MainActivity.SETTINGS_PREFS;
 
 import android.app.AlarmManager;
@@ -153,11 +154,13 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     private void cancelNotification(Context context, int notificationId) {
-        if (notificationId != -1) {
+        if (notificationId != -1 && notificationId != FOREGROUND_NOTIFICATION_ID) {
             NotificationManager notificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancel(notificationId);
             Log.d("AlarmReceiver", "Bildirim kaldırıldı: " + notificationId);
+        } else if (notificationId == FOREGROUND_NOTIFICATION_ID) {
+            Log.d("AlarmReceiver", "Foreground bildirim kaldırılmıyor: " + notificationId);
         }
     }
 

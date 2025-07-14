@@ -1,5 +1,7 @@
 package com.islamyolu.app.Service;
 
+import static com.islamyolu.app.VakitApi.NotificationConstants.FOREGROUND_NOTIFICATION_ID;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -26,7 +28,6 @@ import com.islamyolu.app.main.MainActivity;
 public class PrayerNotificationService extends Service {
     private static final String TAG = "PrayerNotificationService";
     private static final String CHANNEL_ID = "prayer_service_channel";
-    private static final int NOTIFICATION_ID = 64254;
     private Handler handler;
     private boolean isRunning = false;
     private NamazVakiti currentNamazVakiti = new NamazVakiti();
@@ -171,9 +172,9 @@ public class PrayerNotificationService extends Service {
                     .build();
 
             if (!isRunning) {
-                startForeground(NOTIFICATION_ID, notification);
+                startForeground(FOREGROUND_NOTIFICATION_ID, notification);
             } else {
-                notificationManager.notify(NOTIFICATION_ID, notification);
+                notificationManager.notify(FOREGROUND_NOTIFICATION_ID, notification);
             }
 
         } catch (Exception e) {

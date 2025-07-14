@@ -389,6 +389,10 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
     }
 
     private void fetchPrayerTimesNoAPI(String city) {
+        if (City.fromCityName(city) == null) {
+            Toast.makeText(this, city + " Şehiri için Namaz vakitleri bulunamadı. Sorun devam ederse bizimle iletişime geçiniz.", Toast.LENGTH_LONG).show();
+            return;
+        }
         PrayerTimesFetcher prayerTimesFetcher = new PrayerTimesFetcher(this, imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, imsakTimeLayout, gunesTimeLayout, ogleTimeLayout, ikindiTimeLayout, aksamTimeLayout, yatsiTimeLayout, locationRefreshLayout, kalanSureTextView, remain_time_layout, toolbarKalanSureLabel);
         boolean vakitVarmi = prayerTimesFetcher.fetchPrayerTimesNoAPI(city);
         if (!vakitVarmi) {

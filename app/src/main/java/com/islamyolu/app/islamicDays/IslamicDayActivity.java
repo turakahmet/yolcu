@@ -16,8 +16,11 @@ import com.islamyolu.app.main.MainActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -128,7 +131,7 @@ public class IslamicDayActivity extends AppCompatActivity {
         diniGunList.add(new DiniGun(DiniGunEnum.KURBAN_BAYRAMI_4, hijriToGregorian(hijriCalendar, 1)));
 
         // Hicri Yılbaşı (Muharrem 1)
-        hijriCalendar.add(IslamicCalendar.YEAR, 1); // Yılı 1 artır
+//        hijriCalendar.add(IslamicCalendar.YEAR, 1); // Yılı 1 artır
         hijriCalendar.set(IslamicCalendar.MONTH, IslamicCalendar.MUHARRAM);
         hijriCalendar.set(IslamicCalendar.DAY_OF_MONTH, 1);
         diniGunList.add(new DiniGun(DiniGunEnum.HICRI_YILBASI, hijriToGregorian(hijriCalendar, 1)));
@@ -143,15 +146,7 @@ public class IslamicDayActivity extends AppCompatActivity {
         diniGunList.add(new DiniGun(DiniGunEnum.MEVLID_KANDILI, hijriToGregorian(hijriCalendar, 1)));
 
 
-        // Üç Ayların Başlangıcı (Recep 1)
-        hijriCalendar.set(IslamicCalendar.MONTH, IslamicCalendar.RAJAB);
-        hijriCalendar.set(IslamicCalendar.DAY_OF_MONTH, 1);
-        diniGunList.add(new DiniGun(DiniGunEnum.UC_AYLARIN_BASLANGICI, hijriToGregorian(hijriCalendar, 0)));
-
-        // Regaib Kandili (Recep 3)
-        hijriCalendar.set(IslamicCalendar.DAY_OF_MONTH, 3);
-        diniGunList.add(new DiniGun(DiniGunEnum.REGAIB_KANDILI, getRegaibKandiliDate(hijriCalendar)));
-
+        siralamaYap(diniGunList);
         IslamicDayAdapter adapter = new IslamicDayAdapter(diniGunList);
         diniGunlerRecycler.setAdapter(adapter);
 
@@ -174,6 +169,29 @@ public class IslamicDayActivity extends AppCompatActivity {
             }
         }
     }
+
+    private List<DiniGun> siralamaYap(List<DiniGun> diniGunList) {
+        // Gün adını dikkate almadan Türkçe tarihleri parse edebilmek için formatter
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM yyyy", new Locale("tr")); // 'd' tek haneli günleri de kapsar
+
+        diniGunList.sort(Comparator.comparing(d -> {
+            try {
+                // "2 Şubat 2026 Pazartesi" → "2 Şubat 2026"
+                String temizTarih = d.getDiniTarih()
+                        .trim()
+                        .replaceAll("\\s+[A-ZÇĞİÖŞÜa-zçğıöşü]+$", ""); // sondaki gün adını sil
+
+                return LocalDate.parse(temizTarih, formatter);
+
+            } catch (Exception e) {
+                // Hatalı tarih varsa uzak geleceğe al, sıralamada sona düşsün
+                return LocalDate.of(9999, 12, 31);
+            }
+        }));
+
+        return diniGunList;
+    }
+
 
     private String getRegaibKandiliDate(IslamicCalendar hijriCalendar) {
 

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -25,11 +27,14 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.islamyolu.app.R;
+import com.islamyolu.app.Service.LocationHelper;
 import com.islamyolu.app.Service.PrayerNotificationService;
 import com.islamyolu.app.Service.SharedPrefsHelperService;
 import com.islamyolu.app.VakitApi.AlarmReceiver;
+import com.islamyolu.app.VakitApi.City;
 import com.islamyolu.app.VakitApi.DailyPrayerWorkerReceiver;
 import com.islamyolu.app.VakitApi.NamazVakiti;
+import com.islamyolu.app.VakitApi.VakitNoApi;
 import com.islamyolu.app.feedback.BilgilendirmeActivity;
 import com.islamyolu.app.feedback.FeedbackActivity;
 import com.islamyolu.app.feedback.PrivacyActivity;
@@ -38,14 +43,18 @@ import com.islamyolu.app.receiver.PrayerSoundReceiver;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
     private SwitchCompat switchNotificationAll, switchNotificationImsak, switchNotificationSabah, switchNotificationOgle, switchNotificationIkindi, switchNotificationAksam, switchNotificationYatsi, switchNotificationKerahat, switchNotificationSound, switchNotificationVakitHerzamanGoster, switchVakitSound;
     private SharedPrefsHelperService sharedPrefsHelperService;
     private RadioGroup radioGroupVakit;
     private Spinner spinnerEzanSound, spinnerEzanDua;
-    private Button contactButton, privacyButton, bilgilendirmeButton;
+    private Button contactButton, privacyButton, bilgilendirmeButton, settingLocationButton;
     private boolean isUserAction = true; // Kullanıcı aksiyonlarını takip etmek için flag
+    private TextView locationInfo;
+    private static final String TAG = "SettingsActivity";
+
 
     private final Map<Integer, String> switchKeyMap = new HashMap<Integer, String>() {{
         put(R.id.switchNotification_Imsak, "switchNotificationImsak");
@@ -60,7 +69,6 @@ public class SettingsActivity extends AppCompatActivity {
     }};
 
     private static final int REQUEST_NOTIFICATION_PERMISSION = 123;
-    private static final String TAG = "SettingsActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +76,6 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         initializeViews();
-        sharedPrefsHelperService = new SharedPrefsHelperService(this, MainActivity.SETTINGS_PREFS);
         switchCompatClickListeners();
         setupSpinners();
         loadSwitchStates();
@@ -99,6 +106,69 @@ public class SettingsActivity extends AppCompatActivity {
             Intent intent = new Intent(this, BilgilendirmeActivity.class);
             startActivity(intent);
         });
+
+        settingLocationButton.setOnClickListener(v -> {
+            locationInfo.setText(getString(R.string.loadingProcess));
+            settingLocationButton.setEnabled(false);
+            // 5 saniye sonra tekrar etkinleştir
+
+            new Handler().postDelayed(() -> {
+                settingLocationButton.setEnabled(true);
+            }, 5000);
+
+            LocationHelper.getCurrentCityName(this, cityName -> {
+                // Burada artık elinde şehir adı var
+                // Şehir bilgisini kaydet
+                if (City.fromCityName(cityName) == null) {
+                    locationInfo.setText(getString(R.string.sehirBulunamadi));
+                    settingLocationButton.setEnabled(true);
+                    return;
+                }
+                sharedPrefsHelperService.setCityNameFromPreferences(cityName);
+                VakitNoApi vakitNoApi = new VakitNoApi();
+                NamazVakiti namazVakiti = vakitNoApi.localPrayerTimes(Objects.requireNonNull(City.fromCityName(cityName)).getLatitude(), Objects.requireNonNull(City.fromCityName(cityName)).getLongitude());
+                setupPrayerAlarms(namazVakiti);
+                locationInfo.setText(getString(R.string.locaitonInfoText, cityName));
+                settingLocationButton.setEnabled(true);
+                restartApp();
+
+                // örneğin TextView'e yaz:
+                // yourTextView.setText("Bulunduğunuz şehir: " + cityName);
+            });
+
+
+        });
+    }
+
+    public void restartApp() {
+        Log.d(TAG, "Sistem yeniden başlatılıyor...");
+
+        Intent intent = getBaseContext().getPackageManager()
+                .getLaunchIntentForPackage(getBaseContext().getPackageName());
+
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finishAffinity(); // Tüm aktiviteleri kapat
+            System.exit(0);   // Garantili kapatma (opsiyonel ama etkili)
+        }
+    }
+
+
+    private void setupPrayerAlarms(NamazVakiti namazVakiti) {
+        // DailyPrayerWorker'ı başlat ve namaz vakitlerini ilet
+        Intent intent = new Intent(this, DailyPrayerWorkerReceiver.class);
+
+        // Namaz vakitlerini intent'e ekle
+        intent.putExtra("imsak", namazVakiti.getImsak());
+        intent.putExtra("gunes", namazVakiti.getGunes());
+        intent.putExtra("ogle", namazVakiti.getOgle());
+        intent.putExtra("ikindi", namazVakiti.getIkindi());
+        intent.putExtra("aksam", namazVakiti.getAksam());
+        intent.putExtra("yatsi", namazVakiti.getYatsi());
+
+        sendBroadcast(intent);
+        Log.d(TAG, "Alarmlar kurulmak üzere DailyPrayerWorker başlatıldı - Vakitler iletildi");
     }
 
     private void changeRadioButton(int checkedId) {
@@ -166,6 +236,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
+        sharedPrefsHelperService = new SharedPrefsHelperService(this, MainActivity.SETTINGS_PREFS);
         switchNotificationAll = findViewById(R.id.switchNotification_All);
         switchNotificationImsak = findViewById(R.id.switchNotification_Imsak);
         switchNotificationSabah = findViewById(R.id.switchNotification_Sabah);
@@ -183,6 +254,10 @@ public class SettingsActivity extends AppCompatActivity {
         contactButton = findViewById(R.id.contactButton);
         privacyButton = findViewById(R.id.privacyButton);
         bilgilendirmeButton = findViewById(R.id.bilgilendirmeButton);
+        settingLocationButton = findViewById(R.id.settingLocationButton);
+        locationInfo = findViewById(R.id.locationInfo);
+        locationInfo.setText(getString(R.string.locaitonInfoText, sharedPrefsHelperService.getCityNameFromPreferences()));
+
     }
 
     private void switchCompatClickListeners() {

@@ -633,6 +633,11 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="yanlis_yanit">Yanlış Cevap !</string>
     <string name="hataliYanitMesaj">%1$d altın kullanarak devam etmek istermisin?</string>
     <string name="yetersiz_kaynak_label_short">Yetersiz Altın!</string>
+    <string name="locationSettingLabel">Konum Bilgisi</string>
+    <string name="locaitonInfoText">Geçerli Şehir: %1$s</string>
+    <string name="loadingProcess">İşlem Yapılıyor lütfen bekleyin...</string>
+    <string name="sehirBulunamadi">Şehir bulunamadı! Konum izni verin ve konum ayarlarını açarak tekrar deneyiniz. Hata devam ederse iletişime geçiniz.</string>
+
 
     <string-array name="ezan_sound_options">
         <item>Ezan</item>
