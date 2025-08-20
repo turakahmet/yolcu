@@ -19,8 +19,8 @@ import java.util.List;
 
 public class IbadetAdapter extends RecyclerView.Adapter<IbadetAdapter.IbadetViewHolder> {
 
-    private List<Ibadet> ibadetList;
-    private Context context;
+    private final List<Ibadet> ibadetList;
+    private final Context context;
 
     public IbadetAdapter(Context context, List<Ibadet> ibadetList) {
         this.context = context;
@@ -49,6 +49,10 @@ public class IbadetAdapter extends RecyclerView.Adapter<IbadetAdapter.IbadetView
             Intent intent;
             if (position == 0) {
                 intent = new Intent(context, KirkHadisActivity.class);
+            } else if ("cardLayout".equals(ibadet.getKaynak())) {
+                intent = new Intent(context, IbadetArapcaContentActivity.class);
+                intent.putExtra("CONTENT_CONTEXT", ibadet.getAciklama1());
+                intent.putExtra("CONTENT_TITLE", ibadet.getBaslik());
             } else {
                 intent = new Intent(context, IbadetContentActivity.class);
                 intent.putExtra("CONTENT_CONTEXT", ibadet.getAciklama1());

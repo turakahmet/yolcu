@@ -614,6 +614,7 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="hadislogo" translatable="false">hadisLogo</string>
     <string name="weatherRefresh" translatable="false">hava durum yenile buton</string>
     <string name="hadis_header" translatable="false">Hadis-i Şerif</string>
+    <string name="hadis_format">%1$s\n%2$s</string>
     <string name="yarisma_kuran" translatable="false">Kur’an Yolculuğu</string>
     <string name="siyeri_nebi" translatable="false">Siyer-i Nebi</string>
     <string name="peygamberler_tarihi" translatable="false">Peygamberler Tarihi</string>
@@ -637,7 +638,7 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="locaitonInfoText">Geçerli Şehir: %1$s</string>
     <string name="loadingProcess">İşlem Yapılıyor lütfen bekleyin...</string>
     <string name="sehirBulunamadi">Şehir bulunamadı! Konum izni verin ve konum ayarlarını açarak tekrar deneyiniz. Hata devam ederse iletişime geçiniz.</string>
-
+    <string name="share_button_description">Paylaş butonu</string>
 
     <string-array name="ezan_sound_options">
         <item>Ezan</item>

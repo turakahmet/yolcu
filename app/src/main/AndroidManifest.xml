@@ -75,6 +75,7 @@
         <activity android:name=".ibadet.KirkHadisActivity" />
         <activity android:name=".ibadet.IbadetDetailActivity" />
         <activity android:name=".ibadet.IbadetContentActivity" />
+        <activity android:name=".ibadet.IbadetArapcaContentActivity" />
         <activity android:name=".muze.MuzeDetailActivity" />
         <activity android:name=".feedback.FeedbackActivity" />
         <activity android:name=".feedback.PrivacyActivity" />
@@ -143,6 +144,16 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.islamyolu.app.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
     </application>
 
 </manifest>

@@ -473,7 +473,7 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/hadiLogo"
+                    android:id="@+id/hadisLogo"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     android:contentDescription="@string/hadislogo"
@@ -481,6 +481,34 @@
                     android:layout_marginTop="30dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/hadisYenile"
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:layout_margin="5dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    android:src="@drawable/refresh_button"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:ignore="ContentDescription" />
+
+                <ImageButton
+                    android:id="@+id/hadisPaylas"
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:layout_margin="5dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    android:src="@drawable/share"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/hadisYenile"
+                    tools:ignore="ContentDescription" />
+
 
                 <TextView
                     android:id="@+id/hadisHeader"
@@ -491,7 +519,7 @@
                     android:textColor="#EF5350"
                     android:textSize="18sp"
                     android:textStyle="bold|italic"
-                    app:layout_constraintStart_toEndOf="@+id/hadiLogo"
+                    app:layout_constraintStart_toEndOf="@+id/hadisLogo"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -502,7 +530,7 @@
                     android:alpha="0.5"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/hadiLogo"
+                    app:layout_constraintStart_toEndOf="@+id/hadisLogo"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/hadisHeader" />
 
@@ -510,7 +538,7 @@
                     android:id="@+id/hadisLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toEndOf="@id/hadiLogo"
+                    app:layout_constraintStart_toEndOf="@id/hadisLogo"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/hadisBilgi"
                     android:orientation="vertical">
@@ -522,7 +550,7 @@
                         android:gravity="start"
                         android:maxLines="5"
                         android:ellipsize="end"
-                        android:text="@string/testYazisi"
+                        android:text="@string/privacy_info"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 

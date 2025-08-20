@@ -7,16 +7,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.islamyolu.app.R;
-import com.islamyolu.app.Service.PrayerNotificationService;
 import com.islamyolu.app.Service.SharedPrefsHelperService;
 import com.islamyolu.app.main.MainActivity;
 
@@ -62,17 +61,22 @@ public class BootReceiver extends BroadcastReceiver {
                     }
                     NotificationManagerCompat.from(context).notify(1010, builder.build());
                 }
-                // DailyPrayerWorkerReceiver'ın işini tamamlaması için bekle
-                new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    Log.d(TAG, "PrayerNotificationService başlatılıyor");
-                    Intent serviceIntent = new Intent(context, PrayerNotificationService.class);
-                    try {
-                        context.startForegroundService(serviceIntent);
-                        Log.d(TAG, "PrayerNotificationService başarıyla başlatıldı");
-                    } catch (Exception e) {
-                        Log.e(TAG, "PrayerNotificationService başlatılırken hata: " + e.getMessage());
-                    }
-                }, DELAY_BEFORE_NOTIFICATION_SERVICE);
+//                // DailyPrayerWorkerReceiver'ın işini tamamlaması için bekle
+//                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+//                    Log.d(TAG, "PrayerNotificationService başlatılıyor");
+//                    Intent serviceIntent = new Intent(context, PrayerNotificationService.class);
+//                    try {
+//                        context.startForegroundService(serviceIntent);
+//                        Log.d(TAG, "PrayerNotificationService başarıyla başlatıldı");
+//                    } catch (Exception e) {
+//                        Log.e(TAG, "PrayerNotificationService başlatılırken hata: " + e.getMessage());
+//                    }
+//                }, DELAY_BEFORE_NOTIFICATION_SERVICE);
+                // WorkManager ile servis başlatma isteği gönder
+                WorkManager.getInstance(context).enqueue(
+                        new OneTimeWorkRequest.Builder(PrayerNotificationWorker.class).build()
+                );
+
             } else {
                 Log.d(TAG, "Bildirim servisi kullanıcı tarafından devre dışı bırakılmış");
             }

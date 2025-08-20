@@ -1,6 +1,7 @@
 package com.islamyolu.app.Entity;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.islamyolu.app.R;
 
@@ -27,16 +28,11 @@ public class Ibadet {
         this.resimKaynak = resimKaynak;
     }
 
-    public Ibadet(String baslik, int resimKaynak) {
-        this.baslik = baslik;
-        this.resimKaynak = resimKaynak;
-
-    }
-
-    public Ibadet(String baslik, String resimKaynakRemote, String aciklama1) {
+    public Ibadet(String baslik, String resimKaynakRemote, String aciklama1, String kaynak) {
         this.baslik = baslik;
         this.resimKaynakRemote = resimKaynakRemote;
         this.aciklama1 = aciklama1;
+        this.kaynak = kaynak;
     }
 
     public Ibadet() {
@@ -155,7 +151,7 @@ public class Ibadet {
             }
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("IbadetEntitiy", "Hata oluştu", e);
         }
         return stringBuilder.toString();
     }

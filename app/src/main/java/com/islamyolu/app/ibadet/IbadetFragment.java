@@ -64,7 +64,7 @@ public class IbadetFragment extends Fragment {
 
         call.enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     String content = response.body();
 
@@ -82,7 +82,7 @@ public class IbadetFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
                 Log.e("ERROR", "Bağlantı hatası: " + t.getMessage());
             }
         });
@@ -91,6 +91,7 @@ public class IbadetFragment extends Fragment {
     private void parseAndDisplayContent(String content) {
         String imageUrl = "";
         String title = "";
+        String source = "";
         StringBuilder contentBuilder = new StringBuilder();
 
         String[] lines = content.split("\n");
@@ -100,6 +101,8 @@ public class IbadetFragment extends Fragment {
                 imageUrl = line.replace("imageUrl:", "").trim();
             } else if (line.startsWith("title:")) {
                 title = line.replace("title:", "").trim();
+            } else if (line.startsWith("source:")) {
+                source = line.replace("source:", "").trim();
             } else {
                 contentBuilder.append(line).append("\n");
             }
@@ -109,7 +112,7 @@ public class IbadetFragment extends Fragment {
 
         // CardView'e yükle
 //        updateCardView(imageUrl, title, contentText);
-        ibadetList.add(new Ibadet(title, imageUrl, contentText));
+        ibadetList.add(new Ibadet(title, imageUrl, contentText, source));
 
     }
 

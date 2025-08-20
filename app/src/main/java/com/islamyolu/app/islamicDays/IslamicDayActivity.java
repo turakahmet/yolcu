@@ -170,7 +170,7 @@ public class IslamicDayActivity extends AppCompatActivity {
         }
     }
 
-    private List<DiniGun> siralamaYap(List<DiniGun> diniGunList) {
+    private void siralamaYap(List<DiniGun> diniGunList) {
         // Gün adını dikkate almadan Türkçe tarihleri parse edebilmek için formatter
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM yyyy", new Locale("tr")); // 'd' tek haneli günleri de kapsar
 
@@ -189,7 +189,6 @@ public class IslamicDayActivity extends AppCompatActivity {
             }
         }));
 
-        return diniGunList;
     }
 
 
@@ -277,6 +276,8 @@ public class IslamicDayActivity extends AppCompatActivity {
         } else if (diniGun.getDiniGun().equals(DiniGunEnum.HICRI_YILBASI)) {
             imageResource = R.drawable.islamic_day_9;
         } else if (diniGun.getDiniGun().equals(DiniGunEnum.ASURE_GUNU)) {
+            imageResource = R.drawable.islamic_day_11;
+        } else if (diniGun.getDiniGun().equals(DiniGunEnum.MEVLID_KANDILI)) {
             imageResource = R.drawable.islamic_day_10;
         } else {
             imageResource = R.drawable.islamic_day_1;

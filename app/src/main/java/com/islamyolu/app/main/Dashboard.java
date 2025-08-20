@@ -2,13 +2,18 @@ package com.islamyolu.app.main;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -25,6 +30,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -42,6 +48,9 @@ import com.islamyolu.app.weather.WeatherData;
 import com.islamyolu.app.weather.WeatherIcon;
 import com.islamyolu.app.weather.WeatherService;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -65,7 +74,7 @@ public class Dashboard extends Fragment {
     private TextView badgeDescription;
     private TextView weatherTemp, locationDesc, weatherDesc, dahaFazla, weatherKonumAlert;
     private ImageView badgeIcon, weatherIcon, weatherBackground;
-    private ImageButton eBabyRefresh, kBabyRefresh, wheatherRefresh;
+    private ImageButton eBabyRefresh, kBabyRefresh, wheatherRefresh, hadisYenile, hadisPaylas;
     private Dialog mDialog;
     private String eisimAnlami, kisimAnlami;
     private ProgressBar loadingWeatherIcon;
@@ -228,6 +237,66 @@ public class Dashboard extends Fragment {
         kizCardView.setOnClickListener(v -> kCardViewPopup());
         wheatherRefresh.setOnClickListener(v -> wheatherRefreshClick());
         duaCardView.setOnClickListener(v -> dahaFazlaClick());
+        hadisYenile.setOnClickListener(v -> hadisYenileClick());
+        hadisPaylas.setOnClickListener(v -> hadisPaylasClick());
+    }
+
+    private void hadisPaylasClick() {
+        // 1. LayoutInflater ile özel layout'u yükle
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View shareView = inflater.inflate(R.layout.ibadet_share_card, new FrameLayout(requireContext()), false);
+
+        // 2. Verileri layout içine doldur
+        TextView rivayet = shareView.findViewById(R.id.shareBaslik);
+        TextView hadis = shareView.findViewById(R.id.shareAciklama);
+        ImageView ivImage = shareView.findViewById(R.id.shareImage);
+        ivImage.setVisibility(View.GONE);
+
+        String formattedText = getString(R.string.hadis_format, getString(R.string.hadis_header), hadisBilgi.getText());
+        rivayet.setText(formattedText);
+        hadis.setText(hadisMetin.getText());
+
+        // 3. Ölçülmeyen view'dan bitmap al (önce ölç!)
+        DisplayMetrics displayMetrics = requireContext().getResources().getDisplayMetrics();
+        int width = displayMetrics.widthPixels;  // ekran genişliği
+        int height = displayMetrics.heightPixels; // ekran yüksekliği
+
+// View'i ölç ve yerleştir
+        shareView.measure(
+                View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.AT_MOST)
+        );
+        shareView.layout(0, 0, shareView.getMeasuredWidth(), shareView.getMeasuredHeight());
+
+        Bitmap bitmap = Bitmap.createBitmap(shareView.getMeasuredWidth(), shareView.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        shareView.draw(canvas);
+
+        // 4. Bitmap'i paylaş
+        try {
+            File file = new File(requireContext().getCacheDir(), "islamyolu.png");
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+
+            Uri uri = FileProvider.getUriForFile(requireContext(),
+                    requireContext().getPackageName() + ".fileprovider", file);
+
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            shareIntent.setType("image/png");
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            requireContext().startActivity(Intent.createChooser(shareIntent, "Paylaş"));
+
+        } catch (IOException e) {
+            Log.d("CardAdapter", "Hata oluştu:" + e.getMessage());
+        }
+    }
+
+    private void hadisYenileClick() {
+        initializeHadis(getContext());
+
     }
 
     private void dahaFazlaClick() {
@@ -238,11 +307,15 @@ public class Dashboard extends Fragment {
             hadisMetin.setEllipsize(TextUtils.TruncateAt.END);
             dahaFazla.setText(getText(R.string.devamhadis));
             acikMi = false;
+            hadisPaylas.setVisibility(View.GONE);
+            hadisYenile.setVisibility(View.GONE);
         } else {
             hadisMetin.setMaxLines(Integer.MAX_VALUE);
             hadisMetin.setEllipsize(null);
             dahaFazla.setText(getText(R.string.dahaazhadis));
             acikMi = true;
+            hadisPaylas.setVisibility(View.VISIBLE);
+            hadisYenile.setVisibility(View.VISIBLE);
         }
     }
 
@@ -345,7 +418,7 @@ public class Dashboard extends Fragment {
             return new Gson().fromJson(reader, listType);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("HadisJsonParser", "Hata oluştu", e);
             return null;
         }
     }
@@ -404,6 +477,8 @@ public class Dashboard extends Fragment {
         hadisBilgi = root.findViewById(R.id.hadisBilgi);
         hadisMetin = root.findViewById(R.id.hadisMetin);
         dahaFazla = root.findViewById(R.id.dahaFazla);
+        hadisYenile = root.findViewById(R.id.hadisYenile);
+        hadisPaylas = root.findViewById(R.id.hadisPaylas);
     }
 
 }
