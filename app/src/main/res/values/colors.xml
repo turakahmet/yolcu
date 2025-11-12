@@ -32,6 +32,7 @@
     <color name="mountlyBackgroundColor">#E0E0E0</color>
     <color name="lineColor">@color/black</color>
     <color name="themeTextColor">@color/black</color>
+    <color name="themeTextColor_s">@color/black</color>
     <color name="lightPoolGrayColor">#E2E2E2</color>
     <color name="pastelRedColor">#EF9A9A</color>
     <color name="pastelRedColor_m">#EF5350</color>
@@ -57,6 +58,9 @@
     <color name="prayer_next_time_label_wigdet">#212121</color>
     <color name="monthly_row_gray">#F5F5F5</color>
     <color name="monthly_row_orange">#FFCC80</color>
+    <color name="monthly_row_bg">#FFCC80</color>
+    <color name="monthly_row_text">#F5F5F5</color>
+
     <color name="icon_color">#424242</color>
     <color name="widget_icon_color">#212121</color>
     <color name="themePrayerBarColor">@color/white</color>

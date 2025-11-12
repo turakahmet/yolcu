@@ -5,6 +5,7 @@ import android.util.Log;
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import com.islamyolu.app.Entity.PrayerNames;
 
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -349,5 +350,21 @@ public class NamazVakiti {
 
     public void setKalanSure(Duration kalanSure) {
         this.kalanSure = kalanSure;
+    }
+
+    public String toString(Calendar calendar) {
+        // Tarihi "dd.MM.yyyy" formatına getirmek için SimpleDateFormat kullanalım.
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", new Locale("tr"));
+        String tarih = sdf.format(calendar.getTime());
+
+        return String.format("Tarih : %s vakitler imsak : %s, gunes : %s, ogle : %s, ikindi : %s, aksam : %s, yatsi : %s",
+                tarih,
+                this.imsak,
+                this.gunes,
+                this.ogle,
+                this.ikindi,
+                this.aksam,
+                this.yatsi
+        );
     }
 }

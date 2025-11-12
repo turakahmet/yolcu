@@ -1,6 +1,7 @@
 package com.islamyolu.app.Service;
 
 import com.islamyolu.app.Entity.Question;
+import com.islamyolu.app.islamicDays.IslamicDayResponse;
 
 import java.util.List;
 
@@ -14,5 +15,8 @@ public interface APIService {
 
     @GET
     Call<String> getCardTextFile(@Url String fileUrl);
+
+    @GET("/yolcu-db/importantDays.json")
+    Call<List<IslamicDayResponse>> getIslamicDaysList();
 
 }

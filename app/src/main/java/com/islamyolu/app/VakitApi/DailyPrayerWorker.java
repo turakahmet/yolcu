@@ -53,6 +53,10 @@ public class DailyPrayerWorker extends Worker {
 
             // Namaz vakitlerini al
             VakitNoApi vakitNoApi = new VakitNoApi();
+            if (City.fromCityName(cityName) == null) {
+                Log.d("DailyPrayerWorker", "Şehir bilgisi bulunamadı. Alarmlar kurulamıyor.");
+                return Result.retry();
+            }
             NamazVakiti namazVakiti = vakitNoApi.localPrayerTimes(Objects.requireNonNull(City.fromCityName(cityName)).getLatitude(), Objects.requireNonNull(City.fromCityName(cityName)).getLongitude());
 
             if (namazVakiti == null) {

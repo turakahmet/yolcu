@@ -33,7 +33,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.navigation.NavOptions;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -44,6 +45,7 @@ import com.islamyolu.app.Service.BadgeService;
 import com.islamyolu.app.Service.SharedPrefsHelperService;
 import com.islamyolu.app.VakitApi.City;
 import com.islamyolu.app.databinding.FragmentDashboardBinding;
+import com.islamyolu.app.islamicDays.IslamicDayActivity;
 import com.islamyolu.app.weather.WeatherData;
 import com.islamyolu.app.weather.WeatherIcon;
 import com.islamyolu.app.weather.WeatherService;
@@ -430,8 +432,12 @@ public class Dashboard extends Fragment {
     }
 
     private void ibadetFragment() {
-        NavController navController = Navigation.findNavController(requireView());
-        navController.navigate(R.id.action_dashboardFragment_to_IbadetFragment);
+        NavController navController = NavHostFragment.findNavController(this);
+        NavOptions options = new NavOptions.Builder()
+                .setLaunchSingleTop(true)
+                .setPopUpTo(navController.getGraph().getStartDestinationId(), true)
+                .build();
+        navController.navigate(R.id.nav_gallery, null, options); // nav_gallery = menu'deki ibadet id'si
     }
 
     private void takvimFragment() {
@@ -440,14 +446,19 @@ public class Dashboard extends Fragment {
             Toast.makeText(getContext(), "Takvim için konum ayarı yapmalısınız.", Toast.LENGTH_SHORT).show();
             return;
         }
-        NavController navController = Navigation.findNavController(requireView());
-        navController.navigate(R.id.action_dashboardFragment_to_IslamicDayFragment);
+        Intent intent = new Intent(getContext(), IslamicDayActivity.class);
+        startActivity(intent);
     }
 
     private void yarismaFragment() {
-        NavController navController = Navigation.findNavController(requireView());
-        navController.navigate(R.id.action_dashboardFragment_to_homeFragment);
+        NavController navController = NavHostFragment.findNavController(this);
+        NavOptions options = new NavOptions.Builder()
+                .setLaunchSingleTop(true)
+                .setPopUpTo(R.id.nav_dashboard, true) // Dashboard'u tamamen temizle
+                .build();
+        navController.navigate(R.id.nav_home, null, options);
     }
+
 
     private void initializeViews(View root) {
         erkekCardView = root.findViewById(R.id.erkekCardView);

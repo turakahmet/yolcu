@@ -14,10 +14,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.islamyolu.app.R;
+import com.islamyolu.app.profile.Avatar;
 
 public class ProfilePictureDialogFragment extends DialogFragment {
     public interface ProfilePictureDialogListener {
-        void onProfilePictureSelected(int resourceId);
+        void onProfilePictureSelected(Avatar avatar); // artık Avatar enum gönderecek
     }
 
     private ProfilePictureDialogListener listener;
@@ -35,9 +36,8 @@ public class ProfilePictureDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Resim kaynakları
-        final int[] imageOptions = {R.drawable.man_1, R.drawable.man_2, R.drawable.man_3, R.drawable.man_4, R.drawable.man_5,
-                R.drawable.man_6, R.drawable.women_1, R.drawable.women_2, R.drawable.women_3, R.drawable.women_4, R.drawable.women_5, R.drawable.women_6};
+        // Enum dizisi
+        final Avatar[] avatars = Avatar.values();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setTitle(getString(R.string.choose_avatar))
@@ -48,36 +48,35 @@ public class ProfilePictureDialogFragment extends DialogFragment {
 
         // GridView için bir View oluştur
         GridView gridView = new GridView(getActivity());
-        gridView.setNumColumns(3); // 3 sütun
-        gridView.setAdapter(new ImageAdapter(getActivity(), imageOptions));
+        gridView.setNumColumns(3);
+        gridView.setAdapter(new ImageAdapter(getActivity(), avatars));
 
-        // GridView'e tıklama olayı ekle
         gridView.setOnItemClickListener((parent, view, position, id) -> {
-            listener.onProfilePictureSelected(imageOptions[position]);
+            listener.onProfilePictureSelected(avatars[position]);
         });
 
         builder.setView(gridView);
         return builder.create();
     }
 
-    // ImageAdapter sınıfı
+    // Adapter
     public class ImageAdapter extends BaseAdapter {
         private Context context;
-        private int[] images;
+        private Avatar[] avatars;
 
-        public ImageAdapter(Context context, int[] images) {
+        public ImageAdapter(Context context, Avatar[] avatars) {
             this.context = context;
-            this.images = images;
+            this.avatars = avatars;
         }
 
         @Override
         public int getCount() {
-            return images.length;
+            return avatars.length;
         }
 
         @Override
         public Object getItem(int position) {
-            return images[position];
+            return avatars[position];
         }
 
         @Override
@@ -90,14 +89,14 @@ public class ProfilePictureDialogFragment extends DialogFragment {
             ImageView imageView;
             if (convertView == null) {
                 imageView = new ImageView(context);
-                imageView.setLayoutParams(new GridView.LayoutParams(200, 200)); // 200dp boyut
+                imageView.setLayoutParams(new GridView.LayoutParams(200, 200));
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setPadding(8, 8, 8, 8);
             } else {
                 imageView = (ImageView) convertView;
             }
 
-            imageView.setImageResource(images[position]);
+            imageView.setImageResource(avatars[position].getResId());
             return imageView;
         }
     }

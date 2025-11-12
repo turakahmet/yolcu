@@ -66,6 +66,7 @@
     <string name="default_time_clock">00:01</string>
     <string name="soru_yukleniyor">Question is loading</string>
     <string name="tamam">OK</string>
+    <string name="uyariLabel">Warning</string>
     <string name="close">CLOSE</string>
     <string name="correctAnswerEndgameLabel">CORRECT ANSWER</string>
     <string name="timeupLabel">Sorry, your time has expired. You should be faster</string>
@@ -155,4 +156,9 @@
     <string name="locaitonInfoText">Current City: %1$s</string>
     <string name="loadingProcess">Processing please wait...</string>
     <string name="sehirBulunamadi">City not found! Please grant location permissions, open location settings, and try again. If the error persists, please contact us.</string>
+    <string name="share_button_description">Share button</string>
+    <string name="takvim_local_uyari">The calculation will be done automatically. Should I continue? Warning: system calculations may differ by +- 1 day depending on the Directorate of Religious Affairs.</string>
+    <string name="yilLabel">Year</string>
+    <string name="menu_anasayfa">Home</string>
+    <string name="namazVakitHesaplamaHata">An error occurred while calculating prayer times. Please check your location and internet settings. If the error persists, please contact us.</string>
 </resources>

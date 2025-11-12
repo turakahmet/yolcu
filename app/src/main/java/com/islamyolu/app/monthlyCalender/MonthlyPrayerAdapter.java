@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.islamyolu.app.R;
@@ -37,8 +38,10 @@ public class MonthlyPrayerAdapter extends RecyclerView.Adapter<MonthlyPrayerAdap
 
         if (position % 2 == 0) {
             holder.itemView.setBackgroundResource(R.color.monthly_row_gray);
+            holder.dateTextItem.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.monthly_row_orange));
         } else {
-            holder.itemView.setBackgroundResource(R.color.monthly_row_orange);
+            holder.itemView.setBackgroundResource(R.color.monthly_row_bg);
+            holder.dateTextItem.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.monthly_row_text));
         }
 
         holder.dateTextItem.setText(prayer.getMonthlyDay());

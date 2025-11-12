@@ -26,6 +26,15 @@ public enum DiniGunEnum {
         this.ad = ad;
     }
 
+    public static DiniGunEnum fromValue(String diniGun) {
+        for (DiniGunEnum value : values()) {
+            if (value.getAd().equals(diniGun)) {
+                return value;
+            }
+        }
+        return null;
+    }
+
     public String getAd() {
         return ad;
     }

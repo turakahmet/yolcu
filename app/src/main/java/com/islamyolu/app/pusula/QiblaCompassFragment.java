@@ -235,13 +235,10 @@ public class QiblaCompassFragment extends Fragment implements SensorEventListene
                 degreeTextView.setText(String.format("%.0f°", azimuth));
                 // Dereceyi TextView'de göster
                 if (addressDetail != null) {
-                    String addressInfo = "\n" + (addressDetail.getSubAdminArea() != null ? addressDetail.getSubAdminArea() + " " : "") +
-                            (addressDetail.getSubLocality() != null ? addressDetail.getSubLocality() + "\n" : "") +
-                            (addressDetail.getAdminArea() != null ? addressDetail.getAdminArea() + ", " : "") +
-                            (addressDetail.getCountryName() != null ? addressDetail.getCountryName() : "");
-                    degreeAdressDetailTextView.setText(String.format("Kıble Açısı: %.0f°", qiblaDegree) + addressInfo);
-                    qiblaDirectionView.setVisibility(View.VISIBLE);
+                    StringBuilder sb = getStringBuilder();
 
+                    degreeAdressDetailTextView.setText("Kıble Açısı: " + ((int) qiblaDegree) + "°" + sb);
+                    qiblaDirectionView.setVisibility(View.VISIBLE);
                 }
 
                 float threshold = 5f;
@@ -254,6 +251,19 @@ public class QiblaCompassFragment extends Fragment implements SensorEventListene
                 }
             }
         }
+    }
+
+    private @NonNull StringBuilder getStringBuilder() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n");
+        if (addressDetail.getSubAdminArea() != null)
+            sb.append(addressDetail.getSubAdminArea()).append(" ");
+        if (addressDetail.getSubLocality() != null)
+            sb.append(addressDetail.getSubLocality()).append("\n");
+        if (addressDetail.getAdminArea() != null)
+            sb.append(addressDetail.getAdminArea()).append(", ");
+        if (addressDetail.getCountryName() != null) sb.append(addressDetail.getCountryName());
+        return sb;
     }
 
 

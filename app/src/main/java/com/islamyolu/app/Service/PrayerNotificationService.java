@@ -103,17 +103,16 @@ public class PrayerNotificationService extends Service {
 
     private void updatePrayerTimes() {
         try {
-            if (currentNamazVakiti == null) {
+            if (currentNamazVakiti.getGecerliVakit() == null) {
                 String cityName = sharedPrefsHelperSettingService.getCityNameFromPreferences();
                 currentNamazVakiti = vakitNoApi.getLocalPrayerTimesByCityName(cityName);
-                if (currentNamazVakiti != null) {
+                if (currentNamazVakiti.getGecerliVakit() != null) {
                     NamazVakiti.updateInstance(currentNamazVakiti);
+                } else {
+                    onDestroy();
                 }
-            }
-            if (currentNamazVakiti != null) {
-                updatePrayerNotification();
             } else {
-                Log.e(TAG, "Namaz vakitleri null");
+                updatePrayerNotification();
             }
         } catch (Exception e) {
             Log.e(TAG, "Vakit güncelleme hatası: " + e.getMessage(), e);

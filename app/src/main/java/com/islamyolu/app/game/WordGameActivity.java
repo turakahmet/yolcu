@@ -83,6 +83,7 @@ public class WordGameActivity extends AppCompatActivity {
     private boolean jokerKullanmamaRozet = true;
     private int toplamAcilanHarfSayisi = 0;
     private int sorudanAlinanPuan = 0;
+    private final String TAG = "WordGameActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -504,7 +505,7 @@ public class WordGameActivity extends AppCompatActivity {
             EditText editText = (EditText) answerGrid.getChildAt(i);
             userAnswer.append(editText.getText().toString());
         }
-        if (userAnswer.toString().equalsIgnoreCase(currentAnswer)) {
+        if (turkishEqualsIgnoreCase(userAnswer.toString(), currentAnswer)) {
             int kalanHarfSayisi = currentAnswer.length() - toplamAcilanHarfSayisi;
             sorudanAlinanPuan = ADD_COIN * kalanHarfSayisi;
             goldService.addGoldAmount(sorudanAlinanPuan);
@@ -516,6 +517,9 @@ public class WordGameActivity extends AppCompatActivity {
             currentQuestionIndex++;
             confirmButtonLayout.setAlpha(0.0f);
             confirmButton.setEnabled(false);
+            letterJokerButton.setEnabled(false);
+            costCoinLayout.setEnabled(false);
+            costCoinLayout.setAlpha(0.0f);
             if (!harfAlindimiRozet) {
                 badgeService.enableBadge(BadgeType.KELIME_YARISMA_1);
             }
@@ -548,6 +552,28 @@ public class WordGameActivity extends AppCompatActivity {
         }
 
     }
+
+    // Türkçe karakterleri normalize eden metot
+    public static String normalizeTurkish(String input) {
+        if (input == null) return null;
+
+        return input
+                .replace("İ", "I").replace("I", "I")
+                .replace("ı", "i").replace("i", "i")
+                .replace("Ş", "S").replace("ş", "s")
+                .replace("Ğ", "G").replace("ğ", "g")
+                .replace("Ü", "U").replace("ü", "u")
+                .replace("Ö", "O").replace("ö", "o")
+                .replace("Ç", "C").replace("ç", "c")
+                .toUpperCase(); // Büyük/küçük farkını kaldırmak için
+    }
+
+    // Karşılaştırma metodu
+    public static boolean turkishEqualsIgnoreCase(String a, String b) {
+        if (a == null || b == null) return false;
+        return normalizeTurkish(a).equals(normalizeTurkish(b));
+    }
+
 
     private void nextQuestionWithDelay() {
         handler.postDelayed(() -> {
@@ -630,75 +656,96 @@ public class WordGameActivity extends AppCompatActivity {
 
 
     private void giveLetter() {
+        // Önce currentAnswer ve answerGrid kontrolü
+        if (currentAnswer == null || currentAnswer.isEmpty()) {
+            Log.e(TAG, "currentAnswer boş veya null!");
+            return;
+        }
 
-        if (goldService.getGoldAmount() >= JOKER_LETTER) {
-            goldService.minusGoldAmount(JOKER_LETTER);
-            saveGoldAmountText();
-            Random random = new Random();
-            int index;
-            harfAlindimiRozet = true;
-            jokerKullanmamaRozet = false;
-            EditText hintEditText;
-            // Buton sesini çal
-            soundService.wgHintJokerEffect();
+        if (answerGrid.getChildCount() < currentAnswer.length()) {
+            Log.e(TAG, "answerGrid child sayısı yetersiz!");
+            return;
+        }
 
-            // Sadece henüz açılmamış olan bir EditText bulana kadar döngü devam eder
-            do {
-                index = random.nextInt(currentAnswer.length()); // Rastgele bir indeks seç
-                hintEditText = (EditText) answerGrid.getChildAt(index); // O indeksteki EditText'i bul
-            } while (!hintEditText.isEnabled()); // Eğer EditText zaten açılmışsa yeniden seç
+        if (goldService.getGoldAmount() < JOKER_LETTER) {
+            soundService.noUsedJokerEffect();
+            letterJokerButton.setEnabled(false);
+            costCoinLayout.setEnabled(false);
+            goldService.yetersizKaynakDialog(this);
+            return;
+        }
 
-            // Doğru cevaptan alınacak harf
-            char hintChar = currentAnswer.charAt(index);
-            hintEditText.setEnabled(false); // EditText'i düzenlenemez yap
+        goldService.minusGoldAmount(JOKER_LETTER);
+        saveGoldAmountText();
+        soundService.wgHintJokerEffect();
+        harfAlindimiRozet = true;
+        jokerKullanmamaRozet = false;
+
+        Random random = new Random();
+        EditText hintEditText = null;
+
+        // EditTextlerden henüz açılmamış olanları listele
+        List<Integer> availableIndices = new ArrayList<>();
+        for (int i = 0; i < currentAnswer.length(); i++) {
+            EditText et = (EditText) answerGrid.getChildAt(i);
+            if (et != null && et.isEnabled()) {
+                availableIndices.add(i);
+            }
+        }
+
+        if (availableIndices.isEmpty()) {
+            // Tüm harfler zaten açılmış
+            costCoinLayout.setAlpha(0.0f);
+            letterJokerButton.setEnabled(false);
+            costCoinLayout.setEnabled(false);
+            return;
+        }
+
+        // Rasgele bir açık EditText seç
+        int randomIdx = availableIndices.get(random.nextInt(availableIndices.size()));
+        hintEditText = (EditText) answerGrid.getChildAt(randomIdx);
+        char hintChar = currentAnswer.charAt(randomIdx);
+
+        if (hintEditText != null) {
+            hintEditText.setEnabled(false);
             toplamAcilanHarfSayisi++;
 
-            // Alfabeden rasgele harfler gösterme animasyonu
+            // Animasyonu başlat
             Handler handler = new Handler(Looper.getMainLooper());
             EditText finalHintEditText = hintEditText;
             Runnable runnable = new Runnable() {
-                final int animDuration = 1300; // Animasyonun süresi (2 saniye)
-                final int interval = 70; // Harflerin değişme aralığı (100 ms)
+                final int animDuration = 1300;
+                final int interval = 70;
                 final long startTime = System.currentTimeMillis();
 
                 @Override
                 public void run() {
                     if (System.currentTimeMillis() - startTime < animDuration) {
-                        // Rasgele bir harf seç
                         char randomChar = (char) (random.nextInt(26) + 'A');
                         finalHintEditText.setText(String.valueOf(randomChar));
-
-                        // Animasyonu tekrar çalıştır
                         handler.postDelayed(this, interval);
                     } else {
-                        // Animasyon süresi tamamlandı, doğru harfi yerleştir
                         finalHintEditText.setText(String.valueOf(hintChar));
-
                     }
                 }
             };
-
-            // Animasyonu başlat
             handler.post(runnable);
+        }
 
-            // Tüm EditText bileşenlerinin kapalı olup olmadığını kontrol edin
-            boolean allDisabled = true;
-            for (int i = 0; i < currentAnswer.length(); i++) {
-                EditText editText = (EditText) answerGrid.getChildAt(i);
-                if (editText.isEnabled()) {
-                    allDisabled = false;
-                    break;
-                }
+        // Tüm EditTextlerin durumunu kontrol et
+        boolean allDisabled = true;
+        for (int i = 0; i < currentAnswer.length(); i++) {
+            EditText et = (EditText) answerGrid.getChildAt(i);
+            if (et != null && et.isEnabled()) {
+                allDisabled = false;
+                break;
             }
+        }
 
-            if (allDisabled) {
-                costCoinLayout.setAlpha(0.0f);
-                letterJokerButton.setEnabled(false);
-            }
-        } else {
-            soundService.noUsedJokerEffect();
+        if (allDisabled) {
+            costCoinLayout.setAlpha(0.0f);
             letterJokerButton.setEnabled(false);
-            goldService.yetersizKaynakDialog(this);
+            costCoinLayout.setEnabled(false);
         }
     }
 

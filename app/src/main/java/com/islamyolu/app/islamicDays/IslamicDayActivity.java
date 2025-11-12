@@ -1,9 +1,14 @@
 package com.islamyolu.app.islamicDays;
 
-import android.content.SharedPreferences;
 import android.icu.util.IslamicCalendar;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,8 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.islamyolu.app.R;
+import com.islamyolu.app.Service.APIService;
+import com.islamyolu.app.Service.NetworkServiceUtil;
+import com.islamyolu.app.Utils.APIClient;
 import com.islamyolu.app.VakitApi.NamazVakiti;
-import com.islamyolu.app.main.MainActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,12 +34,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Response;
+
 public class IslamicDayActivity extends AppCompatActivity {
 
-    private TextView cityNameText, hijriDateText, yaklasanaTarih, yaklasanaTarihDetay;
+    private TextView hijriDateText, yaklasanaTarih, yaklasanaTarihDetay;
     private ImageView islamicDayImage;
     private RecyclerView diniGunlerRecycler;
     private String getCityNameFromPreferences;
+    private ProgressBar loadingDialog;
+    private Spinner yearSelectSpinner;
+    private List<String> years;
+    private List<IslamicDayResponse> islamicDayResponses;
+    private IslamicDayAdapter diniGunAdapter;
+    private NetworkServiceUtil networkServiceUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,18 +56,61 @@ public class IslamicDayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_islamic_days);
 
         initializeViews();
+        initializeServices();
+
         setupRecyclerView();
-        loadCityData();
+
+        loadGithubDiniGunler();
+
+        yearSelectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int selectedYear = Integer.parseInt(years.get(position));
+
+                // Yıl filtreleme ve RecyclerView güncelleme
+                List<DiniGun> filteredList = convertToDiniGun(filterByYear(selectedYear));
+                diniGunAdapter.updateData(filteredList); // Adapter içinde updateData metodu olmal
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private void initializeServices() {
+        networkServiceUtil = NetworkServiceUtil.getInstance(this);
+        if (!networkServiceUtil.isConnected()) {
+            // veya kullanıcıya devam/iptal seçeneği ver
+            networkServiceUtil.showConfirmNoInternetDialog(this, getString(R.string.no_Internet), getString(R.string.takvim_local_uyari), new NetworkServiceUtil.OnUserChoiceListener() {
+                @Override
+                public void onContinue() {
+                    // Kullanıcı internet olmadan devam etti
+                    loadLocalDiniGunler();
+                    loadingDialog.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onCancel() {
+                    // Kullanıcı iptal etti
+                    finish();
+                }
+            });
+        }
     }
 
     private void initializeViews() {
-        cityNameText = findViewById(R.id.city_name);
+//        cityNameText = findViewById(R.id.city_name);
         hijriDateText = findViewById(R.id.hijri_date);
         islamicDayImage = findViewById(R.id.islamic_day_image);
         diniGunlerRecycler = findViewById(R.id.dini_gunler_recycler);
 
         yaklasanaTarih = findViewById(R.id.yaklasanaTarih);
         yaklasanaTarihDetay = findViewById(R.id.yaklasanaTarihDetay);
+        loadingDialog = findViewById(R.id.loadingDialog);
+        yearSelectSpinner = findViewById(R.id.yearSelectSpinner);
 
 
         hijriDateText.setText(NamazVakiti.getInstance().getHicriDate());
@@ -63,17 +122,96 @@ public class IslamicDayActivity extends AppCompatActivity {
         // Adapter setup will be done when data is loaded
     }
 
-    private void loadCityData() {
-        SharedPreferences locationPrefs = getSharedPreferences(MainActivity.LOCATION_PREFS, MODE_PRIVATE);
-        getCityNameFromPreferences = locationPrefs.getString("city_name", "");
 
-        if (!getCityNameFromPreferences.isEmpty()) {
-            cityNameText.setText(getCityNameFromPreferences);
-            loadDiniGunler();
-        }
+    private void loadGithubDiniGunler() {
+        APIService apiService = APIClient.getClient().create(APIService.class);
+
+        apiService.getIslamicDaysList().enqueue(new retrofit2.Callback<List<IslamicDayResponse>>() {
+            @Override
+            public void onResponse(Call<List<IslamicDayResponse>> call, Response<List<IslamicDayResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // İşlemleri burada gerçekleşir
+                    islamicDayResponses = response.body();
+                    islamicDayResponses.sort(Comparator.comparingInt(IslamicDayResponse::getYil));
+                    int currentYil = LocalDate.now().getYear(); // Şu anki yıl
+
+                    if (!islamicDayResponses.isEmpty()) {
+                        IslamicDayResponse lastItem = islamicDayResponses.get(islamicDayResponses.size() - 1);
+                        int lastYil = lastItem.getYil();
+                        // secilebilir Yıl listesini oluştur
+                        years = new ArrayList<>();
+                        for (int i = currentYil; i <= lastYil; i++) {
+                            years.add(String.valueOf(i));
+                        }
+                        // Adapter oluştur ve Spinner'a ata
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(IslamicDayActivity.this,
+                                android.R.layout.simple_spinner_item, years);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        yearSelectSpinner.setAdapter(adapter);
+                        yearSelectSpinner.setSelection(years.indexOf(String.valueOf(currentYil)));
+
+                        if (lastYil < currentYil) {
+                            loadLocalDiniGunler();
+                            loadingDialog.setVisibility(View.GONE);
+                            return;
+                        }
+
+                    } else {
+                        loadLocalDiniGunler();
+                        loadingDialog.setVisibility(View.GONE);
+                        return;
+                    }
+                    List<DiniGun> diniGunList;
+                    // RecyclerView adapter ilk yükleme (tüm günler değil, seçilen yıl)
+                    diniGunList = convertToDiniGun(filterByYear(currentYil));
+
+//                    for (IslamicDayResponse islamicDayResponse : islamicDayResponses) {
+//                        DiniGun diniGun = new DiniGun(DiniGunEnum.fromValue(islamicDayResponse.getDiniGun()), islamicDayResponse.getDiniTarih());
+//                        diniGun.setIslamicDayResponse(islamicDayResponse);
+//                        diniGunList.add(diniGun);
+//                    }
+                    siralamaYap(diniGunList);
+                    diniGunAdapter = new IslamicDayAdapter(diniGunList);
+                    diniGunlerRecycler.setAdapter(diniGunAdapter);
+                    loadingDialog.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<IslamicDayResponse>> call, Throwable t) {
+                Log.d("servis hata", Objects.requireNonNull(t.getMessage()));
+                loadingDialog.setVisibility(View.GONE);
+
+            }
+        });
+
     }
 
-    private void loadDiniGunler() {
+    private List<IslamicDayResponse> filterByYear(int year) {
+        List<IslamicDayResponse> list = new ArrayList<>();
+        for (IslamicDayResponse day : islamicDayResponses) {
+            if (day.getYil() == year) {
+                list.add(day);
+            }
+        }
+        return list;
+    }
+
+    private List<DiniGun> convertToDiniGun(List<IslamicDayResponse> responses) {
+        List<DiniGun> diniGunList = new ArrayList<>();
+
+        for (IslamicDayResponse response : responses) {
+            DiniGun diniGun = new DiniGun(DiniGunEnum.fromValue(response.getDiniGun()), response.getDiniTarih());
+            diniGun.setIslamicDayResponse(response);
+            diniGunList.add(diniGun);
+        }
+        if (!diniGunList.isEmpty() && LocalDate.now().getYear() == diniGunList.get(0).getIslamicDayResponse().getYil())
+            yaklasanTarihGuncelle(diniGunList);
+        return diniGunList;
+    }
+
+
+    private void loadLocalDiniGunler() {
         // Hicri yıl
         // IslamicCalendar nesnesi oluştur
         List<DiniGun> diniGunList = new ArrayList<>();
@@ -150,6 +288,10 @@ public class IslamicDayActivity extends AppCompatActivity {
         IslamicDayAdapter adapter = new IslamicDayAdapter(diniGunList);
         diniGunlerRecycler.setAdapter(adapter);
 
+        yaklasanTarihGuncelle(diniGunList);
+    }
+
+    private void yaklasanTarihGuncelle(List<DiniGun> diniGunList) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", new Locale("tr", "TR"));
         Date currentDate = new Date();
 
@@ -162,8 +304,8 @@ public class IslamicDayActivity extends AppCompatActivity {
                     updateIslamicDayImage(diniGun);
                     break;
                 } else {
-                    yaklasanaTarih.setText(getApplicationContext().getString(R.string.yaklasanTarihYok));
-                    yaklasanaTarihDetay.setText(getApplicationContext().getString(R.string.yaklasanTarihYok));
+                    yaklasanaTarih.setText(this.getString(R.string.yaklasanTarihYok));
+                    yaklasanaTarihDetay.setText(this.getString(R.string.yaklasanTarihYok));
                 }
             } catch (ParseException ignored) {
             }

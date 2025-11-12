@@ -1,5 +1,6 @@
 package com.islamyolu.app.monthlyCalender;
 
+import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.os.Looper;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,6 +36,8 @@ public class MonthlyPrayerActivity extends AppCompatActivity {
     private static final String TAG = "MonthlyPrayerActivity";
     private NamazVakiti currentNamazVakiti;
     private String getCityNameFromPreferences;
+    private Dialog mDialog;
+    private City city;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +47,16 @@ public class MonthlyPrayerActivity extends AppCompatActivity {
         initializeViews();
         setupRecyclerView();
         loadCityData();
-        startRemainingTimeUpdate();
-        updatePrayerTimeImage();
-
+        if (city != null) {
+            startRemainingTimeUpdate();
+            updatePrayerTimeImage();
+        } else {
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.uyariLabel))
+                    .setMessage(getString(R.string.namazVakitHesaplamaHata))
+                    .setPositiveButton(getString(R.string.tamam), (dialog, which) -> finish())
+                    .show();
+        }
     }
 
     private void initializeViews() {
@@ -98,7 +109,7 @@ public class MonthlyPrayerActivity extends AppCompatActivity {
 
         if (!getCityNameFromPreferences.isEmpty()) {
             cityNameText.setText(getCityNameFromPreferences);
-            City city = City.fromCityName(getCityNameFromPreferences);
+            city = City.fromCityName(getCityNameFromPreferences);
             if (city != null) {
                 loadMonthlyPrayerTimes(city);
             }
@@ -163,6 +174,12 @@ public class MonthlyPrayerActivity extends AppCompatActivity {
         // Update prayer time image based on current prayer time
         // Example:
         int imageResource;
+
+        if (NamazVakiti.getInstance().getNextPrayer() == null) {
+            imageResource = R.drawable.imsak_mountly;
+            prayerTimeImage.setImageResource(imageResource);
+            return;
+        }
 
         if (PrayerNames.IMSAK.getValue().equals(NamazVakiti.getInstance().getNextPrayer().getName())) {
             imageResource = R.drawable.imsak_mountly;

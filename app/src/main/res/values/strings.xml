@@ -6,6 +6,7 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Ayarlar</string>
+    <string name="menu_anasayfa">Ana Sayfa</string>
     <string name="menu_yarisma">Yarışma</string>
     <string name="menu_ibadet">İbadet</string>
     <string name="menu_pususla">Kıble Yönü</string>
@@ -68,6 +69,7 @@
     <string name="default_time_clock_detail" translatable="false">00:00:00</string>
     <string name="soru_yukleniyor">Soru yükleniyor</string>
     <string name="tamam">TAMAM</string>
+    <string name="uyariLabel">Uyarı</string>
     <string name="close">KAPAT</string>
     <string name="correctAnswerEndgameLabel">DOĞRU YANIT</string>
     <string name="timeupLabel">Maalesef süreniz doldu. Daha hızlı olmalısın</string>
@@ -595,7 +597,6 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="ebabyicon" translatable="false">erkekbabyIcon</string>
     <string name="kbabyicon" translatable="false">kızbabyIcon</string>
     <string name="gunu_ismi" translatable="false">Günün ismi</string>
-    <string name="menu_anasayfa" translatable="false">Ana sayfa</string>
     <string name="badgeInfo" translatable="false">Henüz bu rozeti kazanmadın</string>
     <string name="nameRefresh" translatable="false">isim yenile icon</string>
     <string name="isimtagAnlam" translatable="false">"Anlamı: "</string>
@@ -614,7 +615,7 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="hadislogo" translatable="false">hadisLogo</string>
     <string name="weatherRefresh" translatable="false">hava durum yenile buton</string>
     <string name="hadis_header" translatable="false">Hadis-i Şerif</string>
-    <string name="hadis_format">%1$s\n%2$s</string>
+    <string name="hadis_format" translatable="false">%1$s\n%2$s</string>
     <string name="yarisma_kuran" translatable="false">Kur’an Yolculuğu</string>
     <string name="siyeri_nebi" translatable="false">Siyer-i Nebi</string>
     <string name="peygamberler_tarihi" translatable="false">Peygamberler Tarihi</string>
@@ -639,6 +640,9 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="loadingProcess">İşlem Yapılıyor lütfen bekleyin...</string>
     <string name="sehirBulunamadi">Şehir bulunamadı! Konum izni verin ve konum ayarlarını açarak tekrar deneyiniz. Hata devam ederse iletişime geçiniz.</string>
     <string name="share_button_description">Paylaş butonu</string>
+    <string name="takvim_local_uyari">Hesaplama otomatik olarak yapılacaktır devam edilsin mi? Uyarı, sistem hesaplamaları da diyanete göre +-1 gün farklılıklar olabilir.</string>
+    <string name="yilLabel">Yıl</string>
+    <string name="namazVakitHesaplamaHata">Namaz vakitleri hesaplarken hata oluştu. Konum ve internet ayarlarınızı kontrol edin. Hata devam ederse iletişime geçebilirsiniz.</string>
 
     <string-array name="ezan_sound_options">
         <item>Ezan</item>

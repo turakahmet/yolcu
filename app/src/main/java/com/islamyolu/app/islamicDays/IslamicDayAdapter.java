@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.islamyolu.app.R;
@@ -36,11 +37,15 @@ public class IslamicDayAdapter extends RecyclerView.Adapter<IslamicDayAdapter.Vi
 
         if (position % 2 == 0) {
             holder.itemView.setBackgroundResource(R.color.monthly_row_gray);
+            holder.diniGunLabel.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.themeTextColor_s));
+            holder.diniTarihLabel.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.themeTextColor_s));
         } else {
             holder.itemView.setBackgroundResource(R.color.monthly_row_orange);
+            holder.diniGunLabel.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.black));
+            holder.diniTarihLabel.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.black));
         }
         if (diniGun.isAktifGunMu()) {
-            holder.itemView.setBackgroundResource(R.color.current_namaz_time);
+            holder.itemView.setBackgroundResource(R.color.colorPrimary);
         }
 
         holder.diniGunLabel.setText(diniGun.getDiniGun().getAd());
@@ -50,6 +55,12 @@ public class IslamicDayAdapter extends RecyclerView.Adapter<IslamicDayAdapter.Vi
     @Override
     public int getItemCount() {
         return diniGunList.size();
+    }
+
+    public void updateData(List<DiniGun> newList) {
+        this.diniGunList.clear();
+        this.diniGunList.addAll(newList);
+        notifyDataSetChanged();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

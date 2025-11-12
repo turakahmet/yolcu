@@ -37,7 +37,7 @@ public class VakitNoApi {
         );
 
 
-        CalculationParameters params = CalculationMethod.TURKEY.getParameters().copy(18, 17, 0, CalculationMethod.TURKEY, Madhab.SHAFI, null, new PrayerAdjustments(), new PrayerAdjustments(0, -7, 5, 4, 7, 0), Rounding.NEAREST, Shafaq.GENERAL);
+        CalculationParameters params = CalculationMethod.TURKEY.getParameters().copy(18, 17, 0, CalculationMethod.TURKEY, Madhab.SHAFI, null, new PrayerAdjustments(), new PrayerAdjustments(0, -7, 6, 6, 9, 2), Rounding.NEAREST, Shafaq.GENERAL);
         // Hanefi mezhebi için ayarla
 
         // PrayerTimes nesnesini oluşturmak için Koordinatlar ve Parametreler
@@ -156,7 +156,7 @@ public class VakitNoApi {
         );
 
 
-        CalculationParameters params = CalculationMethod.TURKEY.getParameters().copy(18, 17, 0, CalculationMethod.TURKEY, Madhab.SHAFI, null, new PrayerAdjustments(), new PrayerAdjustments(0, -7, 5, 4, 7, 0), Rounding.NEAREST, Shafaq.GENERAL);
+        CalculationParameters params = CalculationMethod.TURKEY.getParameters().copy(18, 17, 0, CalculationMethod.TURKEY, Madhab.SHAFI, null, new PrayerAdjustments(), new PrayerAdjustments(0, -7, 6, 6, 9, 2), Rounding.NEAREST, Shafaq.GENERAL);
         // Hanefi mezhebi için ayarla
 
         // PrayerTimes nesnesini oluşturmak için Koordinatlar ve Parametreler

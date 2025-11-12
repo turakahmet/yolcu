@@ -479,7 +479,15 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void handlePermanentNotificationSwitch(boolean isChecked) {
         sharedPrefsHelperService.setSwitchState("switchNotificationVakitHerzamanGoster", isChecked);
-
+        if (NamazVakiti.getInstance().getGecerliVakit() == null) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Uyarı")
+                    .setMessage("Bu servis Türkiye içerisinde kullanılmaktadır. Cihazınızın Konum ve internet ayarlarını açarak ve gerekli izinleri vererek. Namaz vakitleri hesaplamasını sağlayınız sonrasında bu servisi aktif edebilirsiniz.")
+                    .setPositiveButton("Tamam", null)
+                    .show();
+            sharedPrefsHelperService.setSwitchState("switchNotificationVakitHerzamanGoster", false);
+            return;
+        }
         Intent serviceIntent = new Intent(this, PrayerNotificationService.class);
         if (isChecked) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 15 = API 34

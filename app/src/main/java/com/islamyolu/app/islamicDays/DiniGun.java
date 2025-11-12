@@ -4,6 +4,7 @@ public class DiniGun {
     private DiniGunEnum diniGun;
     private String diniTarih;
     private boolean aktifGunMu = false;
+    private IslamicDayResponse islamicDayResponse;
 
     public DiniGun(DiniGunEnum diniGun, String diniTarih) {
         this.diniGun = diniGun;
@@ -34,4 +35,11 @@ public class DiniGun {
         this.diniTarih = diniTarih;
     }
 
+    public IslamicDayResponse getIslamicDayResponse() {
+        return islamicDayResponse;
+    }
+
+    public void setIslamicDayResponse(IslamicDayResponse islamicDayResponse) {
+        this.islamicDayResponse = islamicDayResponse;
+    }
 }

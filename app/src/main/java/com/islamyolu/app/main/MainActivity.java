@@ -60,6 +60,7 @@ import com.islamyolu.app.VakitApi.PrayerTimesFetcher;
 import com.islamyolu.app.VakitApi.VakitNoApi;
 import com.islamyolu.app.databinding.ActivityMainBinding;
 import com.islamyolu.app.monthlyCalender.MonthlyPrayerActivity;
+import com.islamyolu.app.profile.Avatar;
 
 import java.io.IOException;
 import java.util.List;
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
     private static final String USERNAME_KEY = "username";
     private static final String LAST_KNOWN_LAT_KEY = "last_known_latitude";
     private static final String LAST_KNOWN_LON_KEY = "last_known_longitude";
+    private static final String AVATAR_ICON = "profile_picture_name";
     public static final String SETTINGS_PREFS = "SettingPrefs";
     private ImageButton refreshButton;
     private ImageView editIcon;
@@ -192,9 +194,10 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         String savedUsername = userPrefs.getString(USERNAME_KEY, getString(R.string.defaultUserName));
         // Kaydedilen kullanıcı adını TextView'e ata
         usernameTextView.setText(savedUsername);
-        // Daha önce kaydedilmiş resmi yükle
-        int savedPicture = userPrefs.getInt("profile_picture", R.drawable.man_1); // default_avatar varsayılan resim
-        userAvatar.setImageResource(savedPicture);
+        // Daha önce kaydedilmiş avatarı yükleme
+        String savedName = userPrefs.getString(AVATAR_ICON, Avatar.MAN_1.name());
+        Avatar savedAvatar = Avatar.fromName(savedName);
+        userAvatar.setImageResource(savedAvatar.getResId());
 
 //        // SharedPreferences içindeki tüm verileri temizle
 //        SharedPreferences.Editor editor = userPrefs.edit();
@@ -361,31 +364,35 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
 
     // Yeni konumu işleme
     private void handleNewLocation(Location location) {
-        // İlk açılışta bildirim izni kontrolü
         requestNotificationPermission();
-        try {
-            Geocoder geocoder = new Geocoder(this, new Locale("tr"));
-            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
 
-            if (addresses != null && !addresses.isEmpty()) {
-                Address address = addresses.get(0);
-                String city = address.getAdminArea();
+        new Thread(() -> {
+            try {
+                Geocoder geocoder = new Geocoder(this, new Locale("tr"));
+                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
 
-                if (city != null && !city.isEmpty()) {
-                    // UI güncelle
-                    locationTextView.setText(city);
+                if (addresses != null && !addresses.isEmpty()) {
+                    Address address = addresses.get(0);
+                    String city = address.getAdminArea();
 
-                    // Şehir bilgisini kaydet
-                    locationPrefs.edit().putString("city_name", city).apply();
-                    Log.d("MainActivity", "Şehir bilgisi kaydedildi: " + city);
+                    if (city != null && !city.isEmpty()) {
+                        runOnUiThread(() -> {
+                            // UI güncelle
+                            locationTextView.setText(city);
 
-                    // Namaz vakitlerini al ve alarmları kur
-                    fetchPrayerTimesNoAPI(city);
+                            // Şehir bilgisini kaydet
+                            locationPrefs.edit().putString("city_name", city).apply();
+                            Log.d("MainActivity", "Şehir bilgisi kaydedildi: " + city);
+
+                            // Namaz vakitlerini al ve alarmları kur
+                            fetchPrayerTimesNoAPI(city);
+                        });
+                    }
                 }
+            } catch (IOException e) {
+                Log.e("MainActivity", "Geocoder hatası: " + e.getMessage());
             }
-        } catch (IOException e) {
-            Log.e("MainActivity", "Geocoder hatası: " + e.getMessage());
-        }
+        }).start();
     }
 
     private void fetchPrayerTimesNoAPI(String city) {
@@ -574,13 +581,16 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
 
 
     @Override
-    public void onProfilePictureSelected(int resourceId) {
+    public void onProfilePictureSelected(Avatar avatar) {
         soundService.commonButtonEffect();
-        // SharedPreferences'a kaydet
+
+        // SharedPreferences’a enum adı kaydet
         SharedPreferences.Editor editor = userPrefs.edit();
-        editor.putInt("profile_picture", resourceId);
+        editor.putString(AVATAR_ICON, avatar.name());
         editor.apply();
-        userAvatar.setImageResource(resourceId);
+
+        // Avatar göster
+        userAvatar.setImageResource(avatar.getResId());
     }
 
     @Override

@@ -3,8 +3,11 @@
 
     <color name="lineColor">#FFFFFF</color>
     <color name="themeTextColor">@color/black</color>
+    <color name="themeTextColor_s">@color/white</color>
     <color name="monthly_row_gray">#424242</color>
-    <color name="monthly_row_orange">#4D3C1F</color>
+    <color name="monthly_row_orange">#FFCC80</color>
+    <color name="monthly_row_bg">#4D3C1F</color>
+    <color name="monthly_row_text">#FFCC80</color>
     <color name="icon_color">@android:color/white</color>
     <color name="widget_icon_color">#D3D3D3</color>
     <color name="themePrayerBarColor">#424242</color>
