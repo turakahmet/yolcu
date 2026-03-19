@@ -105,7 +105,7 @@ public class ZekatHesaplaFragment extends Fragment {
                 servisAktifMi = true;
                 for (Currency currency : currencies) {
                     if (currency.getAciklama().contains("Gram Altın")) {
-                        nisapTutar = nisapOran.multiply(BigDecimal.valueOf(currency.getSatis()));
+                        nisapTutar = nisapOran.multiply(BigDecimal.valueOf(currency.getAlis()));
                     }
                 }
             } else
@@ -286,49 +286,57 @@ public class ZekatHesaplaFragment extends Fragment {
         CurrencyParserAPI.fetchCurrencies(requestType, new CurrencyParserAPI.CurrencyCallback() {
             @Override
             public void onCurrenciesFetched(List<Currency> currencies) {
+                // BEST PRACTICE: Asenkron işlem bittiğinde Fragment hala hayatta mı kontrolü
+                if (!isAdded() || getActivity() == null) {
+                    return;
+                }
+
                 if (currencies != null && !currencies.isEmpty()) {
-                    // Spinner'ı doldur
                     List<String> currencyNames = new ArrayList<>();
                     Iterator<Currency> iterator = currencies.iterator();
 
                     while (iterator.hasNext()) {
                         Currency currency = iterator.next();
                         if (currency.getAciklama().contains("Toptan") || currency.getAciklama().contains("Eski")) {
-                            iterator.remove(); // Güvenli şekilde öğeyi kaldır
+                            iterator.remove();
                         } else {
-                            if (requestType.equals("GetCurrency"))
-                                currencyNames.add(currency.getAciklama() + "-" + currency.getKod()); // Currency adını alın
-                            else
+                            if ("GetCurrency".equals(requestType)) {
+                                currencyNames.add(currency.getAciklama() + " - " + currency.getKod());
+                            } else {
                                 currencyNames.add(currency.getAciklama());
+                            }
                         }
                     }
 
                     spinner.setTag(currencies);
 
-                    // UI Thread'de Spinner'a veri ekleme
-                    requireActivity().runOnUiThread(() -> {
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                                requireActivity(),
-                                android.R.layout.simple_spinner_item, currencyNames) {
-                            @Override
-                            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
-                                View view = super.getDropDownView(position, convertView, parent);
-                                TextView text = view.findViewById(android.R.id.text1);
-
-                                // Yazı rengini siyah yapmak
-                                if (text != null) {
-                                    text.setTextColor(ContextCompat.getColor(requireContext(), R.color.black)); // Dropdown menü yazı rengini ayarlama
-                                }
-                                return view;
-                            }
-                        };
-
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        spinner.setAdapter(adapter);
-                    });
+                    // Artık runOnUiThread içine almaya gerek yok, API sınıfımız bunu zaten Main Thread'de tetikliyor.
+                    ArrayAdapter<String> adapter = getStringArrayAdapter(currencyNames);
+                    spinner.setAdapter(adapter);
                 } else {
-                    Log.d("ZekatHesaplaFragment", "Boş veya geçersiz liste.");
+                    Log.w("ZekatHesaplaFragment", "Boş veya geçersiz liste.");
                 }
+            }
+
+            @NonNull
+            private ArrayAdapter<String> getStringArrayAdapter(List<String> currencyNames) {
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                        requireContext(), // requireActivity yerine requireContext kullanımı fragmentlarda daha stabildir
+                        android.R.layout.simple_spinner_item, currencyNames) {
+                    @Override
+                    public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+                        View view = super.getDropDownView(position, convertView, parent);
+                        TextView text = view.findViewById(android.R.id.text1);
+
+                        if (text != null) {
+                            text.setTextColor(ContextCompat.getColor(requireContext(), R.color.black));
+                        }
+                        return view;
+                    }
+                };
+
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                return adapter;
             }
         });
     }
@@ -341,7 +349,7 @@ public class ZekatHesaplaFragment extends Fragment {
                 List<Currency> currencies = (List<Currency>) spinnerAltTuru.getTag();
                 if (currencies != null && position < currencies.size()) {
                     Currency selectedCurrency = currencies.get(position);
-                    String satisSayisi = String.valueOf(selectedCurrency.getSatis());
+                    String satisSayisi = String.valueOf(selectedCurrency.getAlis());
                     satisSayisi = formatCurrency(new BigDecimal(satisSayisi));
                     kurBilgileriTutar.setText(satisSayisi); // Satis değerini TextView'e yaz
                 }

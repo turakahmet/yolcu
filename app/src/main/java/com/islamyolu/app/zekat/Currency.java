@@ -3,8 +3,9 @@ package com.islamyolu.app.zekat;
 public class Currency {
     private String kod;
     private String aciklama;
-    private Tip tip;
+    private double alis;  // Yeni JSON'dan gelen alış fiyatı için eklendi
     private double satis;
+    private String guncellenmeZamani; // Yeni JSON'daki tarih/saat bilgisi için eklendi
 
     public String getKod() {
         return kod;
@@ -22,6 +23,14 @@ public class Currency {
         this.aciklama = aciklama;
     }
 
+    public double getAlis() {
+        return alis;
+    }
+
+    public void setAlis(double alis) {
+        this.alis = alis;
+    }
+
     public double getSatis() {
         return satis;
     }
@@ -30,17 +39,12 @@ public class Currency {
         this.satis = satis;
     }
 
-    public Tip getTip() {
-        return tip;
+    public String getGuncellenmeZamani() {
+        return guncellenmeZamani;
     }
 
-    public void setTip(Tip tip) {
-        this.tip = tip;
-    }
-
-    enum Tip {
-        VARLIK,
-        BORC
+    public void setGuncellenmeZamani(String guncellenmeZamani) {
+        this.guncellenmeZamani = guncellenmeZamani;
     }
 
     @Override
@@ -48,7 +52,9 @@ public class Currency {
         return "Currency{" +
                 "kod='" + kod + '\'' +
                 ", aciklama='" + aciklama + '\'' +
+                ", alis=" + alis +
                 ", satis=" + satis +
+                ", guncellenmeZamani='" + guncellenmeZamani + '\'' +
                 '}';
     }
 }
