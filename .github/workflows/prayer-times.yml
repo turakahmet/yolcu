@@ -54,7 +54,7 @@ jobs:
           MODE: ${{ inputs.mode || 'auto' }}
           DAILY_LIMIT: ${{ inputs.daily_limit || '2000' }}
           SITE_DIR: site
-        run: python bot/diyanet_bot.py
+        run: python bot/pry_bot.py
 
       - name: Yayınla (tek commit, force push; git geçmişi şişmez)
         run: |
