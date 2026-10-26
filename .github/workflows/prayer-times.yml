@@ -1,1 +1,68 @@
+name: Namaz vakitleri güncelle
 
+on:
+  schedule:
+    # Her ayın 1'i ve 15'i 03:17 (TR). 15'i, 1'indeki çalışma başarısız olursa yedek;
+    # o gün yenilenmesi gereken ilçe yoksa bot hiç istek atmadan biter.
+    - cron: "17 0 1,15 * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "auto: gerekiyorsa ilçe listesi + vakitler | places: sadece ilçe listesi | times: sadece vakitler"
+        type: choice
+        options: [auto, places, times]
+        default: auto
+      daily_limit:
+        description: "Bu çalışmada en fazla kaç ilçe güncellensin"
+        default: "2000"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prayer-times
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Mevcut yayını al (gh-pages)
+        run: |
+          if git ls-remote --exit-code --heads origin gh-pages > /dev/null; then
+            git clone --depth 1 --branch gh-pages \
+              "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" site
+            rm -rf site/.git
+          else
+            mkdir -p site
+          fi
+
+      - name: Botu çalıştır
+        env:
+          DIYANET_EMAIL: ${{ secrets.DIYANET_EMAIL }}
+          DIYANET_PASSWORD: ${{ secrets.DIYANET_PASSWORD }}
+          MODE: ${{ inputs.mode || 'auto' }}
+          DAILY_LIMIT: ${{ inputs.daily_limit || '2000' }}
+          SITE_DIR: site
+        run: python bot/diyanet_bot.py
+
+      - name: Yayınla (tek commit, force push; git geçmişi şişmez)
+        run: |
+          cd site
+          touch .nojekyll
+          git init -q -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Veri güncellemesi $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" gh-pages
