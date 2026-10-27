@@ -17,10 +17,12 @@ Kimlik bilgileri yalnızca ortam değişkeninden okunur (GitHub Secrets).
 import json
 import logging
 import os
+import platform
 import re
 import signal
 import sys
 import time
+import traceback
 import unicodedata
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -51,6 +53,8 @@ REQUEST_DELAY = float(os.getenv("REQUEST_DELAY", "1.0"))
 MAX_RUN_MINUTES = env_int("MAX_RUN_MINUTES", 60)       # bu süre dolunca yeni ilçe başlatma
 REQUEST_DEADLINE = env_int("REQUEST_DEADLINE", 90)     # tek isteğin toplam süre sınırı (sn)
 CHECK_QUOTA = os.getenv("CHECK_QUOTA", "1") == "1"
+REPORT_FILE = Path(os.getenv("REPORT_FILE", "report.json"))   # e-posta raporu için çalışma özeti
+BOT_VERSION = "2026.10.27"
 
 # --- DateRange isteğinin biçimi ---------------------------------------------
 # Postman'de çalışan isteğinizle aynı değilse yalnızca bu iki ayarı ve
@@ -72,6 +76,28 @@ PLACES_FILE = V1 / "places.json"
 INDEX_FILE = V1 / "index.json"
 
 log = logging.getLogger("diyanet-bot")
+
+# Çalışma boyunca doldurulur, sonunda REPORT_FILE'a yazılır (send_report.py okur).
+REPORT = {
+    "botVersion": BOT_VERSION,
+    "status": "running",            # success | nothing_to_do | partial | failed
+    "startedAt": None, "finishedAt": None, "durationSec": None,
+    "mode": MODE,
+    "placesRefreshed": False, "placesCount": None,
+    "due": 0, "attempted": 0, "ok": 0, "failed": 0, "pending": None,
+    "stopReason": None,             # quota | time_limit | consecutive_errors | signal
+    "failures": [],                 # [{cityId, city, error}]
+    "quota": [],
+    "fatal": None,                  # {type, message, traceback}
+    "config": {
+        "baseUrl": BASE_URL, "countryId": COUNTRY_ID, "dailyLimit": DAILY_LIMIT, "daysAhead": DAYS_AHEAD,
+        "refreshDays": REFRESH_DAYS, "minForwardDays": MIN_FORWARD_DAYS, "requestDeadline": REQUEST_DEADLINE,
+        "maxRunMinutes": MAX_RUN_MINUTES, "dateRangeMethod": DATERANGE_METHOD,
+        "dateRangeDateFormat": DATERANGE_DATE_FORMAT, "python": platform.python_version(),
+        "requests": requests.__version__,
+    },
+}
+MAX_REPORTED_FAILURES = 100
 
 
 class QuotaExceeded(Exception):
@@ -249,6 +275,10 @@ def log_quota(client: Client) -> None:
         log.info("Kota %s/%s (%s, parametre başına %s): kullanılan %s, aşım %s, parametre sayısı %d, en düşük kalan %s",
                  q.get("controllerName"), q.get("resultName"), q.get("period"), q.get("benefit"),
                  q.get("totalUsed"), q.get("totalExceeded"), len(lines), low)
+        REPORT["quota"].append({"endpoint": f"{q.get('controllerName')}/{q.get('resultName')}",
+                                "period": q.get("period"), "perParameter": q.get("benefit"),
+                                "totalUsed": q.get("totalUsed"), "totalExceeded": q.get("totalExceeded"),
+                                "parameters": len(lines), "lowestRemaining": low})
 
 
 def places_outdated(doc, today: date) -> bool:
@@ -276,6 +306,7 @@ def fetch_places(client: Client) -> dict:
     doc = {"version": 1, "countryId": COUNTRY_ID, "generatedAt": now_iso(),
            "count": len(places), "places": places}
     write_json(PLACES_FILE, doc)  # yarım liste asla yazılmaz: hata olursa buraya gelinmez
+    REPORT["placesRefreshed"] = True
     log.info("%d il, %d ilçe kaydedildi.", len(states), len(places))
     return doc
 
@@ -351,6 +382,7 @@ def run_times(client: Client, places: list, today: date) -> tuple:
     due = select_due(places, entries, today)
     batch = due[:DAILY_LIMIT]
     log.info("Güncellenmesi gereken ilçe: %d, bu çalışmada: %d", len(due), len(batch))
+    REPORT["due"] = len(due)
 
     start, end = today, today + timedelta(days=DAYS_AHEAD - 1)
     ok = failed = consecutive = 0
@@ -360,15 +392,21 @@ def run_times(client: Client, places: list, today: date) -> tuple:
             label = f"{p['state']}/{p['name']} ({p['id']})"
             if time.monotonic() - run_started > MAX_RUN_MINUTES * 60:
                 log.warning("%d dakikalık çalışma süresi doldu; kalanlar sonraki çalışmada.", MAX_RUN_MINUTES)
+                REPORT["stopReason"] = "time_limit"
                 break
+            REPORT["attempted"] += 1
             try:
                 days = fetch_city(client, p["id"], start, end)
             except ApiError as e:
                 failed += 1
                 consecutive += 1
                 log.error("%s: %s", label, e)
+                if len(REPORT["failures"]) < MAX_REPORTED_FAILURES:
+                    REPORT["failures"].append({"cityId": p["id"], "city": f"{p['state']}/{p['name']}",
+                                               "error": str(e)[:500]})
                 if consecutive >= 5:
                     log.error("Art arda 5 hata; çalışma durduruluyor.")
+                    REPORT["stopReason"] = "consecutive_errors"
                     break
                 continue
             consecutive = 0
@@ -387,39 +425,76 @@ def run_times(client: Client, places: list, today: date) -> tuple:
         index_doc["generatedAt"] = now_iso()
         index_doc["pending"] = max(len(due) - ok, 0)
         write_json(INDEX_FILE, index_doc)
+        REPORT.update(ok=ok, failed=failed, pending=index_doc["pending"])
         log.info("Özet: %d başarılı, %d hatalı, bekleyen %d", ok, failed, index_doc["pending"])
     return ok, failed
 
 
-def main() -> int:
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+def _on_sigterm(signum, frame):
+    # GitHub adım zaman aşımında/iptalde süreç sonlandırılır; rapor yine de yazılsın.
+    REPORT["stopReason"] = "signal"
+    raise SystemExit(f"sinyal {signum} alındı (iptal veya zaman aşımı)")
+
+
+def _finalize_report(started: float) -> None:
+    REPORT["finishedAt"] = now_iso()
+    REPORT["durationSec"] = round(time.monotonic() - started)
+    if REPORT["status"] == "running":
+        if REPORT["fatal"] or (REPORT["failed"] and not REPORT["ok"]):
+            REPORT["status"] = "failed"
+        elif REPORT["failed"] or REPORT["stopReason"] or REPORT.get("pending"):
+            REPORT["status"] = "partial"
+        elif REPORT["due"] == 0 and not REPORT["placesRefreshed"]:
+            REPORT["status"] = "nothing_to_do"
+        else:
+            REPORT["status"] = "success"
+    try:
+        REPORT_FILE.write_text(json.dumps(REPORT, ensure_ascii=False, indent=2), encoding="utf-8")
+    except OSError as e:
+        log.error("Rapor yazılamadı: %s", e)
+
+
+def _run() -> int:
     email, password = os.getenv("DIYANET_EMAIL"), os.getenv("DIYANET_PASSWORD")
     if not email or not password:
-        log.error("DIYANET_EMAIL / DIYANET_PASSWORD ortam değişkenleri tanımlı değil.")
-        return 2
+        raise ApiError("DIYANET_EMAIL / DIYANET_PASSWORD ortam değişkenleri tanımlı değil (GitHub Secrets).")
 
     client = Client(email, password)
     today = datetime.now(TZ).date()
+    if CHECK_QUOTA:
+        log_quota(client)
+    places_doc = read_json(PLACES_FILE)
+    if MODE == "places" or (MODE == "auto" and places_outdated(places_doc, today)):
+        places_doc = fetch_places(client)
+    if places_doc:
+        REPORT["placesCount"] = len(places_doc.get("places", []))
+    if MODE == "places":
+        return 0
+    if not places_doc:
+        raise ApiError("places.json yok; önce MODE=places ile çalıştırın.")
+    ok, failed = run_times(client, places_doc["places"], today)
+    return 1 if failed and not ok else 0
+
+
+def main() -> int:
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    signal.signal(signal.SIGTERM, _on_sigterm)
+    started = time.monotonic()
+    REPORT["startedAt"] = now_iso()
+    log.info("Bot sürümü %s, mod=%s", BOT_VERSION, MODE)
     try:
-        if CHECK_QUOTA:
-            log_quota(client)
-        places_doc = read_json(PLACES_FILE)
-        if MODE == "places" or (MODE == "auto" and places_outdated(places_doc, today)):
-            places_doc = fetch_places(client)
-            if MODE == "places":
-                return 0
-        if not places_doc:
-            log.error("places.json yok; önce MODE=places ile çalıştırın.")
-            return 1
-        ok, failed = run_times(client, places_doc["places"], today)
-        if failed and not ok:
-            return 1
+        return _run()
     except QuotaExceeded as e:
         log.warning("Kota sınırına ulaşıldı (%s). İlerleme kaydedildi; kalanlar sonraki çalışmada.", e)
-    except ApiError as e:
-        log.error("Hata: %s", e)
+        REPORT["stopReason"] = "quota"
+        return 0
+    except BaseException as e:  # ApiError, beklenmeyen hatalar, SystemExit (sinyal)
+        log.error("Hata: %s: %s", type(e).__name__, e)
+        REPORT["fatal"] = {"type": type(e).__name__, "message": str(e)[:1000],
+                           "traceback": traceback.format_exc()[-4000:]}
         return 1
-    return 0
+    finally:
+        _finalize_report(started)
 
 
 if __name__ == "__main__":
