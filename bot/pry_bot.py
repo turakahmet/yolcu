@@ -18,6 +18,7 @@ import json
 import logging
 import os
 import re
+import signal
 import sys
 import time
 import unicodedata
@@ -47,6 +48,8 @@ MIN_FORWARD_DAYS = env_int("MIN_FORWARD_DAYS", 300)    # ileri veri bundan azsa 
 MIN_VALID_DAYS = env_int("MIN_VALID_DAYS", 60)         # bundan az gün dönerse yanıtı reddet
 PLACES_MAX_AGE_DAYS = env_int("PLACES_MAX_AGE_DAYS", 90)
 REQUEST_DELAY = float(os.getenv("REQUEST_DELAY", "1.0"))
+MAX_RUN_MINUTES = env_int("MAX_RUN_MINUTES", 60)       # bu süre dolunca yeni ilçe başlatma
+REQUEST_DEADLINE = env_int("REQUEST_DEADLINE", 90)     # tek isteğin toplam süre sınırı (sn)
 CHECK_QUOTA = os.getenv("CHECK_QUOTA", "1") == "1"
 
 # --- DateRange isteğinin biçimi ---------------------------------------------
@@ -122,6 +125,35 @@ def mask(obj):
 
 
 # --- API istemcisi -----------------------------------------------------------
+class _Deadline(BaseException):
+    """BaseException: kütüphanelerin 'except Exception' blokları tarafından yutulmasın diye."""
+
+
+def _on_deadline(signum, frame):
+    raise _Deadline()
+
+
+def _with_deadline(fn):
+    """requests'in timeout'u bayt başına beklemedir; sunucu yavaş yavaş veri gönderirse
+    istek saatlerce sürebilir. SIGALRM ile isteğin toplam süresini (gövde okuma dahil) sınırlar."""
+    previous = signal.signal(signal.SIGALRM, _on_deadline)
+    signal.alarm(REQUEST_DEADLINE)
+    try:
+        return fn()
+    except _Deadline:
+        raise requests.Timeout(f"istek {REQUEST_DEADLINE} sn içinde tamamlanmadı") from None
+    finally:
+        signal.alarm(0)
+        signal.signal(signal.SIGALRM, previous)
+
+
+def _json(r):
+    try:
+        return r.json()
+    except ValueError:
+        raise ApiError(f"JSON olmayan yanıt (HTTP {r.status_code}): {r.text[:200]!r}") from None
+
+
 class Client:
     TOKEN_TTL = 25 * 60  # access token 30 dk; 5 dk pay
 
@@ -133,13 +165,17 @@ class Client:
         self._token_at = 0.0
 
     def login(self) -> None:
-        r = self.session.post(BASE_URL + PATHS["login"],
-                              json={"email": self._email, "password": self._password}, timeout=30)
+        try:
+            r = _with_deadline(lambda: self.session.post(
+                BASE_URL + PATHS["login"], json={"email": self._email, "password": self._password},
+                timeout=(10, 30)))
+        except requests.RequestException as e:
+            raise ApiError(f"Login isteği başarısız ({type(e).__name__})")
         if r.status_code == 429:
             raise QuotaExceeded("login")
         if r.status_code != 200:
             raise ApiError(f"Login başarısız: HTTP {r.status_code}")
-        body = r.json()
+        body = _json(r)
         if not body.get("success") or not body.get("data"):
             raise ApiError(f"Login başarısız: {body.get('message')}")
         self._token = body["data"]["accessToken"]
@@ -154,8 +190,9 @@ class Client:
         while attempt < 3:
             attempt += 1
             try:
-                r = self.session.request(method, BASE_URL + path, timeout=60,
-                                         headers={"Authorization": f"Bearer {self._token}"}, **kwargs)
+                r = _with_deadline(lambda: self.session.request(
+                    method, BASE_URL + path, timeout=(10, 60),
+                    headers={"Authorization": f"Bearer {self._token}"}, **kwargs))
             except requests.RequestException as e:
                 log.warning("%s %s ağ hatası (%s), deneme %d/3", method, path, type(e).__name__, attempt)
                 time.sleep(5 * attempt)
@@ -173,7 +210,7 @@ class Client:
                 continue
             if r.status_code != 200:
                 raise ApiError(f"HTTP {r.status_code}: {r.text[:300]}")
-            body = r.json()
+            body = _json(r)
             if not body.get("success"):
                 msg = str(body.get("message") or "")
                 if re.search(r"kota|quota|limit", msg, re.I):
@@ -317,9 +354,13 @@ def run_times(client: Client, places: list, today: date) -> tuple:
 
     start, end = today, today + timedelta(days=DAYS_AHEAD - 1)
     ok = failed = consecutive = 0
+    run_started = time.monotonic()
     try:
         for p in batch:
             label = f"{p['state']}/{p['name']} ({p['id']})"
+            if time.monotonic() - run_started > MAX_RUN_MINUTES * 60:
+                log.warning("%d dakikalık çalışma süresi doldu; kalanlar sonraki çalışmada.", MAX_RUN_MINUTES)
+                break
             try:
                 days = fetch_city(client, p["id"], start, end)
             except ApiError as e:
