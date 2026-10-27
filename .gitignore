@@ -15,3 +15,5 @@
 local.properties
 site/
 __pycache__/
+report.json
+bot.log
