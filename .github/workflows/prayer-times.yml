@@ -35,9 +35,14 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - run: pip install -r requirements.txt
+      - name: Bağımlılıkları kur
+        id: deps
+        run: |
+          test -s requirements.txt || { echo "requirements.txt bulunamadı veya boş"; exit 1; }
+          pip install -r requirements.txt
 
       - name: Mevcut yayını al (gh-pages)
+        id: fetch_site
         run: |
           if git ls-remote --exit-code --heads origin gh-pages > /dev/null; then
             git clone --depth 1 --branch gh-pages \
@@ -48,6 +53,7 @@ jobs:
           fi
 
       - name: Botu çalıştır
+        id: bot
         timeout-minutes: 70
         env:
           DIYANET_EMAIL: ${{ secrets.DIYANET_EMAIL }}
@@ -55,11 +61,15 @@ jobs:
           MODE: ${{ inputs.mode || 'auto' }}
           DAILY_LIMIT: ${{ inputs.daily_limit || '2000' }}
           SITE_DIR: site
-        run: python bot/diyanet_bot.py
+          REPORT_FILE: report.json
+        run: |
+          set -o pipefail
+          python -u bot/pry_bot.py 2>&1 | tee bot.log
 
       # Bot hata verse ya da zaman aşımına uğrasa bile o ana kadar çekilen veri yayımlanır.
       # Geçerli veri yoksa (ör. klonlama başarısız olduysa) mevcut yayını silmemek için atlanır.
       - name: Yayınla (tek commit, force push; git geçmişi şişmez)
+        id: publish
         if: always()
         run: |
           if [ ! -s site/v1/places.json ] || [ ! -s site/v1/index.json ]; then
@@ -74,3 +84,19 @@ jobs:
           git add -A
           git commit -q -m "Veri güncellemesi $(date -u +%Y-%m-%dT%H:%MZ)"
           git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" gh-pages
+
+      # Her çalışmanın sonunda rapor e-postası: başarılıysa kısa özet, değilse ayrıntılı teşhis + log eki.
+      - name: Rapor e-postası gönder
+        if: always()
+        env:
+          SMTP_USER: ${{ secrets.GMAIL_USER }}
+          SMTP_PASSWORD: ${{ secrets.GMAIL_PASS }}
+          REPORT_TO: ${{ secrets.REPORT_TO }}
+          DEPS_OUTCOME: ${{ steps.deps.outcome }}
+          FETCH_OUTCOME: ${{ steps.fetch_site.outcome }}
+          BOT_OUTCOME: ${{ steps.bot.outcome }}
+          PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
+          REPORT_FILE: report.json
+          BOT_LOG: bot.log
+          SITE_DIR: site
+        run: python3 bot/send_report.py
