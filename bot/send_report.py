@@ -2,7 +2,8 @@
 """
 Bot çalışmasının sonucunu e-posta ile gönderir.
 
-- Başarılı / yenilenecek ilçe yok  -> kısa özet
+- Başarılı                         -> kısa özet
+- Yenilenecek şehir yok             -> e-posta yok (NOTIFY_NOTHING_TO_DO=1 ise kısa özet)
 - Kısmi veya hatalı                -> ayrıntılı teşhis (hata ayıklamak için doğrudan
                                        Claude'a yapıştırılabilecek bir blok) + tam log eki
 
@@ -35,6 +36,7 @@ DEPS_OUTCOME = os.getenv("DEPS_OUTCOME", "unknown")
 FETCH_OUTCOME = os.getenv("FETCH_OUTCOME", "unknown")
 BOT_OUTCOME = os.getenv("BOT_OUTCOME", "unknown")
 PUBLISH_OUTCOME = os.getenv("PUBLISH_OUTCOME", "unknown")
+NOTIFY_NOTHING_TO_DO = os.getenv("NOTIFY_NOTHING_TO_DO", "0") == "1"
 LOG_TAIL_LINES = 80
 
 _EMAIL_RE = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
@@ -83,20 +85,21 @@ def github_links() -> tuple[str, str]:
     pages_url = "-"
     if "/" in repo:
         owner, name = repo.split("/", 1)
-        pages_url = f"https://{owner.lower()}.github.io/{name}/v1/"
+        pages_url = f"https://{owner.lower()}.github.io/{name}/v2/"
     return run_url, pages_url
 
 
 def site_summary() -> dict:
     """Yayımlanan verinin genel durumu (index.json'dan)."""
-    index = read_json(SITE_DIR / "v1" / "index.json") or {}
+    index = read_json(SITE_DIR / "v2" / "index.json") or {}
     cities = index.get("cities") or {}
     if not cities:
         return {}
     valid_to = sorted(c["validTo"] for c in cities.values() if c.get("validTo"))
     updated = sorted(c["updatedAt"] for c in cities.values() if c.get("updatedAt"))
     return {"cities": len(cities), "earliestValidTo": valid_to[0] if valid_to else None,
-            "oldestUpdate": updated[0] if updated else None, "pending": index.get("pending")}
+            "oldestUpdate": updated[0] if updated else None, "pending": index.get("pending"),
+            "failed": len(index.get("failed") or {})}
 
 
 def overall(report) -> str:
@@ -115,21 +118,36 @@ def success_body(report: dict, level: str) -> tuple[str, str]:
     run_url, pages_url = github_links()
     site = site_summary()
     today = datetime.now(TZ).strftime("%d.%m.%Y")
-    if level == "nothing_to_do":
-        subject = f"✅ Namaz vakitleri: yenilenecek ilçe yoktu ({today})"
-        what = "Tüm ilçelerin verisi güncel olduğu için bu çalışmada Diyanet'ten vakit çekilmedi."
+    pending = report.get("pending") or 0
+    if level != "nothing_to_do" and not report.get("ok") and report.get("placesRefreshed"):
+        subject = f"✅ Namaz vakitleri: yer listesi yenilendi ({today})"
+        what = (f"Ülke/şehir listesi yenilendi: {report.get('countriesCount')} ülke, "
+                f"{report.get('citiesCount')} şehir. Bu çalışmada vakit çekilmedi.")
+    elif level == "nothing_to_do":
+        subject = f"✅ Namaz vakitleri: yenilenecek şehir yoktu ({today})"
+        what = "Tüm şehirlerin verisi güncel olduğu için bu çalışmada Diyanet'ten vakit çekilmedi."
     else:
-        subject = f"✅ Namaz vakitleri güncellendi: {report['ok']}/{report['due']} ilçe ({today})"
-        what = f"{report['ok']} ilçenin 1 yıllık vakitleri yenilendi."
+        tail = f", kalan {pending}" if pending else ""
+        subject = f"✅ Namaz vakitleri güncellendi: {report['ok']} şehir{tail} ({today})"
+        what = f"{report['ok']} şehrin 1 yıllık vakitleri yenilendi."
+        if pending:
+            what += (f" Süre sınırı nedeniyle {pending} şehir sonraki günlük çalışmalara kaldı "
+                     "(normal; ilk doldurmada ve yenileme günlerinde beklenir).")
     lines = [
         what,
         "",
-        f"Çalışma     : {fmt_dt(report.get('startedAt'))}, süre {fmt_duration(report.get('durationSec'))}",
-        f"İlçe listesi: {report.get('placesCount')} ilçe" + (" (bu çalışmada yenilendi)" if report.get("placesRefreshed") else ""),
+        f"Çalışma       : {fmt_dt(report.get('startedAt'))}, süre {fmt_duration(report.get('durationSec'))}",
+        f"Yer listesi   : {report.get('countriesCount')} ülke, {report.get('citiesCount')} şehir"
+        + (" (bu çalışmada yenilendi)" if report.get("placesRefreshed") else ""),
     ]
     if site:
-        lines.append(f"Yayındaki veri: {site['cities']} ilçe, en erken biten {site['earliestValidTo']}, "
+        lines.append(f"Yayındaki veri: {site['cities']} şehir, en erken biten {site['earliestValidTo']}, "
                      f"en eski güncelleme {fmt_dt(site['oldestUpdate'])}")
+    if report.get("failedTotal"):
+        lines.append(f"Hata beklemesinde: {report['failedTotal']} şehir (7 günde bir tekrar denenir; "
+                     "liste index.json → failed)")
+    if report.get("removedV1"):
+        lines.append("Eski v1 klasörü silindi (v2 doldurması tamamlandı).")
     for q in report.get("quota") or []:
         lines.append(f"Kota ({q['endpoint']}): parametre başına {q['perParameter']}/gün, "
                      f"bugün kullanılan {q['totalUsed']}, aşım {q['totalExceeded']}")
@@ -143,13 +161,13 @@ def failure_body(report, level: str, log_text: str) -> tuple[str, str]:
     r = report or {}
     if level == "partial":
         subject = f"⚠️ Namaz vakitleri kısmen güncellendi: {r.get('ok', 0)} başarılı, {r.get('failed', 0)} hatalı ({today})"
-        intro = ("Çalışma tamamlandı ama bazı ilçeler güncellenemedi veya çalışma erken durdu. "
-                 "Güncellenemeyen ilçelerin eski verisi yayında kalmaya devam ediyor; "
-                 "kalanlar bir sonraki çalışmada (ayın 1'i veya 15'i) tekrar denenecek.")
+        intro = ("Çalışma tamamlandı ama bazı şehirler güncellenemedi veya çalışma erken durdu. "
+                 "Güncellenemeyen şehirlerin eski verisi yayında kalmaya devam ediyor. Hata veren şehirler "
+                 "7 gün beklemeye alınır; diğer kalanlar ertesi günkü çalışmada denenir.")
     else:
         subject = f"❌ Namaz vakitleri botu HATA verdi ({today})"
         intro = ("Çalışma başarısız oldu. Yayındaki mevcut veri değiştirilmedi (veya yalnızca başarılı "
-                 "ilçeler yayımlandı); uygulama eski veriyle çalışmaya devam eder.")
+                 "şehirler yayımlandı); uygulama eski veriyle çalışmaya devam eder.")
 
     log_lines = log_text.splitlines()
     tail = "\n".join(log_lines[-LOG_TAIL_LINES:]) if log_lines else "(bot.log boş veya yok)"
@@ -158,11 +176,13 @@ def failure_body(report, level: str, log_text: str) -> tuple[str, str]:
 
     d = []
     d.append("=== HATA AYIKLAMA İÇİN CLAUDE'A YAPIŞTIRILACAK TEŞHİS BİLGİSİ ===")
-    d.append("Bağlam: Diyanet AwqatSalah API'sinden il/ilçe ve 1 yıllık namaz vakitlerini çekip "
-             "GitHub Pages'e (gh-pages branch, v1/places.json, v1/index.json, v1/times/{cityId}.json) "
-             "yazan Python botu (bot/pry_bot.py). GitHub Actions'ta ayın 1'i ve 15'i çalışır. "
-             "Login: POST /Auth/Login; diğerleri /api/... altında (Place/States, Place/Cities, "
-             "PrayerTime/DateRange, Quota/My). Kota cityId başına günde 100 istek.")
+    d.append("Bağlam: Diyanet AwqatSalah API'sinden tüm ülkelerin ülke/eyalet/şehir listesini ve şehir başına "
+             "1 yıllık namaz vakitlerini çekip GitHub Pages'e (gh-pages branch; v2/countries.json, "
+             "v2/places/{countryId}.json, v2/cities.json, v2/times/{cityId}.json, v2/index.json) yazan Python "
+             "botu (bot/pry_bot.py, veri biçimi v2). GitHub Actions'ta her gün çalışır, 150 dk süre sınırı içinde "
+             "eskiyen şehirleri yeniler; hata veren şehirler 7 gün beklemeye alınır. Login: POST /Auth/Login "
+             "(/api öneksiz); diğerleri /api/... altında (Place/Countries, Place/States/{countryId}, "
+             "Place/Cities/{stateId}, PrayerTime/DateRange, Quota/My). Kota parametre başına günde 100 istek.")
     d.append("")
     d.append(f"Genel durum      : {level}")
     d.append(f"Bot durumu       : {r.get('status', 'rapor yok')}")
@@ -176,7 +196,9 @@ def failure_body(report, level: str, log_text: str) -> tuple[str, str]:
         d.append(f"Sayılar          : yenilenmesi gereken {r.get('due')}, denenen {r.get('attempted')}, "
                  f"başarılı {r.get('ok')}, hatalı {r.get('failed')}, bekleyen {r.get('pending')}")
         d.append(f"Durma sebebi     : {r.get('stopReason') or '-'}")
-        d.append(f"İlçe listesi     : {r.get('placesCount')} ilçe, bu çalışmada yenilendi mi: {r.get('placesRefreshed')}")
+        d.append(f"Yer listesi      : {r.get('countriesCount')} ülke, {r.get('citiesCount')} şehir, "
+                 f"bu çalışmada yenilendi mi: {r.get('placesRefreshed')}")
+        d.append(f"Hata beklemesi   : bu çalışmada atlanan {r.get('skippedBackoff')}, toplam hatalı şehir {r.get('failedTotal')}")
     elif BOT_OUTCOME == "skipped":
         failed_step = ("bağımlılık kurulumu (requirements.txt / pip install)" if DEPS_OUTCOME == "failure"
                        else "gh-pages klonlama" if FETCH_OUTCOME == "failure" else "bot'tan önceki bir adım")
@@ -194,7 +216,7 @@ def failure_body(report, level: str, log_text: str) -> tuple[str, str]:
     if failures:
         d += ["", f"HATA TÜRLERİ ({len(failures)} kayıt, rakamlar # ile gruplandı):"]
         d += [f"  {n} x {msg}" for msg, n in groups.most_common(10)]
-        d += ["", f"HATALI İLÇELER (ilk {len(failures)}):"]
+        d += ["", f"HATALI ŞEHİRLER (ilk {len(failures)}):"]
         d += [f"  {f['cityId']} {f['city']}: {scrub(f['error'])}" for f in failures]
 
     if r.get("quota"):
@@ -249,6 +271,9 @@ def main() -> int:
     level = overall(report)
     log_text = read_log()
 
+    if level == "nothing_to_do" and not NOTIFY_NOTHING_TO_DO:
+        print("Yenilenecek şehir yoktu; e-posta gönderilmedi (NOTIFY_NOTHING_TO_DO=0).")
+        return 0
     if level in ("success", "nothing_to_do"):
         subject, body = success_body(report, level)
         attachments = []
