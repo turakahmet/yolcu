@@ -2,19 +2,22 @@ name: Namaz vakitleri güncelle
 
 on:
   schedule:
-    # Her ayın 1'i ve 15'i 03:17 (TR). 15'i, 1'indeki çalışma başarısız olursa yedek;
-    # o gün yenilenmesi gereken ilçe yoksa bot hiç istek atmadan biter.
-    - cron: "17 0 1,15 * *"
+    # Her gün 03:17 (TR). Bot 150 dk içinde eskiyen şehirleri yeniler; yenilenecek şehir
+    # yoksa birkaç saniyede biter ve e-posta göndermez. GitHub zamanlamada gecikebilir.
+    - cron: "17 0 * * *"
   workflow_dispatch:
     inputs:
       mode:
-        description: "auto: gerekiyorsa ilçe listesi + vakitler | places: sadece ilçe listesi | times: sadece vakitler"
+        description: "auto: gerekiyorsa yer listesi + vakitler | places: sadece yer listesi | times: sadece vakitler"
         type: choice
         options: [auto, places, times]
         default: auto
+      country_ids:
+        description: "Boş = tüm ülkeler. Test için ülke id'leri, ör. 2 (Türkiye) veya 2,13"
+        default: ""
       daily_limit:
-        description: "Bu çalışmada en fazla kaç ilçe güncellensin"
-        default: "2000"
+        description: "Bu çalışmada en fazla kaç şehir (boş = sınırsız, süre sınırı geçerli)"
+        default: ""
 
 permissions:
   contents: write
@@ -26,7 +29,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v6
 
@@ -54,12 +57,14 @@ jobs:
 
       - name: Botu çalıştır
         id: bot
-        timeout-minutes: 70
+        timeout-minutes: 165
         env:
           DIYANET_EMAIL: ${{ secrets.DIYANET_EMAIL }}
           DIYANET_PASSWORD: ${{ secrets.DIYANET_PASSWORD }}
           MODE: ${{ inputs.mode || 'auto' }}
-          DAILY_LIMIT: ${{ inputs.daily_limit || '2000' }}
+          COUNTRY_IDS: ${{ inputs.country_ids || '' }}
+          DAILY_LIMIT: ${{ inputs.daily_limit || '' }}
+          MAX_RUN_MINUTES: "150"
           SITE_DIR: site
           REPORT_FILE: report.json
         run: |
@@ -72,8 +77,8 @@ jobs:
         id: publish
         if: always()
         run: |
-          if [ ! -s site/v1/places.json ] || [ ! -s site/v1/index.json ]; then
-            echo "Yayımlanacak geçerli veri yok; mevcut yayına dokunulmadı."
+          if [ ! -s site/v2/cities.json ] || [ ! -s site/v2/index.json ]; then
+            echo "Yayımlanacak geçerli v2 verisi yok; mevcut yayına dokunulmadı."
             exit 0
           fi
           cd site
@@ -85,13 +90,15 @@ jobs:
           git commit -q -m "Veri güncellemesi $(date -u +%Y-%m-%dT%H:%MZ)"
           git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" gh-pages
 
-      # Her çalışmanın sonunda rapor e-postası: başarılıysa kısa özet, değilse ayrıntılı teşhis + log eki.
+      # Başarılıysa kısa özet, değilse ayrıntılı teşhis + log eki. Yenilenecek şehir yoksa
+      # zamanlanmış çalışmada e-posta gönderilmez; elle çalıştırmada her zaman gönderilir.
       - name: Rapor e-postası gönder
         if: always()
         env:
           SMTP_USER: ${{ secrets.GMAIL_USER }}
           SMTP_PASSWORD: ${{ secrets.GMAIL_PASS }}
           REPORT_TO: ${{ secrets.REPORT_TO }}
+          NOTIFY_NOTHING_TO_DO: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
           DEPS_OUTCOME: ${{ steps.deps.outcome }}
           FETCH_OUTCOME: ${{ steps.fetch_site.outcome }}
           BOT_OUTCOME: ${{ steps.bot.outcome }}
