@@ -33,7 +33,7 @@ from zoneinfo import ZoneInfo
 import requests
 
 TZ = ZoneInfo("Europe/Istanbul")
-BOT_VERSION = "2026.11.03"
+BOT_VERSION = "2026.11.04"
 DATA_VERSION = 2
 
 
@@ -61,6 +61,7 @@ MIN_VALID_DAYS = env_int("MIN_VALID_DAYS", 60)         # bundan az gün dönerse
 MAX_NULL_RATIO = env_float("MAX_NULL_RATIO", 0.5)      # boş vakit oranı bunu aşarsa reddet (kutup bölgeleri)
 PLACES_MAX_AGE_DAYS = env_int("PLACES_MAX_AGE_DAYS", 90)
 FAILED_RETRY_DAYS = env_int("FAILED_RETRY_DAYS", 7)    # hata veren şehri kaç gün sonra tekrar dene
+NO_DATA_RETRY_DAYS = env_int("NO_DATA_RETRY_DAYS", 30) # Diyanet'te verisi olmayan (404) şehri kaç gün sonra dene
 MAX_CONSECUTIVE_ERRORS = env_int("MAX_CONSECUTIVE_ERRORS", 20)
 REQUEST_DELAY = env_float("REQUEST_DELAY", 1.0)
 MAX_RUN_MINUTES = env_int("MAX_RUN_MINUTES", 150)      # bu süre dolunca yeni şehir başlatma
@@ -103,6 +104,8 @@ REPORT = {
     "mode": MODE,
     "placesRefreshed": False, "countriesCount": None, "citiesCount": None,
     "due": 0, "attempted": 0, "ok": 0, "failed": 0, "pending": None,
+    "noData": 0, "noDataCities": [],
+    "newFailed": 0,                   # daha önce hatasız olup bu çalışmada hata veren şehir sayısı  # Diyanet'te kaydı olmayan şehirler (404); hata sayılmaz
     "skippedBackoff": 0, "failedTotal": 0, "removedCities": 0, "removedV1": False,
     "stopReason": None,             # quota | time_limit | consecutive_errors | signal
     "failures": [],                 # bu çalışmadaki hatalar [{cityId, city, error}]
@@ -126,6 +129,21 @@ class QuotaExceeded(Exception):
 
 class ApiError(Exception):
     pass
+
+
+class NoData(ApiError):
+    """Diyanet'te bu şehir için kayıt yok (HTTP 404). Bot hatası değildir."""
+
+
+def _error_message(r) -> str:
+    """Hata yanıtındaki 'message' alanını okunur halde döndürür (\\u0131 kaçışları çözülmüş)."""
+    try:
+        msg = r.json().get("message")
+        if msg:
+            return str(msg)
+    except (ValueError, AttributeError):
+        pass
+    return r.text[:300]
 
 
 # --- yardımcılar ---------------------------------------------------------------
@@ -242,7 +260,9 @@ class Client:
                 time.sleep(5 * attempt)
                 continue
             if r.status_code != 200:
-                raise ApiError(f"HTTP {r.status_code}: {r.text[:300]}")
+                if r.status_code == 404:
+                    raise NoData(f"HTTP 404: {_error_message(r)}")
+                raise ApiError(f"HTTP {r.status_code}: {_error_message(r)}")
             body = _json(r)
             if not body.get("success"):
                 msg = str(body.get("message") or "")
@@ -437,7 +457,8 @@ def select_due(cities: list, entries: dict, failed: dict, today: date) -> list:
     for c in cities:
         cid = str(c["id"])
         f = failed.get(cid)
-        if f and (today - date.fromisoformat(f["lastTry"])).days < FAILED_RETRY_DAYS:
+        retry_days = NO_DATA_RETRY_DAYS if f and f.get("noData") else FAILED_RETRY_DAYS
+        if f and (today - date.fromisoformat(f["lastTry"])).days < retry_days:
             REPORT["skippedBackoff"] += 1
             continue
         e = entries.get(cid)
@@ -476,11 +497,29 @@ def run_times(client: Client, cities: list, index_doc: dict, today: date) -> tup
             REPORT["attempted"] += 1
             try:
                 days, nulls = fetch_city(client, c["id"], start, end)
+            except NoData as e:
+                # Diyanet'te kayıt yok: hata sayılmaz, 30 günde bir tekrar denenir.
+                # Art arda sayacı yine artar: hepsi 404 dönüyorsa sistematik bir sorun vardır.
+                consecutive += 1
+                REPORT["noData"] += 1
+                log.warning("%s: Diyanet'te kayıt yok (%s)", label, e)
+                prev = failed_map.get(cid, {})
+                failed_map[cid] = {"lastTry": today.isoformat(), "count": prev.get("count", 0) + 1,
+                                   "error": str(e)[:300], "noData": True}
+                if len(REPORT["noDataCities"]) < MAX_REPORTED_FAILURES:
+                    REPORT["noDataCities"].append({"cityId": c["id"], "city": label, "error": str(e)[:200]})
+                if consecutive >= MAX_CONSECUTIVE_ERRORS:
+                    log.error("Art arda %d hata/kayıtsız şehir; çalışma durduruluyor.", consecutive)
+                    REPORT["stopReason"] = "consecutive_errors"
+                    break
+                continue
             except ApiError as e:
                 failed += 1
                 consecutive += 1
                 log.error("%s: %s", label, e)
                 prev = failed_map.get(cid, {})
+                if not prev:
+                    REPORT["newFailed"] += 1
                 failed_map[cid] = {"lastTry": today.isoformat(), "count": prev.get("count", 0) + 1,
                                    "error": str(e)[:300]}
                 if len(REPORT["failures"]) < MAX_REPORTED_FAILURES:
@@ -536,7 +575,8 @@ def _finalize_report(started: float) -> None:
     REPORT["finishedAt"] = now_iso()
     REPORT["durationSec"] = round(time.monotonic() - started)
     if REPORT["status"] == "running":
-        if REPORT["fatal"] or (REPORT["failed"] and not REPORT["ok"]):
+        # Yalnızca daha önce de hata vermiş şehirlerin tekrar denenip yine hata vermesi 'failed' sayılmaz.
+        if REPORT["fatal"] or (REPORT["newFailed"] and not REPORT["ok"]):
             REPORT["status"] = "failed"
         elif REPORT["failed"] or REPORT["stopReason"] in ("quota", "consecutive_errors", "signal"):
             REPORT["status"] = "partial"
@@ -575,7 +615,7 @@ def _run() -> int:
         return 0
     ok, failed = run_times(client, cities, index_doc, today)
     maybe_remove_v1(index_doc, cities)
-    return 1 if failed and not ok else 0
+    return 1 if REPORT["newFailed"] and not ok else 0
 
 
 def main() -> int:
