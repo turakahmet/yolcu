@@ -143,9 +143,12 @@ def success_body(report: dict, level: str) -> tuple[str, str]:
     if site:
         lines.append(f"Yayındaki veri: {site['cities']} şehir, en erken biten {site['earliestValidTo']}, "
                      f"en eski güncelleme {fmt_dt(site['oldestUpdate'])}")
+    if report.get("noData"):
+        names = ", ".join(x["city"] for x in report.get("noDataCities", [])[:10])
+        lines.append(f"Diyanet'te kaydı olmayan: {report['noData']} şehir ({names}); 30 günde bir tekrar denenir")
     if report.get("failedTotal"):
-        lines.append(f"Hata beklemesinde: {report['failedTotal']} şehir (7 günde bir tekrar denenir; "
-                     "liste index.json → failed)")
+        lines.append(f"Beklemedeki şehir (hatalı + kayıtsız): {report['failedTotal']} "
+                     "(liste index.json → failed)")
     if report.get("removedV1"):
         lines.append("Eski v1 klasörü silindi (v2 doldurması tamamlandı).")
     for q in report.get("quota") or []:
@@ -199,6 +202,7 @@ def failure_body(report, level: str, log_text: str) -> tuple[str, str]:
         d.append(f"Yer listesi      : {r.get('countriesCount')} ülke, {r.get('citiesCount')} şehir, "
                  f"bu çalışmada yenilendi mi: {r.get('placesRefreshed')}")
         d.append(f"Hata beklemesi   : bu çalışmada atlanan {r.get('skippedBackoff')}, toplam hatalı şehir {r.get('failedTotal')}")
+        d.append(f"Kaydı olmayan    : {r.get('noData', 0)} şehir (HTTP 404, hata sayılmaz)")
     elif BOT_OUTCOME == "skipped":
         failed_step = ("bağımlılık kurulumu (requirements.txt / pip install)" if DEPS_OUTCOME == "failure"
                        else "gh-pages klonlama" if FETCH_OUTCOME == "failure" else "bot'tan önceki bir adım")
