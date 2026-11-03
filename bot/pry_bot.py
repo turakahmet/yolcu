@@ -33,7 +33,7 @@ from zoneinfo import ZoneInfo
 import requests
 
 TZ = ZoneInfo("Europe/Istanbul")
-BOT_VERSION = "2026.11.02"
+BOT_VERSION = "2026.11.03"
 DATA_VERSION = 2
 
 
@@ -287,6 +287,12 @@ def log_quota(client: Client) -> None:
 def places_outdated(doc, today: date) -> bool:
     if not doc or not doc.get("rows"):
         return True
+    # Liste farklı bir ülke filtresiyle çekildiyse (ör. önce COUNTRY_IDS=2 ile test edildiyse) yenile.
+    # Eski dosyalarda bu alan yoktur; hangi filtreyle çekildiği bilinmediği için bir kez yenilenir.
+    if doc.get("countryFilter") != sorted(COUNTRY_FILTER):
+        log.info("Yer listesi farklı ülke filtresiyle çekilmiş (%s → %s); yenilenecek.",
+                 doc.get("countryFilter", "bilinmiyor"), sorted(COUNTRY_FILTER) or "tümü")
+        return True
     generated = datetime.fromisoformat(doc["generatedAt"]).date()
     return (today - generated).days >= PLACES_MAX_AGE_DAYS
 
@@ -345,7 +351,8 @@ def fetch_places(client: Client) -> dict:
                        "codeKey": cd["codeKey"], "states": len(cd["states"]),
                        "cities": sum(len(s["cities"]) for s in cd["states"])} for cd in country_docs]})
     rows.sort(key=lambda r: (norm(r[6]), norm(r[4]), r[2]))
-    doc = {"version": DATA_VERSION, "generatedAt": generated, "count": len(rows), "fields": CITY_FIELDS, "rows": rows}
+    doc = {"version": DATA_VERSION, "generatedAt": generated, "countryFilter": sorted(COUNTRY_FILTER),
+           "count": len(rows), "fields": CITY_FIELDS, "rows": rows}
     write_json(CITIES_FILE, doc)
     REPORT["placesRefreshed"] = True
     log.info("%d ülke, %d şehir kaydedildi.", len(country_docs), len(rows))
