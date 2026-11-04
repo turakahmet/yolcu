@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId = "com.islamyolu.app"
         minSdk = 27
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 20
         versionName = "1.0.20"
 
