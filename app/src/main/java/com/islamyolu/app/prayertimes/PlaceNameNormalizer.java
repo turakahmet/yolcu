@@ -13,7 +13,7 @@ import java.util.Locale;
  */
 public final class PlaceNameNormalizer {
 
-    private static final Locale TURKISH = new Locale("tr");
+    private static final Locale TURKISH = Locale.forLanguageTag("tr");
     private static final String TURKISH_CHARS = "ÇĞİÖŞÜÂÎÛ";
     private static final String ASCII_CHARS = "CGIOSUAIU";
 

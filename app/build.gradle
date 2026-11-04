@@ -3,17 +3,17 @@ plugins {
 }
 
 android {
-    namespace 'com.islamyolu.app'
-    compileSdk 35
+    namespace = 'com.islamyolu.app'
+    compileSdk = 37
 
     defaultConfig {
-        applicationId "com.islamyolu.app"
-        minSdk 27
-        targetSdk 35
-        versionCode 20
-        versionName "1.0.20"
+        applicationId = "com.islamyolu.app"
+        minSdk = 27
+        targetSdk = 35
+        versionCode = 20
+        versionName = "1.0.20"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Room şema JSON'ları app/schemas altına yazılır ve sürüm kontrolüne girer
         javaCompileOptions {
@@ -25,7 +25,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             resValue "string", "app_version", "${defaultConfig.versionName}"
         }
@@ -35,11 +35,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     buildFeatures {
         viewBinding = true
+        // AGP 9'da varsayılan kapalı; buildTypes içindeki resValue (app_version) için gerekli
+        resValues = true
     }
     tasks.withType(JavaCompile).tap {
         configureEach {
