@@ -187,9 +187,9 @@
     <string name="city_selection_location_no_match">No city matching your location was found. Please choose from the list.</string>
     <string name="city_selection_location_pick_state">Country based on your location: %1$s. Please choose your province / state.</string>
     <string name="city_selection_location_pick_city">Province / state based on your location: %1$s. Choose your district; if it is not listed, choose the provincial center (%1$s).</string>
-    <string name="city_selection_location_confirm_title">Your city based on your location</string>
-    <string name="city_selection_location_confirm_message">Download prayer times for %1$s?</string>
-    <string name="city_selection_location_confirm_yes">Yes, download</string>
+    <string name="city_selection_location_confirm_title">Your current location</string>
+    <string name="city_selection_location_rejected">You can choose your city step by step from the list.</string>
+    <string name="city_selection_location_confirm_yes">Confirm location</string>
     <string name="city_selection_location_confirm_no">I\'ll choose from the list</string>
     <string name="location_off_title">Location is off</string>
     <string name="city_selection_location_off_message">Turn on your device location so we can find your city automatically. Come back after turning it on; the search will start by itself.</string>
@@ -198,4 +198,9 @@
     <string name="location_off_decline">Cancel</string>
     <string name="city_selection_location_off_list">Location is off. You can choose your city from the list.</string>
     <string name="location_no_fix">Your location could not be determined right now. Please try again in an open area.</string>
-</resources>
+    <string name="location_line_country">Country: %1$s</string>
+    <string name="location_line_province">Province: %1$s</string>
+    <string name="location_line_district">District: %1$s</string>
+    <string name="location_line_state">State: %1$s</string>
+    <string name="location_line_city">City: %1$s</string>
+    <string name="location_line_prayer_center">Your district is not listed separately by Diyanet; prayer times for %1$s (provincial center) will be used.</string></resources>

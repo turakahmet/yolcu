@@ -1140,9 +1140,9 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="city_selection_location_no_match">Konumunuza uygun şehir bulunamadı. Lütfen listeden seçin.</string>
     <string name="city_selection_location_pick_state">Konumunuza göre ülke: %1$s. Lütfen il / eyaletinizi seçin.</string>
     <string name="city_selection_location_pick_city">Konumunuza göre il / eyalet: %1$s. İlçenizi seçin; ilçeniz listede yoksa il merkezini (%1$s) seçin.</string>
-    <string name="city_selection_location_confirm_title">Konumunuza göre şehriniz</string>
-    <string name="city_selection_location_confirm_message">%1$s için namaz vakitleri indirilsin mi?</string>
-    <string name="city_selection_location_confirm_yes">Evet, indir</string>
+    <string name="city_selection_location_confirm_title">Mevcut konumunuz</string>
+    <string name="city_selection_location_rejected">Şehrinizi adım adım listeden seçebilirsiniz.</string>
+    <string name="city_selection_location_confirm_yes">Konumu onayla</string>
     <string name="city_selection_location_confirm_no">Listeden seçeceğim</string>
     <string name="location_off_title">Konum kapalı</string>
     <string name="city_selection_location_off_message">Şehrinizi otomatik bulabilmemiz için cihazınızın konumunu açın. Açtıktan sonra geri dönün; arama kendiliğinden başlar.</string>
@@ -1151,4 +1151,9 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="location_off_decline">Vazgeç</string>
     <string name="city_selection_location_off_list">Konum kapalı. Şehrinizi listeden seçebilirsiniz.</string>
     <string name="location_no_fix">Konumunuz şu an belirlenemedi. Açık bir alanda tekrar deneyin.</string>
-</resources>
+    <string name="location_line_country">Ülke: %1$s</string>
+    <string name="location_line_province">Şehir: %1$s</string>
+    <string name="location_line_district">İlçe: %1$s</string>
+    <string name="location_line_state">Eyalet: %1$s</string>
+    <string name="location_line_city">Şehir: %1$s</string>
+    <string name="location_line_prayer_center">İlçeniz Diyanet listesinde ayrı yer almıyor; %1$s (il merkezi) namaz vakitleri kullanılacak.</string></resources>

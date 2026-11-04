@@ -18,6 +18,7 @@ import com.islamyolu.app.Service.LocationService;
 import com.islamyolu.app.Service.NetworkServiceUtil;
 import com.islamyolu.app.Service.SharedPrefsHelperService;
 import com.islamyolu.app.main.MainActivity;
+import com.islamyolu.app.prayertimes.PlaceNameNormalizer;
 import com.islamyolu.app.prayertimes.PrayerCitySelection;
 import com.islamyolu.app.prayertimes.PrayerSyncResult;
 import com.islamyolu.app.prayertimes.PrayerTimesRepository;
@@ -34,6 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -98,7 +100,8 @@ public class CitySelectionViewModel extends AndroidViewModel {
     @Nullable private PlacesResponse places;
     @Nullable private CountriesResponse.Country country;
     @Nullable private PlacesResponse.State state;
-    private final Set<Integer> unavailableCityIds = new HashSet<>();
+    /** Konum akışı arka plan thread'inden de okur */
+    private final Set<Integer> unavailableCityIds = ConcurrentHashMap.newKeySet();
     @Nullable private Runnable retryAction;
     private boolean started;
 
@@ -199,14 +202,42 @@ public class CitySelectionViewModel extends AndroidViewModel {
 
     // --- Konumdan şehir bulma (§8) ---
 
-    /** Öneri penceresinde kullanıcının cevabı (ekran döndürülse de cevaplanana kadar korunur). */
+    /**
+     * "Konumunuz bu mu?" penceresi için bulunan konum. Kullanıcı onaylamadan hiçbir şey seçilmez;
+     * ekran döndürülse de cevaplanana kadar korunur.
+     */
     public static final class LocationSuggestion {
-        @NonNull final PlaceItem city;
-        @NonNull final String displayName;
+        /** Türkiye'de satırlar "Şehir / İlçe", diğer ülkelerde "Eyalet / Şehir" */
+        final boolean turkey;
+        @NonNull final String countryName;
+        @Nullable final String stateName;
+        /** Konumdaki ilçe/şehir (Diyanet listesinde olmayabilir, ör. Gaziosmanpaşa) */
+        @Nullable final String districtName;
+        /**
+         * Konumdaki ilçe listede yoksa vakitleri kullanılacak il merkezi (ör. İSTANBUL); pencerede
+         * kullanıcıya açıkça gösterilir. Kesin eşleşmede null.
+         */
+        @Nullable final String centerName;
+        // Onaylanırsa uygulanacak eşleşme
+        @NonNull private final CountriesResponse.Country country;
+        @NonNull private final PlacesResponse places;
+        @NonNull private final PlaceMatcher.PlaceMatch match;
+        /** Onayda vakitleri indirilecek şehir; bulunamadıysa null (liste en yakın adımdan açılır) */
+        @Nullable private final PlaceItem target;
 
-        LocationSuggestion(@NonNull PlaceItem city, @NonNull String displayName) {
-            this.city = city;
-            this.displayName = displayName;
+        LocationSuggestion(boolean turkey, @NonNull String countryName, @Nullable String stateName,
+                           @Nullable String districtName, @Nullable String centerName,
+                           @NonNull CountriesResponse.Country country, @NonNull PlacesResponse places,
+                           @NonNull PlaceMatcher.PlaceMatch match, @Nullable PlaceItem target) {
+            this.turkey = turkey;
+            this.countryName = countryName;
+            this.stateName = stateName;
+            this.districtName = districtName;
+            this.centerName = centerName;
+            this.country = country;
+            this.places = places;
+            this.match = match;
+            this.target = target;
         }
     }
 
@@ -278,38 +309,91 @@ public class CitySelectionViewModel extends AndroidViewModel {
                 return;
             }
             PlaceMatcher.PlaceMatch match = PlaceMatcher.matchPlace(address, matched.getId(), placesResult.getData());
-            runOnMain(() -> applyLocationMatch(matched, placesResult.getData(), match));
+            LocationSuggestion suggestion = buildSuggestion(address, matched, placesResult.getData(), match);
+            runOnMain(() -> {
+                // Bulunan konum kullanıcıya sorulur; onaylamadan hiçbir şey seçilmez
+                loading.setValue(false);
+                message.setValue(null);
+                locationSuggestion.setValue(suggestion);
+            });
         });
     }
 
+    /** "Konumu onayla": seçim yapılmış gibi vakitler indirilir; hedef şehir yoksa liste bulunan yerden açılır. */
     public void acceptLocationSuggestion() {
         LocationSuggestion suggestion = locationSuggestion.getValue();
         locationSuggestion.setValue(null);
-        if (suggestion != null) {
-            selectCity(suggestion.city);
+        if (suggestion == null) {
+            return;
+        }
+        country = suggestion.country;
+        places = suggestion.places;
+        if (suggestion.target != null && suggestion.match.state != null) {
+            state = suggestion.match.state;
+            showCities();
+            selectCity(suggestion.target);
+        } else {
+            applyLocationMatch(suggestion.places, suggestion.match);
         }
     }
 
-    public void rejectLocationSuggestion() {
-        locationSuggestion.setValue(null);
+    /**
+     * Pencere bilgisi ve onayda kullanılacak şehir. Konumdaki ilçe Diyanet listesinde yoksa
+     * (ör. İstanbul'un merkez ilçeleri) ilin kendi adıyla geçen merkez kaydı hedeflenir.
+     */
+    private LocationSuggestion buildSuggestion(AddressParts address, CountriesResponse.Country matched,
+                                               PlacesResponse matchedPlaces, PlaceMatcher.PlaceMatch match) {
+        boolean turkey = matched.getId() == TURKEY_COUNTRY_ID;
+        PlacesResponse.State matchedState = match.state;
+        String stateName = matchedState != null ? nameOf(matchedState.getName()) : address.getAdminArea();
+        String district = match.city != null
+                ? nameOf(match.city.getName())
+                : (turkey && address.getSubAdminArea() != null ? address.getSubAdminArea() : address.getLocality());
+        if (district != null && stateName != null
+                && PlaceNameNormalizer.normalize(district).equals(PlaceNameNormalizer.normalize(stateName))) {
+            district = null; // "İstanbul, İstanbul" tekrarını gösterme
+        }
+
+        PlacesResponse.City targetCity = match.city;
+        String centerName = null;
+        if (targetCity == null && matchedState != null) {
+            targetCity = centerCityOf(matchedState);
+            if (targetCity != null) {
+                centerName = nameOf(targetCity.getName());
+            }
+        }
+        PlaceItem target = targetCity != null
+                ? new PlaceItem(targetCity.getId(), nameOf(targetCity.getName()), unavailableCityIds.contains(targetCity.getId()))
+                : null;
+        return new LocationSuggestion(turkey, countryDisplayName(matched), stateName, district, centerName,
+                matched, matchedPlaces, match, target);
     }
 
-    private void applyLocationMatch(CountriesResponse.Country matched, PlacesResponse matchedPlaces,
-                                    PlaceMatcher.PlaceMatch match) {
-        loading.setValue(false);
-        country = matched;
-        places = matchedPlaces;
-        if (match.level == PlaceMatcher.Level.CITY && match.city != null && match.state != null) {
-            state = match.state;
-            showCities();
-            String cityName = nameOf(match.city.getName());
-            PrayerCitySelection preview = new PrayerCitySelection(match.city.getId(), cityName,
-                    state.getId(), nameOf(state.getName()), matched.getId(), nameOf(matched.getName()));
-            // Tek ve kesin eşleşme bile sessizce kabul edilmez; kullanıcı onaylar
-            locationSuggestion.setValue(new LocationSuggestion(
-                    new PlaceItem(match.city.getId(), cityName, unavailableCityIds.contains(match.city.getId())),
-                    preview.getDisplayName()));
-        } else if (match.level == PlaceMatcher.Level.STATE && match.state != null) {
+    /** İlin kendi adıyla geçen merkez kaydı (ör. İSTANBUL ilindeki İSTANBUL); tek şehirli ilde o şehir. */
+    @Nullable
+    private static PlacesResponse.City centerCityOf(PlacesResponse.State state) {
+        List<PlacesResponse.City> cities = state.getCities();
+        if (cities.size() == 1) {
+            return cities.get(0);
+        }
+        for (PlacesResponse.City city : cities) {
+            if (city.getKey() != null && city.getKey().equals(state.getKey())) {
+                return city;
+            }
+        }
+        return null;
+    }
+
+    /** "Konumunuz bu mu?" → Hayır: adım adım seçim 1. adımdan başlar. */
+    public void rejectLocationSuggestion() {
+        locationSuggestion.setValue(null);
+        showCountries();
+        message.setValue(new Message(R.string.city_selection_location_rejected, null, false));
+    }
+
+    /** Kesin ilçe bulunamadıysa liste, bulunan en yakın adımdan açılır. */
+    private void applyLocationMatch(PlacesResponse matchedPlaces, PlaceMatcher.PlaceMatch match) {
+        if (match.level == PlaceMatcher.Level.STATE && match.state != null) {
             // "Merkez" ilçe, birden fazla aday veya listede olmayan ilçe: ilçeyi kullanıcı seçer
             state = match.state;
             showCities();
@@ -320,7 +404,7 @@ public class CitySelectionViewModel extends AndroidViewModel {
             message.setValue(new Message(R.string.city_selection_location_pick_city, nameOf(state.getName()), false));
         } else {
             showStates();
-            message.setValue(new Message(R.string.city_selection_location_pick_state, countryDisplayName(matched), false));
+            message.setValue(new Message(R.string.city_selection_location_pick_state, countryLabel(), false));
         }
     }
 

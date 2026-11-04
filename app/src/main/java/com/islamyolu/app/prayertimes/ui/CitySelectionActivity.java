@@ -31,6 +31,7 @@ import com.islamyolu.app.prayertimes.PlaceNameNormalizer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Diyanet namaz vakitleri için şehir seçimi: Ülke → Eyalet/İl → Şehir/İlçe.
@@ -53,6 +54,7 @@ public class CitySelectionActivity extends AppCompatActivity {
     /** İzin, konum açık/kapalı ve ayarlara yönlendirme merkezi LocationAccess'te. Sonuç ViewModel'e gider. */
     private final LocationAccess locationAccess = LocationAccess.register(this,
             new LocationAccess.Options()
+                    .fresh(true) // kullanıcı yer değiştirmiş olabilir; eski konum kullanılmaz
                     .servicesOffMessage(R.string.city_selection_location_off_message)
                     .declineLabel(R.string.city_selection_location_confirm_no),
             new LocationAccess.Callback() {
@@ -239,7 +241,7 @@ public class CitySelectionActivity extends AppCompatActivity {
         }
         suggestionDialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.city_selection_location_confirm_title)
-                .setMessage(getString(R.string.city_selection_location_confirm_message, suggestion.displayName))
+                .setMessage(locationSummary(suggestion))
                 .setPositiveButton(R.string.city_selection_location_confirm_yes, (d, w) -> viewModel.acceptLocationSuggestion())
                 .setNegativeButton(R.string.city_selection_location_confirm_no, (d, w) -> viewModel.rejectLocationSuggestion())
                 .create();
@@ -250,6 +252,43 @@ public class CitySelectionActivity extends AppCompatActivity {
             }
         });
         suggestionDialog.show();
+    }
+
+    /**
+     * Ülke: Türkiye / Şehir: İstanbul / İlçe: Gaziosmanpaşa (yurt dışında Eyalet / Şehir).
+     * İlçe Diyanet listesinde yoksa hangi yerin vakitlerinin kullanılacağı ayrıca yazılır.
+     */
+    private String locationSummary(CitySelectionViewModel.LocationSuggestion s) {
+        Locale uiLocale = getResources().getConfiguration().getLocales().get(0);
+        // Türkçe adlarda i/İ doğru dönüşsün diye Türkçe kural; yabancı yer adlarında dilden bağımsız kural
+        Locale placeLocale = s.turkey ? Locale.forLanguageTag("tr") : Locale.ROOT;
+        StringBuilder sb = new StringBuilder();
+        sb.append(getString(R.string.location_line_country, displayCase(s.countryName, uiLocale)));
+        if (s.stateName != null) {
+            sb.append('\n').append(getString(s.turkey ? R.string.location_line_province : R.string.location_line_state,
+                    displayCase(s.stateName, placeLocale)));
+        }
+        if (s.districtName != null) {
+            sb.append('\n').append(getString(s.turkey ? R.string.location_line_district : R.string.location_line_city,
+                    displayCase(s.districtName, placeLocale)));
+        }
+        if (s.centerName != null) {
+            sb.append("\n\n").append(getString(R.string.location_line_prayer_center, displayCase(s.centerName, placeLocale)));
+        }
+        return sb.toString();
+    }
+
+    /** "GAZİOSMANPAŞA" → "Gaziosmanpaşa", "AFYONKARAHİSAR" → "Afyonkarahisar" */
+    private static String displayCase(String value, Locale locale) {
+        String lower = value.toLowerCase(locale);
+        StringBuilder sb = new StringBuilder(lower.length());
+        boolean wordStart = true;
+        for (int i = 0; i < lower.length(); i++) {
+            char c = lower.charAt(i);
+            sb.append(wordStart ? String.valueOf(c).toUpperCase(locale) : String.valueOf(c));
+            wordStart = c == ' ' || c == '-' || c == '/' || c == '(';
+        }
+        return sb.toString();
     }
 
     private void updateLocationButton() {

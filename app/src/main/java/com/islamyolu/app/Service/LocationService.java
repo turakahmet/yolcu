@@ -71,19 +71,28 @@ public class LocationService {
                 || ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
-    /** Bu kadar yeni bir konum varsa beklemeden kullanılır (şehir/kıble için yeterince güncel). */
+    /** fresh=false iken bu kadar yeni hazır konum beklemeden kullanılır (açılış, kıble gibi). */
     private static final long MAX_LOCATION_AGE_MS = 10 * 60 * 1000L;
-    /** Pil dostu deneme süresi; ağ konumu olmayan cihazda (ör. emülatör) boşuna beklenmez. */
-    private static final long BALANCED_TIMEOUT_MS = 6_000L;
+    /** Pil dostu (ağ) deneme süresi */
+    private static final long BALANCED_TIMEOUT_MS = 8_000L;
     /** GPS deneme süresi */
     private static final long HIGH_ACCURACY_TIMEOUT_MS = 15_000L;
 
-    /**
-     * Tek bir güncel konum alır; sürekli güncelleme başlatmaz.
-     * Sıra: son 10 dakikalık hazır konum ya da pil dostu konum (en çok 6 sn) → GPS (en çok 15 sn)
-     * → son bilinen konum. Sonuç ana thread'de döner.
-     */
+    /** Hazır konum kabul edilir (hızlı). */
     public void getSingleLocation(@NonNull SingleLocationCallback callback) {
+        getSingleLocation(false, callback);
+    }
+
+    /**
+     * Tek bir konum alır; sürekli güncelleme başlatmaz. Ağ (pil dostu) ve GPS aynı anda denenir,
+     * önce gelen kullanılır, diğeri iptal edilir; ikisi de boş dönerse son bilinen konuma düşülür.
+     * Sonuç ana thread'de döner.
+     *
+     * @param fresh true ise önbellekteki eski konum kullanılmaz (kullanıcı "konumumu bul" dediğinde;
+     *              kullanıcı yer değiştirdiyse eski konum dönmesin)
+     */
+    @SuppressLint("MissingPermission") // izin hemen aşağıda kontrol ediliyor
+    public void getSingleLocation(boolean fresh, @NonNull SingleLocationCallback callback) {
         if (!hasLocationPermission()) {
             callback.onUnavailable(Unavailable.PERMISSION_DENIED);
             return;
@@ -92,29 +101,45 @@ public class LocationService {
             callback.onUnavailable(Unavailable.SERVICES_OFF);
             return;
         }
-        requestCurrent(Priority.PRIORITY_BALANCED_POWER_ACCURACY, BALANCED_TIMEOUT_MS, callback,
-                () -> requestCurrent(Priority.PRIORITY_HIGH_ACCURACY, HIGH_ACCURACY_TIMEOUT_MS, callback,
-                        () -> requestLastKnown(callback)));
+        long maxAge = fresh ? 0 : MAX_LOCATION_AGE_MS;
+        CancellationTokenSource cancellation = new CancellationTokenSource();
+        boolean[] delivered = {false};
+        int[] pending = {2};
+        OnCurrentResult onResult = location -> {
+            if (delivered[0]) {
+                return;
+            }
+            if (location != null) {
+                delivered[0] = true;
+                cancellation.cancel(); // diğer deneme gereksiz
+                callback.onLocation(location);
+            } else if (--pending[0] == 0) {
+                requestLastKnown(callback);
+            }
+        };
+        requestCurrent(Priority.PRIORITY_BALANCED_POWER_ACCURACY, BALANCED_TIMEOUT_MS, maxAge, cancellation, onResult);
+        requestCurrent(Priority.PRIORITY_HIGH_ACCURACY, HIGH_ACCURACY_TIMEOUT_MS, maxAge, cancellation, onResult);
+    }
+
+    private interface OnCurrentResult {
+        void onResult(Location location);
     }
 
     @SuppressLint("MissingPermission") // getSingleLocation() izni kontrol ediyor
-    private void requestCurrent(int priority, long timeoutMs, SingleLocationCallback callback, Runnable onEmpty) {
+    private void requestCurrent(int priority, long timeoutMs, long maxAgeMs,
+                                CancellationTokenSource cancellation, OnCurrentResult onResult) {
         CurrentLocationRequest request = new CurrentLocationRequest.Builder()
                 .setPriority(priority)
-                .setMaxUpdateAgeMillis(MAX_LOCATION_AGE_MS)
+                .setMaxUpdateAgeMillis(maxAgeMs)
                 .setDurationMillis(timeoutMs)
                 .build();
-        fusedLocationClient.getCurrentLocation(request, new CancellationTokenSource().getToken())
-                .addOnSuccessListener(location -> {
-                    if (location != null) {
-                        callback.onLocation(location);
-                    } else {
-                        onEmpty.run();
-                    }
-                })
+        fusedLocationClient.getCurrentLocation(request, cancellation.getToken())
+                .addOnSuccessListener(onResult::onResult)
                 .addOnFailureListener(e -> {
-                    AppLogger.error(TAG, "Güncel konum alınamadı (öncelik " + priority + ")", e);
-                    onEmpty.run();
+                    if (!cancellation.getToken().isCancellationRequested()) {
+                        AppLogger.error(TAG, "Güncel konum alınamadı (öncelik " + priority + ")", e);
+                    }
+                    onResult.onResult(null);
                 });
     }
 

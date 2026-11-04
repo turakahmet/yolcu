@@ -52,12 +52,22 @@ public final class LocationAccess {
     /** Ekrana özel ayarlar; varsayılanlar çoğu ekran için yeterlidir. */
     public static final class Options {
         boolean precise;
+        boolean fresh;
         @StringRes int servicesOffMessage = R.string.location_off_message;
         @StringRes int declineLabel = R.string.location_off_decline;
 
         /** Hassas konum (ör. kıble pusulası). Varsayılan: şehir düzeyi kaba konum. */
         public Options precise(boolean value) {
             precise = value;
+            return this;
+        }
+
+        /**
+         * Önbellekteki eski konum kullanılmaz; her istekte taze konum alınır.
+         * Kullanıcı açıkça "konumumu bul" dediğinde (yer değiştirmiş olabilir). Varsayılan: hızlı, hazır konum.
+         */
+        public Options fresh(boolean value) {
+            fresh = value;
             return this;
         }
 
@@ -187,7 +197,7 @@ public final class LocationAccess {
     }
 
     private void fetch() {
-        service().getSingleLocation(new LocationService.SingleLocationCallback() {
+        service().getSingleLocation(options.fresh, new LocationService.SingleLocationCallback() {
             @Override
             public void onLocation(@NonNull Location location) {
                 callback.onLocation(location);

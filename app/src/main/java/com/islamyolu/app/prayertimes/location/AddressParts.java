@@ -27,6 +27,21 @@ public final class AddressParts {
         this.locality = locality;
     }
 
+    @Nullable
+    public String getAdminArea() {
+        return adminArea;
+    }
+
+    @Nullable
+    public String getSubAdminArea() {
+        return subAdminArea;
+    }
+
+    @Nullable
+    public String getLocality() {
+        return locality;
+    }
+
     /** Geocoder'ın Locale.ENGLISH ile döndürdüğü adresten. */
     @NonNull
     public static AddressParts from(@NonNull Address address) {
