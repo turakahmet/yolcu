@@ -40,10 +40,11 @@ public class WidgetSettingsActivity extends AppCompatActivity {
             return;
         }
 
-        // Sonucu CANCELED olarak ayarla (başarılı olana kadar)
+        // Sonuç baştan OK: kullanıcı ayarı kaydetmeden geri çıkarsa widget varsayılan şeffaflıkla eklenir.
+        // (CANCELED dönülünce başlatıcı widget'ı siler; bazı markalarda widget hiç görünmüyordu.)
         Intent resultValueTemp = new Intent();
         resultValueTemp.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-        setResult(RESULT_CANCELED, resultValueTemp);
+        setResult(RESULT_OK, resultValueTemp);
 
         SeekBar transparencySeekBar = findViewById(R.id.transparencySeekBar);
         TextView transparencyValueText = findViewById(R.id.transparencyValueText);

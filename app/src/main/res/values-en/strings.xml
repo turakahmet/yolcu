@@ -230,4 +230,5 @@
         <item>Dhu al-Qadah</item>
         <item>Dhu al-Hijjah</item>
     </string-array>
+    <string name="widget_description">Prayer times, time remaining and weather</string>
 </resources>

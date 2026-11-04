@@ -146,8 +146,9 @@
             android:name=".widget.WidgetSettingsActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.Dialog">
+            <!-- Widget yapılandırma ekranı (başlatıcılar bu action ile açar) -->
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
         <provider

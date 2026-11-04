@@ -1183,4 +1183,5 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
         <item>Zilkade</item>
         <item>Zilhicce</item>
     </string-array>
+    <string name="widget_description">Namaz vakitleri, kalan süre ve hava durumu</string>
 </resources>
