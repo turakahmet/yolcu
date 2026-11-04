@@ -200,6 +200,38 @@ public final class PlaceMatcher {
         return new PlaceMatch(state != null ? Level.STATE : Level.COUNTRY, state, null);
     }
 
+    /**
+     * İlin kendi adıyla geçen merkez kaydı (ör. İSTANBUL ilindeki İSTANBUL); tek şehirli ilde o şehir.
+     * Türkiye'de merkez ilçeler (Seyhan, Çankaya…) Diyanet listesinde bu kaydın içindedir.
+     */
+    @Nullable
+    public static PlacesResponse.City centerCityOf(@NonNull PlacesResponse.State state) {
+        List<PlacesResponse.City> cities = state.getCities();
+        if (cities.size() == 1) {
+            return cities.get(0);
+        }
+        for (PlacesResponse.City city : cities) {
+            if (city.getKey() != null && city.getKey().equals(state.getKey())) {
+                return city;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Önceki sürümün kaydettiği il adını ("Isparta", "İstanbul"; Geocoder adminArea) Türkiye'deki il
+     * ve o ilin merkez kaydıyla eşler. Eşleşmezse null; kullanıcı listeden seçer.
+     */
+    @Nullable
+    public static PlaceMatch matchLegacyProvince(@Nullable String legacyCityName, @NonNull PlacesResponse turkey) {
+        PlaceMatch match = matchPlace(new AddressParts(null, legacyCityName, null, null), TURKEY_COUNTRY_ID, turkey);
+        if (match.state == null) {
+            return null;
+        }
+        PlacesResponse.City center = centerCityOf(match.state);
+        return center != null ? new PlaceMatch(Level.CITY, match.state, center) : null;
+    }
+
     @Nullable
     private static PlacesResponse.State findState(PlacesResponse places, List<String> stateNames) {
         for (String name : stateNames) {

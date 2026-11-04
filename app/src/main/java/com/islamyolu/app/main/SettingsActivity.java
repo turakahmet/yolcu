@@ -1,9 +1,6 @@
 package com.islamyolu.app.main;
 
 import android.Manifest;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -33,7 +30,6 @@ import com.islamyolu.app.Service.LocationAccess;
 import com.islamyolu.app.Service.LocationService;
 import com.islamyolu.app.Service.PrayerNotificationService;
 import com.islamyolu.app.Service.SharedPrefsHelperService;
-import com.islamyolu.app.VakitApi.AlarmReceiver;
 import com.islamyolu.app.VakitApi.City;
 import com.islamyolu.app.VakitApi.DailyPrayerWorkerReceiver;
 import com.islamyolu.app.feedback.BilgilendirmeActivity;
@@ -41,9 +37,7 @@ import com.islamyolu.app.feedback.FeedbackActivity;
 import com.islamyolu.app.feedback.PrivacyActivity;
 import com.islamyolu.app.prayertimes.PrayerCitySelection;
 import com.islamyolu.app.prayertimes.ui.CitySelectionActivity;
-import com.islamyolu.app.receiver.PrayerSoundReceiver;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -196,21 +190,8 @@ public class SettingsActivity extends AppCompatActivity {
             // Yeni değeri kaydet
             sharedPrefsHelperService.setRadioButtonState("radioGroupVakit", newValue);
 
-            // Mevcut tüm alarmları iptal et
-            cancelAllPrayerAlarms();
-
-            // Yeni alarmları kur
+            // DailyPrayerWorker günün alarmlarını önce iptal edip yeni süreyle yeniden kurar
             setupNewPrayerAlarms();
-        }
-    }
-
-    private void cancelAllPrayerAlarms() {
-        // Tüm namaz vakitleri için alarmları iptal et (kurulmamış alarmı iptal etmek zararsızdır)
-        int[] bodies = {R.string.imsak_vakit_notification_body, R.string.gunes_vakit_notification_body,
-                R.string.ogle_vakit_notification_body, R.string.ikindi_vakit_notification_body,
-                R.string.aksam_vakit_notification_body, R.string.yatsi_vakit_notification_body};
-        for (int body : bodies) {
-            cancelNotification(getString(R.string.namaz_vakit_notification_header), getString(body));
         }
     }
 
@@ -347,30 +328,6 @@ public class SettingsActivity extends AppCompatActivity {
         return switchKeyMap.get(id);
     }
 
-    private void cancelNotification(String title, String message) {
-        Log.d("AlarmReceiver", "Alarm is being canceled!" + message);
-
-        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        if (alarmManager == null) {
-            Log.e("AlarmReceiver", "AlarmManager is null!");
-            return;
-        }
-
-        Intent intent = new Intent(this, AlarmReceiver.class);
-        intent.setAction("package com.myapp.yolcu.ACTION_ALARM_NOTIFICATION");
-        intent.putExtra("title", title);
-        message = message.replace("##", String.valueOf(sharedPrefsHelperService.getRadioButtonState("radioGroupVakit")));
-        intent.putExtra("message", message);
-
-        // Alarm oluştururken kullanılan requestCode'u kullanın.
-        int requestCode = title.hashCode() + message.hashCode(); // Benzersiz bir requestCode oluşturabilirsiniz.
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-        // Alarmı iptal et
-        alarmManager.cancel(pendingIntent);
-        Log.d("AlarmReceiver", "Alarm canceled.");
-    }
-
     private void allNotificationActive() {
         switchNotificationImsak.setChecked(true);
         switchNotificationSabah.setChecked(true);
@@ -432,11 +389,6 @@ public class SettingsActivity extends AppCompatActivity {
         spinnerEzanSound.setSelection(ezanSoundPosition);
         isUserAction = false;
         spinnerEzanDua.setSelection(ezanDuaPosition);
-
-        // Eğer her iki ses de kapalıysa alarmları iptal et
-        if (ezanSoundPosition == 3 && ezanDuaPosition == 2) {
-            cancelAllPrayerSoundAlarms();
-        }
     }
 
     @SuppressWarnings("UnspecifiedImmutableFlag")
@@ -525,13 +477,8 @@ public class SettingsActivity extends AppCompatActivity {
                 sharedPrefsHelperService.setSpinnerSelection("spinner_ezan_sound", position);
                 Log.d("SettingsActivity", "Ezan sesi seçimi değişti: " + position);
 
-                // Eğer "Kapalı" seçildiyse ve dua da kapalıysa alarmları iptal et
-                if (position == 4 && sharedPrefsHelperService.getSpinnerSelection("spinner_ezan_sound", 3) == 4) {
-                    cancelAllPrayerSoundAlarms();
-                } else {
-                    // Değilse alarmları güncelle
-                    setupNewPrayerAlarms();
-                }
+                // Worker ses alarmlarını iptal edip seçime göre yeniden kurar ("Kapalı" ise kurmaz)
+                setupNewPrayerAlarms();
             }
 
             @Override
@@ -555,51 +502,14 @@ public class SettingsActivity extends AppCompatActivity {
                 sharedPrefsHelperService.setSpinnerSelection("spinner_ezan_dua", position);
                 Log.d("SettingsActivity", "Ezan duası seçimi değişti: " + position);
 
-                // Eğer "Kapalı" seçildiyse ve ezan da kapalıysa alarmları iptal et
-                if (position == 2 && sharedPrefsHelperService.getSpinnerSelection("spinner_ezan_dua", 2) == 2) {
-                    cancelAllPrayerSoundAlarms();
-                } else {
-                    // Değilse alarmları güncelle
-                    setupNewPrayerAlarms();
-                }
+                // Worker ses alarmlarını iptal edip seçime göre yeniden kurar ("Kapalı" ise kurmaz)
+                setupNewPrayerAlarms();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-    }
-
-    private void cancelAllPrayerSoundAlarms() {
-        Log.d("SettingsActivity", "Tüm ezan sesi alarmları iptal ediliyor");
-
-        // Tüm namaz vakitleri için ses alarmlarını iptal et (adlar DailyPrayerWorker'ın request code'larıyla aynı)
-        for (String prayerName : new String[]{"İmsak", "Güneş", "Öğle", "İkindi", "Akşam", "Yatsı"}) {
-            cancelPrayerSoundAlarm(prayerName);
-        }
-    }
-
-    private void cancelPrayerSoundAlarm(String prayerName) {
-        try {
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            if (alarmManager == null) return;
-
-            Intent intent = new Intent(this, PrayerSoundReceiver.class);
-            int requestCode = ("sound_" + prayerName + Calendar.getInstance().get(Calendar.DAY_OF_YEAR)).hashCode();
-
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    this,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-            );
-
-            alarmManager.cancel(pendingIntent);
-            Log.d("SettingsActivity", prayerName + " vakti için ses alarmı iptal edildi");
-
-        } catch (Exception e) {
-            Log.e("SettingsActivity", prayerName + " vakti için ses alarmı iptal edilirken hata: " + e.getMessage());
-        }
     }
 }
 

@@ -70,6 +70,8 @@ public class DailyPrayerWorker extends Worker {
 
             // Alarmları kur (boş vakitler atlanır)
             setPrayerAlarms(getApplicationContext(), current.timeline, today);
+            pruneSentNotifications(getApplicationContext());
+            sharedPrefsHelperService.removeStaleSettingsCityName();
 
             // Bir sonraki gün için worker'ı şehrin gece yarısına (00:02) planla; cihazın saat dilimine değil
             PrayerDayEntity todayData = current.timeline.day(today);
@@ -307,32 +309,31 @@ public class DailyPrayerWorker extends Worker {
         );
     }
 
-    // Bildirimin gönderilip gönderilmediğini kontrol et
-    private boolean isNotificationSent(Context context, String notificationId) {
-        SharedPreferences prefs = context.getSharedPreferences(
-                "SentNotifications",
-                Context.MODE_PRIVATE
-        );
-        return prefs.getBoolean(notificationId, false);
-    }
-
-    // Bildirimi gönderildi olarak işaretle
-    private void markNotificationAsSent(Context context, String notificationId) {
-        SharedPreferences prefs = context.getSharedPreferences(
-                "SentNotifications",
-                Context.MODE_PRIVATE
-        );
-        prefs.edit().putBoolean(notificationId, true).apply();
-    }
-
-    // Eski bildirimleri temizle (her gün 00:01'de çağrılacak)
-    private void clearOldNotifications(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(
-                "SentNotifications",
-                Context.MODE_PRIVATE
-        );
-        prefs.edit().clear().apply();
-        Log.d("DailyPrayerWorker", "Eski bildirim kayıtları temizlendi");
+    /**
+     * AlarmReceiver'ın "gönderildi" kayıtlarından ("Öğle_2026_11_04") 2 günden eski olanları siler;
+     * önceden hiç temizlenmediği için dosya her gün büyüyordu. Kayıt adı generateNotificationId ile aynı biçimdedir.
+     */
+    private void pruneSentNotifications(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("SentNotifications", Context.MODE_PRIVATE);
+        Calendar limit = Calendar.getInstance();
+        limit.add(Calendar.DAY_OF_YEAR, -2);
+        String oldestKept = String.format(Locale.ROOT, "%d_%02d_%02d",
+                limit.get(Calendar.YEAR), limit.get(Calendar.MONTH) + 1, limit.get(Calendar.DAY_OF_MONTH));
+        SharedPreferences.Editor editor = prefs.edit();
+        int removed = 0;
+        for (String key : prefs.getAll().keySet()) {
+            int split = key.indexOf('_');
+            String datePart = split >= 0 ? key.substring(split + 1) : "";
+            // "yyyy_MM_dd" metin olarak sıralanabilir; biçim dışı kayıtlar da temizlenir
+            if (datePart.length() != oldestKept.length() || datePart.compareTo(oldestKept) < 0) {
+                editor.remove(key);
+                removed++;
+            }
+        }
+        if (removed > 0) {
+            editor.apply();
+            Log.d(TAG, removed + " eski bildirim kaydı temizlendi");
+        }
     }
 
     /** Şehrin vakit verisi yoksa (seçim/veri yok, worker durduruldu) cihazın gece yarısına planlanır. */
@@ -414,24 +415,6 @@ public class DailyPrayerWorker extends Worker {
         }
     }
 
-    // Switch durumlarını loglama metodu
-    private void logAllSwitchStates() {
-        Log.d("DailyPrayerWorker", "Switch Durumları:");
-        Log.d("DailyPrayerWorker", "switchNotificationAll: " +
-                sharedPrefsHelperService.getSwitchState("switchNotificationAll"));
-        Log.d("DailyPrayerWorker", "switchNotificationImsak: " +
-                sharedPrefsHelperService.getSwitchState("switchNotificationImsak"));
-        Log.d("DailyPrayerWorker", "switchNotificationSabah: " +
-                sharedPrefsHelperService.getSwitchState("switchNotificationSabah"));
-        Log.d("DailyPrayerWorker", "switchNotificationOgle: " +
-                sharedPrefsHelperService.getSwitchState("switchNotificationOgle"));
-        Log.d("DailyPrayerWorker", "switchNotificationIkindi: " +
-                sharedPrefsHelperService.getSwitchState("switchNotificationIkindi"));
-        Log.d("DailyPrayerWorker", "switchNotificationAksam: " +
-                sharedPrefsHelperService.getSwitchState("switchNotificationAksam"));
-        Log.d("DailyPrayerWorker", "switchNotificationYatsi: " +
-                sharedPrefsHelperService.getSwitchState("switchNotificationYatsi"));
-    }
 
     @SuppressLint("ScheduleExactAlarm")
     private void schedulePrayerSound(Context context, Date prayerTime, String prayerName, int notificationMinusSabahEzaniIcin) {

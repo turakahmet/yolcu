@@ -7,9 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -52,13 +49,17 @@ import com.islamyolu.app.Service.SoundService;
 import com.islamyolu.app.VakitApi.DailyPrayerWorkerReceiver;
 import com.islamyolu.app.databinding.ActivityMainBinding;
 import com.islamyolu.app.monthlyCalender.MonthlyPrayerActivity;
+import com.islamyolu.app.prayertimes.LegacyCityMigration;
 import com.islamyolu.app.prayertimes.PrayerSlot;
+import com.islamyolu.app.prayertimes.PrayerSyncResult;
 import com.islamyolu.app.prayertimes.ui.CitySelectionActivity;
 import com.islamyolu.app.prayertimes.ui.PrayerTimesPanel;
 import com.islamyolu.app.prayertimes.ui.PrayerTimesViewModel;
 import com.islamyolu.app.profile.Avatar;
 
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements ProfilePictureDialogFragment.ProfilePictureDialogListener {
 
@@ -107,6 +108,8 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
     private PrayerTimesPanel prayerTimesPanel;
     @Nullable private PrayerTimesViewModel.State prayerState;
     private boolean alarmsScheduled;
+    private boolean legacyMigrationChecked;
+    private final ExecutorService background = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +128,6 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         initializeServices();
         initializeHeaderView();
         initialGoldAmount();
-//        checkInternetConnection();
 
         // Namaz vakitleri Room'dan LiveData ile gelir (§5); şehir seçilmemiş/veri bitmişse durum mesajı gösterilir (§6)
         setupCityClick();
@@ -137,6 +139,11 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
             if (state.status == PrayerTimesViewModel.Status.OK && !alarmsScheduled) {
                 alarmsScheduled = true;
                 setupPrayerAlarms();
+            }
+            // Önceki sürümden gelen kullanıcı: kayıtlı il yeni şehir yapısına bir kez taşınır (onayla)
+            if (state.status == PrayerTimesViewModel.Status.NO_CITY && !legacyMigrationChecked) {
+                legacyMigrationChecked = true;
+                offerLegacyMigration();
             }
         });
 
@@ -186,11 +193,6 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
 
     private void openCitySelection() {
         startActivity(new Intent(this, CitySelectionActivity.class));
-    }
-
-    private boolean hasNotificationPermission() {
-        return ContextCompat.checkSelfPermission(this,
-                Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
     }
 
 
@@ -366,6 +368,50 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
                 });
     }
 
+    /** Eski il kaydı varsa il merkezinin vakitlerini önerir; eşleşmez veya internet yoksa sessiz kalır. */
+    private void offerLegacyMigration() {
+        background.execute(() -> {
+            LegacyCityMigration.Offer offer = LegacyCityMigration.findOffer(getApplicationContext());
+            if (offer != null) {
+                runOnUiThread(() -> showLegacyMigrationDialog(offer));
+            }
+        });
+    }
+
+    private void showLegacyMigrationDialog(LegacyCityMigration.Offer offer) {
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.legacy_migration_title)
+                .setMessage(getString(R.string.legacy_migration_message, offer.legacyName, offer.selection.getCityName()))
+                .setCancelable(false)
+                .setPositiveButton(R.string.legacy_migration_yes, (d, w) -> acceptLegacyMigration(offer))
+                .setNegativeButton(R.string.legacy_migration_other, (d, w) -> {
+                    LegacyCityMigration.decline(getApplicationContext());
+                    openCitySelection();
+                })
+                .show();
+    }
+
+    private void acceptLegacyMigration(LegacyCityMigration.Offer offer) {
+        Toast.makeText(this, getString(R.string.city_selection_downloading, offer.selection.getCityName()),
+                Toast.LENGTH_SHORT).show();
+        background.execute(() -> {
+            PrayerSyncResult result = LegacyCityMigration.accept(getApplicationContext(), offer);
+            runOnUiThread(() -> {
+                if (isFinishing() || isDestroyed()) return;
+                if (result.isSuccess()) {
+                    prayerTimesViewModel.refresh(MAIN_SCREEN_DAYS_AHEAD);
+                } else {
+                    // İndirilemedi (internet/sunucu): taşıma durumu yazılmadı, sonraki açılışta yeniden sorulur
+                    Toast.makeText(this, R.string.legacy_migration_failed, Toast.LENGTH_LONG).show();
+                    openCitySelection();
+                }
+            });
+        });
+    }
+
     /** Açılışta bir kez: ezan/bildirim alarmları Room'daki bugünün vakitleriyle kurulur. */
     private void setupPrayerAlarms() {
         sendBroadcast(new Intent(this, DailyPrayerWorkerReceiver.class));
@@ -481,28 +527,6 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         return super.onOptionsItemSelected(item);
     }
 
-    private void checkInternetConnection() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        // Modern API kullanımı (SDK 27 ve üstü)
-        Network network = cm.getActiveNetwork();
-        if (network != null) {
-            NetworkCapabilities capabilities = cm.getNetworkCapabilities(network);
-            boolean isConnected = capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
-
-            if (!isConnected) {
-                locationRefreshLayout.setVisibility(View.VISIBLE);
-                startActivity(new Intent(this, NetworkCheckActivity.class));
-                Toast.makeText(this, R.string.no_Internet, Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        } else {
-            // Eğer aktif ağ yoksa
-            locationRefreshLayout.setVisibility(View.VISIBLE);
-            startActivity(new Intent(this, NetworkCheckActivity.class));
-            Toast.makeText(this, R.string.no_Internet, Toast.LENGTH_SHORT).show();
-            finish();
-        }
-    }
 
 
     @Override
@@ -533,6 +557,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
 
     @Override
     protected void onDestroy() {
+        background.shutdown();
         super.onDestroy();
         Log.d("Lifecycle", "onDestroy called");
     }

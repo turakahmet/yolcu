@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.islamyolu.app.main.MainActivity;
 import com.islamyolu.app.prayertimes.PrayerCitySelection;
 
 public class SharedPrefsHelperService {
@@ -13,7 +14,6 @@ public class SharedPrefsHelperService {
     private static final String TAG = "SharedPrefsHelper";
     private final SharedPreferences sharedPreferences;
     private static final String RUN_KEY = "firstRunDefault";
-    private static final String ALARM_INITIALIZED_KEY = "alarmSystemInitialized";
     private final Context context;
 
     public static final String KEY_VAKIT_SOUND_MODE = "vakit_sound_mode_enabled";
@@ -113,6 +113,18 @@ public class SharedPrefsHelperService {
         return enabled;
     }
 
+    /**
+     * Eski hatanın ayar dosyasına (SettingPrefs) yazdığı "city_name" kopyasını siler; hiçbir yer okumuyor.
+     * Doğru kayıt LOCATION_PREFS'tedir ve dokunulmaz. Kopya yoksa bir şey yapmaz.
+     */
+    public void removeStaleSettingsCityName() {
+        SharedPreferences settings = context.getSharedPreferences(MainActivity.SETTINGS_PREFS, Context.MODE_PRIVATE);
+        if (settings.contains("city_name")) {
+            settings.edit().remove("city_name").apply();
+            Log.d(TAG, "Ayar dosyasındaki eski city_name kopyası silindi");
+        }
+    }
+
     /** Okuma ile aynı dosyaya (LOCATION_PREFS) yazar; önceden yanlışlıkla ayar dosyasına yazıyordu. */
     public void setCityNameFromPreferences(String cityName) {
         locationPreferences().edit().putString("city_name", cityName).apply();
@@ -150,6 +162,35 @@ public class SharedPrefsHelperService {
         return new PrayerCitySelection(cityId, cityName,
                 prefs.getInt(KEY_PRAYER_STATE_ID, NO_ID), prefs.getString(KEY_PRAYER_STATE_NAME, null),
                 prefs.getInt(KEY_PRAYER_COUNTRY_ID, NO_ID), prefs.getString(KEY_PRAYER_COUNTRY_NAME, null));
+    }
+
+    // --- Eski sürümden tek seferlik taşıma (city_name → prayer_city_*) ---
+
+    private static final String KEY_LEGACY_MIGRATION = "prayer_legacy_migration";
+
+    /** Taşıma sonucu ("migrated", "declined", "no_match", "no_legacy"); hiç denenmediyse null. */
+    public String getLegacyMigrationState() {
+        return locationPreferences().getString(KEY_LEGACY_MIGRATION, null);
+    }
+
+    public void setLegacyMigrationState(String state) {
+        locationPreferences().edit().putString(KEY_LEGACY_MIGRATION, state).apply();
+    }
+
+    /**
+     * Taşımayı geri alır: yalnızca yeni anahtarlar (prayer_city_* ve taşıma durumu) silinir; eski
+     * "city_name" hiç değiştirilmediği için önceki durum aynen geri gelir.
+     */
+    public void revertLegacyMigration() {
+        locationPreferences().edit()
+                .remove(KEY_PRAYER_CITY_ID)
+                .remove(KEY_PRAYER_CITY_NAME)
+                .remove(KEY_PRAYER_STATE_ID)
+                .remove(KEY_PRAYER_STATE_NAME)
+                .remove(KEY_PRAYER_COUNTRY_ID)
+                .remove(KEY_PRAYER_COUNTRY_NAME)
+                .remove(KEY_LEGACY_MIGRATION)
+                .apply();
     }
 
     private SharedPreferences locationPreferences() {

@@ -359,7 +359,7 @@ public class CitySelectionViewModel extends AndroidViewModel {
         PlacesResponse.City targetCity = match.city;
         String centerName = null;
         if (targetCity == null && matchedState != null) {
-            targetCity = centerCityOf(matchedState);
+            targetCity = PlaceMatcher.centerCityOf(matchedState);
             if (targetCity != null) {
                 centerName = nameOf(targetCity.getName());
             }
@@ -369,21 +369,6 @@ public class CitySelectionViewModel extends AndroidViewModel {
                 : null;
         return new LocationSuggestion(turkey, countryDisplayName(matched), stateName, district, centerName,
                 matched, matchedPlaces, match, target);
-    }
-
-    /** İlin kendi adıyla geçen merkez kaydı (ör. İSTANBUL ilindeki İSTANBUL); tek şehirli ilde o şehir. */
-    @Nullable
-    private static PlacesResponse.City centerCityOf(PlacesResponse.State state) {
-        List<PlacesResponse.City> cities = state.getCities();
-        if (cities.size() == 1) {
-            return cities.get(0);
-        }
-        for (PlacesResponse.City city : cities) {
-            if (city.getKey() != null && city.getKey().equals(state.getKey())) {
-                return city;
-            }
-        }
-        return null;
     }
 
     /** "Konumunuz bu mu?" → Hayır: adım adım seçim 1. adımdan başlar. */

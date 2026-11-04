@@ -15,9 +15,6 @@
     <string name="menu_basari">Rozetler</string>
     <string name="empty_text">-</string>
     <string name="no_Internet">İnternet bağlantınızı kontrol edin</string>
-    <string name="konumMevcutDegil">Konum Alınamadı! Namaz vakitleri için konum ve internet açınız</string>
-    <string name="checkLocationAndInternet">internet ve konum bilgilerinizi açıktan sonra tekrar deneyiniz</string>
-    <string name="no_Location">Bu şehir için URL bulunamadı</string>
     <string name="no_permit_location">Konum izni reddedildi</string>
     <string name="suggestion_location_permit">Namaz vakitleri ve diğer duyurular için bildirimleri açmanızı öneriyoruz</string>
     <string name="gunes">Güneş</string>
@@ -52,15 +49,12 @@
     <string name="imsak_vakti">İmsak Vakti</string>
 
     <string name="namaz_vakit_notification_header">Namaz Vakti</string>
-    <string name="imsak_vakit_notification_header">İmsak Vakti</string>
     <string name="gunes_vakit_notification_body">Güneş Doğmasına ## dakika kaldı!</string>
     <string name="ogle_vakit_notification_body">Öğle namazına ## dakika kaldı!</string>
     <string name="ikindi_vakit_notification_body">İkindi namazına ## dakika kaldı!</string>
     <string name="aksam_vakit_notification_body">Akşam namazına ## dakika kaldı!</string>
     <string name="yatsi_vakit_notification_body">Yatsı namazına ## dakika kaldı!</string>
     <string name="imsak_vakit_notification_body">İmsak vaktine ## dakika kaldı!</string>
-    <string name="kerahat_vakit_notification_header">Kerahat Vakti</string>
-    <string name="kerahat_vakit_notification_body">İkindi namazının farzı hariç namaz kılmayınız</string>
     <string name="play">KATIL</string>
     <string name="default_cost_coin">000</string>
     <string name="default_timer">00</string>
@@ -257,7 +251,6 @@
     <string name="basiret" translatable="false">Ebû Hüreyre radıyallahu anh’den rivayet edildiğine göre Resûl-i Ekrem sallallahu aleyhi ve sellem şöyle buyurdu:\n“Mü’min bir yılan deliğinden iki defa ısırılmaz.”</string>
     <string name="basiret_K" translatable="false">Riyâzü’s-Sâlihîn, Hadis No: 1838 (Buhârî, Edeb 83; Müslim Zühd 63. Ayrıca bk. Ebû Dâvûd, Edeb 29; İbni Mâce, Fiten 13)</string>
     <string name="basiret_T" translatable="false">1. Müslüman, her konuda dikkatli ve uyanık olmalıdır. Kendisini aldatmak isteyenlerin oyununa gelmemelidir.\n\n2. Bir defa yanılmış, aldatılmış, oyuna getirilmiş olsa bile, ikinci defa aynı oyuna gelmemelidir</string>
-    <string name="required_locaiton">Konum ayarlarından konumunuzu açınız</string>
     <string name="find_location_label">Konum aranıyor...</string>
     <string name="compassInfo_bottom">Uyarı: Elektronik cihazlar ile yön bulma her zaman doğru sonuç vermeyebilir. Kesin sonuç için yakınınızda bulunan Mescit ve Camileri referans alınız </string>
     <string name="compassInfo_header">1.\tDoğru yön için konum izni ve konum ayarlarınızı açınız. \n2.\tCihazınızın konum bilginizi bulmasını bekleyiniz. \n3.\tKonumunuz bulunduğunda pusula altında il /ilçe /mahalle bilgileri yazacaktır.\n4.\tDoğru konum bilgisi olduğundan emin olun. \n5.\tCihazınızı düz bir zemine yerleştiriniz. \n6.\tKâbe sembolüne göre cihazınızı sağa veya sola çeviriniz. \n7.\tYaklaşık derece aralığına girdiğinizde pusula derecesi yeşil renk olacaktır bu yöne doğru yönelebilirsiniz.</string>
@@ -474,8 +467,6 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="sound_setting">Uygulama Sesleri</string>
     <string name="vakit_sound_setting">Namazda Titreşime Al</string>
     <string name="app_version" translatable="false">1.0.1</string>
-    <string name="prayer_times_updated">Namaz Vakitleri Güncellendi</string>
-    <string name="prayer_times_updated_body">Namaz vakitleri güncellendi. Yeniden kurulum gerekiyor.</string>
     <string name="vakitHerzamanGoster">Bildirimleri Her Zaman Göster</string>
     <string name="local_products_title">Yerli Ürünler</string>
     <string name="local_products_description">Yerli ürünleri keşfedin ve bilinçli bir tüketici olun. Barkod tarayıcı ile ürünlerin yerli olup olmadığını öğrenin.</string>
@@ -485,7 +476,6 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="weather_icon_description" translatable="false">weather label</string>
     <string name="tempatura_default" translatable="false">0°C</string>
     <string name="testYazisiVakit">Vakit Hesaplanıyor</string>
-    <string name="aylik_vakitler">Namaz Takvimi</string>
     <string name="prayer_time_image_desc" translatable="false">Aylik vakit arkaplan resim</string>
     <string name="aylikNamazTakvim">Namaz Takvimi</string>
     <string name="diniTakvim">Dini Günler</string>
@@ -639,7 +629,6 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="share_button_description">Paylaş butonu</string>
     <string name="takvim_local_uyari">Hesaplama otomatik olarak yapılacaktır devam edilsin mi? Uyarı, sistem hesaplamaları da diyanete göre +-1 gün farklılıklar olabilir.</string>
     <string name="yilLabel">Yıl</string>
-    <string name="namazVakitHesaplamaHata">Namaz vakitleri hesaplarken hata oluştu. Konum ve internet ayarlarınızı kontrol edin. Hata devam ederse iletişime geçebilirsiniz.</string>
 
     <string-array name="ezan_sound_options">
         <item>Ezan</item>
@@ -1164,7 +1153,6 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="kerahat_in_progress">KERAHAT VAKTİ İÇİNDESİNİZ</string>
     <string name="prayer_remaining_with_kerahat">%1$s / %2$s</string>
     <string name="widget_next_prayer_label">~%1$s Vaktine~</string>
-    <string name="widget_loading">Yükleniyor...</string>
     <string name="prayer_notification_next">sonra %1$s vakti</string>
     <string name="prayer_notification_hijri">Hicri: %1$s</string>
     <string name="prayer_notification_time">%1$s: %2$s</string>
@@ -1184,4 +1172,9 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
         <item>Zilhicce</item>
     </string-array>
     <string name="widget_description">Namaz vakitleri, kalan süre ve hava durumu</string>
-</resources>
+    <!-- Önceki sürümden şehir taşıma -->
+    <string name="legacy_migration_title">Namaz vakti şehriniz</string>
+    <string name="legacy_migration_message">Önceki sürümde konumunuz %1$s olarak kayıtlı. Namaz vakitleri artık Diyanet\'ten ilçe bazında geliyor.\n\n%2$s (il merkezi) vakitleri indirilsin mi? İlçenizi daha sonra Ayarlar\'dan değiştirebilirsiniz.</string>
+    <string name="legacy_migration_yes">Evet, indir</string>
+    <string name="legacy_migration_other">Başka şehir seç</string>
+    <string name="legacy_migration_failed">Vakitler indirilemedi. Şehrinizi listeden seçebilirsiniz.</string></resources>

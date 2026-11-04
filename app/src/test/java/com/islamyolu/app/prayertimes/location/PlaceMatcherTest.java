@@ -122,6 +122,24 @@ public class PlaceMatcherTest {
         assertNull(match.state);
     }
 
+    // --- Eski sürümden taşıma: kayıtlı il adı → il merkezi ---
+
+    @Test
+    public void eskiIlAdi_ilMerkezineEslenir() {
+        PlaceMatcher.PlaceMatch adana = PlaceMatcher.matchLegacyProvince("Adana", TURKEY);
+        assertEquals(9146, adana.city.getId());
+        assertEquals(500, adana.state.getId());
+        // Türkçe karakterli il adı
+        assertEquals(9541, PlaceMatcher.matchLegacyProvince("İstanbul", TURKEY).city.getId());
+    }
+
+    @Test
+    public void eskiIlAdi_eslesmezseNull() {
+        assertNull(PlaceMatcher.matchLegacyProvince("Atlantis", TURKEY));
+        assertNull(PlaceMatcher.matchLegacyProvince(null, TURKEY));
+        assertNull(PlaceMatcher.matchLegacyProvince("", TURKEY));
+    }
+
     private static CountriesResponse.Country country(String geocoderName) {
         CountriesResponse.Country c = PlaceMatcher.matchCountry(new AddressParts(geocoderName, null, null, null), COUNTRIES);
         assertNotNull(geocoderName, c);

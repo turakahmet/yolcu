@@ -61,7 +61,6 @@
         <receiver
             android:name=".VakitApi.AlarmReceiver"
             android:exported="false" />
-        <receiver android:name=".VakitApi.NotificationCancelReceiver" />
         <receiver android:name=".VakitApi.DailyPrayerWorkerReceiver" />
 
         <activity
@@ -131,11 +130,7 @@
         <receiver
             android:name=".receiver.PrayerSoundReceiver"
             android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
+            android:exported="false" />
 
         <service
             android:name=".Service.PrayerSoundControlService"

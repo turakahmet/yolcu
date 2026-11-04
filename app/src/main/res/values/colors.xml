@@ -45,13 +45,6 @@
     <color name="widget_highlight_color">#4CAF50</color>
     <color name="widget_border">#EEEEEE</color>
     <color name="widget_border_night">#424242</color>
-    <!-- Eklenecek yeni renkler -->
-    <color name="prayer_imsak_bg">#1A237E</color>
-    <color name="prayer_gunes_bg">#E65100</color>
-    <color name="prayer_ogle_bg">#1B5E20</color>
-    <color name="prayer_ikindi_bg">#4A148C</color>
-    <color name="prayer_aksam_bg">#3E2723</color>
-    <color name="prayer_yatsi_bg">#263238</color>
 
     <color name="current_prayer_widget">#212121</color>
     <color name="prayer_next_time_wigdet">#C85555</color>

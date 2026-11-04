@@ -16,9 +16,6 @@
     <string name="menu_basari">Badges</string>
     <string name="empty_text">-</string>
     <string name="no_Internet">Check your internet connection</string>
-    <string name="konumMevcutDegil">Latest location information is not available, location updates are being initiated…</string>
-    <string name="checkLocationAndInternet">Try again after clearing your internet and location information.</string>
-    <string name="no_Location">No URL found for this city</string>
     <string name="no_permit_location">Location permission denied</string>
     <string name="suggestion_location_permit">We recommend that you turn on notifications for prayer times and other announcements.</string>
     <string name="imsak">Fajr</string>
@@ -50,15 +47,12 @@
     <string name="yatsi_namazi">Isha Prayer</string>
     <string name="imsak_vakti">Fajr Time</string>
     <string name="namaz_vakit_notification_header">Prayer Time</string>
-    <string name="imsak_vakit_notification_header">Fajr Time</string>
     <string name="gunes_vakit_notification_body">10 minutes until sunrise!</string>
     <string name="ogle_vakit_notification_body">10 minutes left until Dhuhr!</string>
     <string name="ikindi_vakit_notification_body">10 minutes left until Asr!</string>
     <string name="aksam_vakit_notification_body">10 minutes left until Maghrib!</string>
     <string name="yatsi_vakit_notification_body">10 minutes left until Isha!</string>
     <string name="imsak_vakit_notification_body">10 minutes left until Fajr time!</string>
-    <string name="kerahat_vakit_notification_header">Time of Karahat</string>
-    <string name="kerahat_vakit_notification_body">Do not pray except for the obligatory Asr prayer</string>
     <string name="play">Play</string>
     <string name="default_cost_coin">000</string>
     <string name="default_timer">00</string>
@@ -91,7 +85,6 @@
     <string name="testYazisi">Lorem Ipsum is simply</string>
     <string name="kirkhadis">Let\'s Learn 40 Hadiths</string>
     <string name="yetersiz_kaynak_label">You don\'t have enough resources!  You can earn gold by answering questions correctly</string>
-    <string name="required_locaiton">Turn on your location from location settings</string>
     <string name="find_location_label">Searching for location...</string>
     <string name="compassInfo_bottom">Warning: Direction finding with electronic devices may not always give accurate results. For accurate results, please refer to the Masjids and Mosques near you.</string>
     <string name="compassInfo_header">"1. Turn on your location permission and location settings for correct direction.\n2. Wait for your device to find your location information.\n3. When your location is found, city / district / neighborhood information will be written under the compass.\n4. Make sure you have accurate location information.\n5. Place your device on a flat surface.\n6. Turn your device to the right or left according to the Kaaba symbol.\n7.When you enter the approximate degree range, the compass degree will turn green and you can head in this direction."</string>
@@ -107,15 +100,12 @@
     <string name="kerahat_vakti">Show Kerahat Times</string>
     <string name="sound_setting">App Sounds</string>
     <string name="vakit_sound_setting">Vibrate During Prayer</string>
-    <string name="prayer_times_updated">Updated Prayer Times</string>
-    <string name="prayer_times_updated_body">Prayer times updated. Reinstallation required.</string>
     <string name="vakitHerzamanGoster">Always Show Notifications</string>
     <string name="local_products_title">Local Products</string>
     <string name="local_products_description">Discover local products and be a conscious consumer. Find out if the products are local with a barcode scanner.</string>
     <string name="local_products_image">Local Products Icon</string>
     <string name="open_local_products_app">Open the App</string>
     <string name="testYazisiVakit">Calculating Time</string>
-    <string name="aylik_vakitler">Prayer Calendar</string>
     <string name="aylikNamazTakvim">Prayer Calendar</string>
     <string name="diniTakvim">Religious Days</string>
     <string name="islamicDays">Religious Days</string>
@@ -157,7 +147,6 @@
     <string name="takvim_local_uyari">The calculation will be done automatically. Should I continue? Warning: system calculations may differ by +- 1 day depending on the Directorate of Religious Affairs.</string>
     <string name="yilLabel">Year</string>
     <string name="menu_anasayfa">Home</string>
-    <string name="namazVakitHesaplamaHata">An error occurred while calculating prayer times. Please check your location and internet settings. If the error persists, please contact us.</string>
     <!-- Diyanet prayer times city selection -->
     <string name="city_selection_title">Prayer Times City</string>
     <string name="city_selection_step_country">Select your country</string>
@@ -211,7 +200,6 @@
     <string name="kerahat_in_progress">YOU ARE IN A KERAHAT (DISLIKED) TIME</string>
     <string name="prayer_remaining_with_kerahat">%1$s / %2$s</string>
     <string name="widget_next_prayer_label">~Until %1$s~</string>
-    <string name="widget_loading">Loading...</string>
     <string name="prayer_notification_next">until %1$s</string>
     <string name="prayer_notification_hijri">Hijri: %1$s</string>
     <string name="prayer_notification_time">%1$s: %2$s</string>
@@ -231,4 +219,9 @@
         <item>Dhu al-Hijjah</item>
     </string-array>
     <string name="widget_description">Prayer times, time remaining and weather</string>
-</resources>
+    <!-- City migration from the previous version -->
+    <string name="legacy_migration_title">Your prayer times city</string>
+    <string name="legacy_migration_message">Your location was saved as %1$s in the previous version. Prayer times now come from Diyanet for each district.\n\nDownload prayer times for %2$s (provincial center)? You can change your district later in Settings.</string>
+    <string name="legacy_migration_yes">Yes, download</string>
+    <string name="legacy_migration_other">Choose another city</string>
+    <string name="legacy_migration_failed">Prayer times could not be downloaded. You can choose your city from the list.</string></resources>
