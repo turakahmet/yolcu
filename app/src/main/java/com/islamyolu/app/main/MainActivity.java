@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -39,17 +37,14 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.Priority;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
 import com.islamyolu.app.R;
+import com.islamyolu.app.Service.AddressResolver;
 import com.islamyolu.app.Service.BadgeService;
 import com.islamyolu.app.Service.GoldService;
+import com.islamyolu.app.Service.LocationAccess;
+import com.islamyolu.app.Service.LocationService;
 import com.islamyolu.app.Service.SharedPrefsHelperService;
 import com.islamyolu.app.Service.SoundService;
 import com.islamyolu.app.VakitApi.City;
@@ -61,8 +56,6 @@ import com.islamyolu.app.databinding.ActivityMainBinding;
 import com.islamyolu.app.monthlyCalender.MonthlyPrayerActivity;
 import com.islamyolu.app.profile.Avatar;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -73,10 +66,20 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
     private TextView imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, locationTextView, usernameTextView, kalanSureTextView, toolbarKalanSureLabel, total_user_gold, total_rozet;
     private LinearLayout imsakTimeLayout, gunesTimeLayout, ogleTimeLayout, ikindiTimeLayout, aksamTimeLayout, yatsiTimeLayout, locationRefreshLayout, remain_time_layout;
 
-    private FusedLocationProviderClient fusedLocationClient;
-    private static final int REQUEST_LOCATION_PERMISSION = 1;
-    private LocationCallback locationCallback;
-    private boolean isLocationFetching = false; // Konum alınıp alınmadığını kontrol etmek için
+    /** İzin, konum açık/kapalı ve konum alma merkezi LocationAccess'te */
+    private final LocationAccess locationAccess = LocationAccess.register(this, new LocationAccess.Options(),
+            new LocationAccess.Callback() {
+                @Override
+                public void onLocation(@NonNull Location location) {
+                    saveLastKnownLocation(location);
+                    handleNewLocation(location);
+                }
+
+                @Override
+                public void onUnavailable(@NonNull LocationService.Unavailable reason) {
+                    onLocationUnavailable(reason);
+                }
+            });
 
     // SharedPreferences için tanımlar
     private SharedPreferences locationPrefs;
@@ -110,9 +113,6 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         userPrefs = getSharedPreferences(USER_PREFS, Context.MODE_PRIVATE);
         sharedPrefsHelperService.defaultSettingPreference();
 
-        // FusedLocationProviderClient başlatma
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
         initializeViews();
         initializeServices();
         initializeHeaderView();
@@ -120,15 +120,8 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
 //        checkInternetConnection();
 
         // Refresh butonuna tıklama işlemi
-        refreshButton.setOnClickListener(v -> {
-            // Konum bilgilerini yenilemek için
-            try {
-                getLastLocation();
-            } catch (Exception e) {
-                e.printStackTrace(); // Hata ayıklamak için
-                // Kullanıcıya bir hata mesajı gösterebilirsiniz
-            }
-        });
+        // Kullanıcı istedi: konum kapalıysa "Konumu aç" penceresi gösterilir
+        refreshButton.setOnClickListener(v -> locationAccess.requestSingleLocation(true));
         // Geri tuşu davranışını ayarla
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -138,14 +131,9 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         });
 
 
-        // Konum izni kontrolü
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // İzin yoksa izin iste
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
-        } else {
-            // İzin varsa konumu al
-            getLastLocation();
+        // Açılışta: izin yoksa istenir; konum kapalıysa pencere gösterilmez, son kayıtlı konum kullanılır
+        if (savedInstanceState == null) {
+            locationAccess.requestSingleLocation(false);
         }
 
         remain_time_layout.setOnClickListener(v -> {
@@ -285,113 +273,44 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
     }
 
 
-    // Son konumu al veya SharedPreferences'dan yükle
-    private void getLastLocation() {
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // İzin yoksa izin iste
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+    /** Konum alınamazsa son kayıtlı konum kullanılır; o da yoksa yenile alanı gösterilir. */
+    private void onLocationUnavailable(LocationService.Unavailable reason) {
+        if (reason == LocationService.Unavailable.PERMISSION_DENIED) {
+            locationRefreshLayout.setVisibility(View.VISIBLE);
+            Toast.makeText(this, R.string.no_permit_location, Toast.LENGTH_SHORT).show();
             return;
         }
-
-        // Son bilinen konumu al
-        fusedLocationClient.getLastLocation().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                Location locationResult = task.getResult();
-                saveLastKnownLocation(locationResult); // Konumu kaydet
-                handleNewLocation(locationResult);
-            } else {
-                // Konum alınamadı, SharedPreferences'dan son konumu al
-                Location savedLocation = loadLastKnownLocation();
-                if (savedLocation != null) {
-                    handleNewLocation(savedLocation);
-                } else {
-                    // Son konum yok, konum güncellemelerini başlat
-                    locationRefreshLayout.setVisibility(View.VISIBLE);
-                    Toast.makeText(MainActivity.this, R.string.konumMevcutDegil, Toast.LENGTH_SHORT).show();
-                    startLocationUpdates();
-                }
-            }
-        });
-    }
-
-    // Konum güncellemelerini başlat
-    private void startLocationUpdates() {
-        if (isLocationFetching) return; // Zaten konum alınıyorsa tekrar başlatma
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // İzin yoksa izin iste
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
-            return;
+        Location savedLocation = loadLastKnownLocation();
+        if (savedLocation != null) {
+            handleNewLocation(savedLocation);
+        } else {
+            locationRefreshLayout.setVisibility(View.VISIBLE);
+            Toast.makeText(this, R.string.konumMevcutDegil, Toast.LENGTH_SHORT).show();
         }
-
-        isLocationFetching = true;
-
-        // LocationRequest oluşturma (yeni API ile)
-        LocationRequest locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
-                .setMinUpdateIntervalMillis(5000) // En fazla 5 saniye aralıklarla güncelleme
-                .build();
-
-        // Konum güncelleme geri çağrısı
-        locationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(@NonNull LocationResult locationResult) {
-                for (Location location : locationResult.getLocations()) {
-                    saveLastKnownLocation(location); // Konumu kaydet
-                    handleNewLocation(location);
-                    // Konum bilgisi alındıktan sonra güncellemeleri durdur
-                    stopLocationUpdates();
-                }
-            }
-        };
-
-        // Konum güncellemelerini başlat
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
     }
 
-    // Konum güncellemelerini durdur
-    private void stopLocationUpdates() {
-        if (!isLocationFetching) return;
-
-        fusedLocationClient.removeLocationUpdates(locationCallback);
-        isLocationFetching = false;
-    }
-
-    // Yeni konumu işleme
+    // Yeni konumu işleme (il adı, mevcut il listesiyle eşleşsin diye Türkçe çözümlenir)
     private void handleNewLocation(Location location) {
         requestNotificationPermission();
 
-        new Thread(() -> {
-            try {
-                Geocoder geocoder = new Geocoder(this, new Locale("tr"));
-                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-
-                if (addresses != null && !addresses.isEmpty()) {
-                    Address address = addresses.get(0);
-                    String city = address.getAdminArea();
-
-                    if (city != null && !city.isEmpty()) {
-                        runOnUiThread(() -> {
-                            // UI güncelle
-                            locationTextView.setText(city);
-
-                            // Şehir bilgisini kaydet
-                            locationPrefs.edit().putString("city_name", city).apply();
-                            Log.d("MainActivity", "Şehir bilgisi kaydedildi: " + city);
-
-                            // Namaz vakitlerini al ve alarmları kur
-                            fetchPrayerTimesNoAPI(city);
-                        });
+        new AddressResolver(this).resolveAsync(location.getLatitude(), location.getLongitude(),
+                Locale.forLanguageTag("tr"), address -> {
+                    if (isFinishing() || isDestroyed() || address == null) {
+                        return;
                     }
-                }
-            } catch (IOException e) {
-                Log.e("MainActivity", "Geocoder hatası: " + e.getMessage());
-            }
-        }).start();
+                    String city = address.getAdminArea();
+                    if (city == null || city.isEmpty()) {
+                        return;
+                    }
+                    locationTextView.setText(city);
+
+                    // Şehir bilgisini kaydet
+                    locationPrefs.edit().putString("city_name", city).apply();
+                    Log.d("MainActivity", "Şehir bilgisi kaydedildi: " + city);
+
+                    // Namaz vakitlerini al ve alarmları kur
+                    fetchPrayerTimesNoAPI(city);
+                });
     }
 
     private void fetchPrayerTimesNoAPI(String city) {
@@ -452,14 +371,6 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_LOCATION_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLastLocation();
-            } else {
-                locationRefreshLayout.setVisibility(View.VISIBLE);
-                Toast.makeText(this, R.string.no_permit_location, Toast.LENGTH_SHORT).show();
-            }
-        }
         if (requestCode == REQUEST_NOTIFICATION_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Kullanıcı izni verdi, bildirimleri başlatabilirsiniz

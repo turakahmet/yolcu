@@ -520,6 +520,31 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/locationInfo" />
 
+            <!-- Diyanet vakitleri için şehir seçimi (Ülke → İl → İlçe); yukarıdaki konum akışından bağımsız -->
+            <TextView
+                android:id="@+id/prayerCityInfo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="5dp"
+                android:text="@string/prayer_city_not_selected"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/settingLocationButton" />
+
+            <Button
+                android:id="@+id/selectPrayerCityButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/prayer_city_select_button"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/prayerCityInfo" />
+
 
             <!--______-->
 
@@ -545,7 +570,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/setting_timer_image"
-                app:layout_constraintTop_toBottomOf="@id/settingLocationButton" />
+                app:layout_constraintTop_toBottomOf="@id/selectPrayerCityButton" />
 
             <!-- çizgi -->
             <View

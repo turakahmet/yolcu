@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,7 +28,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.islamyolu.app.R;
-import com.islamyolu.app.Service.LocationHelper;
+import com.islamyolu.app.Service.AddressResolver;
+import com.islamyolu.app.Service.LocationAccess;
+import com.islamyolu.app.Service.LocationService;
 import com.islamyolu.app.Service.PrayerNotificationService;
 import com.islamyolu.app.Service.SharedPrefsHelperService;
 import com.islamyolu.app.VakitApi.AlarmReceiver;
@@ -38,10 +41,13 @@ import com.islamyolu.app.VakitApi.VakitNoApi;
 import com.islamyolu.app.feedback.BilgilendirmeActivity;
 import com.islamyolu.app.feedback.FeedbackActivity;
 import com.islamyolu.app.feedback.PrivacyActivity;
+import com.islamyolu.app.prayertimes.PrayerCitySelection;
+import com.islamyolu.app.prayertimes.ui.CitySelectionActivity;
 import com.islamyolu.app.receiver.PrayerSoundReceiver;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -50,9 +56,9 @@ public class SettingsActivity extends AppCompatActivity {
     private SharedPrefsHelperService sharedPrefsHelperService;
     private RadioGroup radioGroupVakit;
     private Spinner spinnerEzanSound, spinnerEzanDua;
-    private Button contactButton, privacyButton, bilgilendirmeButton, settingLocationButton;
+    private Button contactButton, privacyButton, bilgilendirmeButton, settingLocationButton, selectPrayerCityButton;
     private boolean isUserAction = true; // Kullanıcı aksiyonlarını takip etmek için flag
-    private TextView locationInfo;
+    private TextView locationInfo, prayerCityInfo;
     private static final String TAG = "SettingsActivity";
 
 
@@ -69,6 +75,20 @@ public class SettingsActivity extends AppCompatActivity {
     }};
 
     private static final int REQUEST_NOTIFICATION_PERMISSION = 123;
+
+    /** İzin, konum açık/kapalı ve konum alma merkezi LocationAccess'te */
+    private final LocationAccess locationAccess = LocationAccess.register(this, new LocationAccess.Options(),
+            new LocationAccess.Callback() {
+                @Override
+                public void onLocation(@NonNull Location location) {
+                    onSettingsLocation(location);
+                }
+
+                @Override
+                public void onUnavailable(@NonNull LocationService.Unavailable reason) {
+                    showCityNotFound();
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +127,10 @@ public class SettingsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        // Adım adım seçim açılır; konum yalnızca ekrandaki "Mevcut konumumu bul" ile aranır
+        selectPrayerCityButton.setOnClickListener(v ->
+                startActivity(new Intent(this, CitySelectionActivity.class)));
+
         settingLocationButton.setOnClickListener(v -> {
             locationInfo.setText(getString(R.string.loadingProcess));
             settingLocationButton.setEnabled(false);
@@ -116,28 +140,45 @@ public class SettingsActivity extends AppCompatActivity {
                 settingLocationButton.setEnabled(true);
             }, 5000);
 
-            LocationHelper.getCurrentCityName(this, cityName -> {
-                // Burada artık elinde şehir adı var
-                // Şehir bilgisini kaydet
-                if (City.fromCityName(cityName) == null) {
-                    locationInfo.setText(getString(R.string.sehirBulunamadi));
-                    settingLocationButton.setEnabled(true);
-                    return;
-                }
-                sharedPrefsHelperService.setCityNameFromPreferences(cityName);
-                VakitNoApi vakitNoApi = new VakitNoApi();
-                NamazVakiti namazVakiti = vakitNoApi.localPrayerTimes(Objects.requireNonNull(City.fromCityName(cityName)).getLatitude(), Objects.requireNonNull(City.fromCityName(cityName)).getLongitude());
-                setupPrayerAlarms(namazVakiti);
-                locationInfo.setText(getString(R.string.locaitonInfoText, cityName));
-                settingLocationButton.setEnabled(true);
-                restartApp();
-
-                // örneğin TextView'e yaz:
-                // yourTextView.setText("Bulunduğunuz şehir: " + cityName);
-            });
-
-
+            locationAccess.requestSingleLocation(true);
         });
+    }
+
+    /** "Güncelle": konumdan il adını bulur (mevcut il listesiyle eşleşsin diye Türkçe). */
+    private void onSettingsLocation(Location location) {
+        new AddressResolver(this).resolveAsync(location.getLatitude(), location.getLongitude(),
+                Locale.forLanguageTag("tr"), address -> {
+                    if (isFinishing() || isDestroyed()) {
+                        return;
+                    }
+                    String cityName = address != null ? address.getAdminArea() : null;
+                    if (cityName == null || City.fromCityName(cityName) == null) {
+                        showCityNotFound();
+                        return;
+                    }
+                    sharedPrefsHelperService.setCityNameFromPreferences(cityName);
+                    VakitNoApi vakitNoApi = new VakitNoApi();
+                    NamazVakiti namazVakiti = vakitNoApi.localPrayerTimes(Objects.requireNonNull(City.fromCityName(cityName)).getLatitude(), Objects.requireNonNull(City.fromCityName(cityName)).getLongitude());
+                    setupPrayerAlarms(namazVakiti);
+                    locationInfo.setText(getString(R.string.locaitonInfoText, cityName));
+                    settingLocationButton.setEnabled(true);
+                    restartApp();
+                });
+    }
+
+    private void showCityNotFound() {
+        locationInfo.setText(getString(R.string.sehirBulunamadi));
+        settingLocationButton.setEnabled(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Şehir seçim ekranından dönüldüğünde güncel seçimi göster
+        PrayerCitySelection selection = sharedPrefsHelperService.getPrayerCitySelection();
+        prayerCityInfo.setText(selection != null
+                ? getString(R.string.prayer_city_current, selection.getDisplayName())
+                : getString(R.string.prayer_city_not_selected));
     }
 
     public void restartApp() {
@@ -256,6 +297,8 @@ public class SettingsActivity extends AppCompatActivity {
         bilgilendirmeButton = findViewById(R.id.bilgilendirmeButton);
         settingLocationButton = findViewById(R.id.settingLocationButton);
         locationInfo = findViewById(R.id.locationInfo);
+        prayerCityInfo = findViewById(R.id.prayerCityInfo);
+        selectPrayerCityButton = findViewById(R.id.selectPrayerCityButton);
         locationInfo.setText(getString(R.string.locaitonInfoText, sharedPrefsHelperService.getCityNameFromPreferences()));
 
     }

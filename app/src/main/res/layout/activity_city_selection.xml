@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Diyanet namaz vakti şehri seçimi: 1 Ülke → 2 İl/Eyalet → 3 İlçe/Şehir.
+     Kenar boşluğu (city_selection_side_margin) ve liste sütun sayısı (city_selection_columns)
+     ekran genişliğine göre değişir: telefon / tablet-katlanabilir / çok geniş ekran. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context=".prayertimes.ui.CitySelectionActivity">
+
+    <!-- Adım göstergesi; tamamlanan adıma dokunulunca o adıma dönülür -->
+    <LinearLayout
+        android:id="@+id/steps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/city_selection_side_margin"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="@dimen/city_selection_side_margin"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <include
+            android:id="@+id/stepCountry"
+            layout="@layout/item_selection_step"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <include
+            android:id="@+id/stepState"
+            layout="@layout/item_selection_step"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <include
+            android:id="@+id/stepCity"
+            layout="@layout/item_selection_step"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/stepTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/city_selection_side_margin"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="@dimen/city_selection_side_margin"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        tools:text="@string/city_selection_step_country" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/searchLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/city_selection_side_margin"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/city_selection_side_margin"
+        android:hint="@string/city_selection_search_hint"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusTopStart="12dp"
+        app:endIconMode="clear_text"
+        app:startIconDrawable="@android:drawable/ic_menu_search">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionSearch"
+            android:inputType="textCapCharacters|textNoSuggestions"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/useLocationButton"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/city_selection_side_margin"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/city_selection_side_margin"
+        android:minHeight="48dp"
+        android:text="@string/city_selection_use_location"
+        android:visibility="gone"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/baseline_location_on_24"
+        app:iconGravity="textStart"
+        tools:visibility="visible" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1">
+
+        <!-- Kartların kendi 4dp boşluğu olduğu için yan dolgu 4dp eksik verilir -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/placeList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingStart="@dimen/city_selection_list_padding"
+            android:paddingEnd="@dimen/city_selection_list_padding"
+            android:paddingBottom="16dp"
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbars="vertical" />
+
+        <TextView
+            android:id="@+id/emptyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="24dp"
+            android:text="@string/city_selection_empty_search"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/messagePanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="@dimen/city_selection_side_margin"
+            android:layout_marginEnd="@dimen/city_selection_side_margin"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/messageText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:accessibilityLiveRegion="polite"
+                    android:gravity="center"
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    tools:text="@string/city_selection_no_internet" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/retryButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/city_selection_retry"
+                    android:visibility="gone"
+                    app:cornerRadius="12dp"
+                    tools:visibility="visible" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
+</LinearLayout>

@@ -1,12 +1,17 @@
 package com.islamyolu.app.prayertimes;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -170,7 +175,34 @@ public class PrayerTimesValidatorTest {
                 PrayerTimesValidator.Error.EXPIRED);
     }
 
+    @Test
+    public void gercekBotDosyasiGecerlidir() throws Exception {
+        // GitHub Pages'ten alınmış Adana dosyası (02.11.2026 üretimi); bot biçimi değişirse bu test uyarır
+        String json;
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("times_9146.json")) {
+            assertNotNull("Test kaynağı bulunamadı", in);
+            json = new String(readAll(in), StandardCharsets.UTF_8);
+        }
+        CityTimesDto file = parser.parse(json);
+        PrayerTimesValidator.Result result = validator.validate(file, CITY_ID, LocalDate.of(2026, 11, 4));
+
+        assertTrue(result.toString(), result.isValid());
+        assertEquals("TÜRKİYE", file.getCountry());
+        assertTrue(file.getDays().size() >= 365);
+        assertEquals(180, file.getDays().get(0).getGmtOffsetMinutes());
+    }
+
     // --- Yardımcılar ---
+
+    private static byte[] readAll(InputStream in) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] buffer = new byte[8192];
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
+        }
+        return out.toByteArray();
+    }
 
     private PrayerTimesValidator.Result validate(String json) throws PrayerTimesFormatException {
         return validator.validate(parser.parse(json), CITY_ID, TODAY);

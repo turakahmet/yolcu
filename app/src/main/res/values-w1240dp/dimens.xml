@@ -1,3 +1,6 @@
 <resources>
     <dimen name="fab_margin">200dp</dimen>
+    <!-- Şehir seçimi kenar boşluğu (Çok geniş ekran: içerik ortada toplanır) -->
+    <dimen name="city_selection_side_margin">160dp</dimen>
+    <dimen name="city_selection_list_padding">156dp</dimen>
 </resources>

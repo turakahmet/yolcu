@@ -260,10 +260,7 @@
     <string name="required_locaiton">Konum ayarlarından konumunuzu açınız</string>
     <string name="find_location_label">Konum aranıyor...</string>
     <string name="compassInfo_bottom">Uyarı: Elektronik cihazlar ile yön bulma her zaman doğru sonuç vermeyebilir. Kesin sonuç için yakınınızda bulunan Mescit ve Camileri referans alınız </string>
-    <string name="location_fail">"Konum alınırken hata oluştur hata mesaj: "</string>
     <string name="compassInfo_header">1.\tDoğru yön için konum izni ve konum ayarlarınızı açınız. \n2.\tCihazınızın konum bilginizi bulmasını bekleyiniz. \n3.\tKonumunuz bulunduğunda pusula altında il /ilçe /mahalle bilgileri yazacaktır.\n4.\tDoğru konum bilgisi olduğundan emin olun. \n5.\tCihazınızı düz bir zemine yerleştiriniz. \n6.\tKâbe sembolüne göre cihazınızı sağa veya sola çeviriniz. \n7.\tYaklaşık derece aralığına girdiğinizde pusula derecesi yeşil renk olacaktır bu yöne doğru yönelebilirsiniz.</string>
-    <string name="location_service_closed_header">Konum Servisi Kapalı</string>
-    <string name="location_service_closed_message">Konum servisini açmak için ayarlara gitmek ister misiniz?</string>
     <string name="location_permission_required_header">Konum İzni Gerekli</string>
     <string name="location_permission_required_message">Konum servisini kullanabilmek için konum izni vermeniz gerekiyor.</string>
     <string name="dovizTuru">Döviz Türü</string>
@@ -1114,4 +1111,44 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
         <item>Aybüke#ay ışığı,ay gibi parlak,ay yüzlü,ay benizli,akıllı zeki.</item>
         <item>Aybike#ay ışığı,ay gibi parlak,ay yüzlü,ay benizli,akıllı zeki.</item>
     </string-array>
+    <!-- Diyanet namaz vakti şehri seçimi -->
+    <string name="city_selection_title">Namaz Vakti Şehri</string>
+    <string name="city_selection_step_country">Ülkenizi seçin</string>
+    <string name="city_selection_step_label_country">Ülke</string>
+    <string name="city_selection_step_label_state">İl / Eyalet</string>
+    <string name="city_selection_step_label_city">İlçe / Şehir</string>
+    <string name="city_selection_step_a11y">Adım %1$d / 3: %2$s</string>
+    <string name="city_selection_step_state">İl / eyalet seçin</string>
+    <string name="city_selection_step_city">İlçe / şehir seçin</string>
+    <string name="city_selection_search_hint">Ara</string>
+    <string name="city_selection_empty_search">Sonuç bulunamadı</string>
+    <string name="city_selection_retry">Tekrar dene</string>
+    <string name="city_selection_no_internet">Şehir listesini ve namaz vakitlerini indirmek için internet bağlantısı gerekiyor. Bağlantınızı açıp tekrar deneyin. İndirme bir kez yapılır; sonrasında vakitler internetsiz çalışır.</string>
+    <string name="city_selection_no_data_for_city">%1$s için Diyanet namaz vakti yayımlamıyor. Aynı il / eyaletteki başka bir şehri seçebilirsiniz.</string>
+    <string name="city_selection_unavailable_badge">Diyanet vakit yayımlamıyor</string>
+    <string name="city_selection_load_error">Liste yüklenemedi. Lütfen tekrar deneyin.</string>
+    <string name="city_selection_download_error">Namaz vakitleri şu an indirilemedi. Mevcut verileriniz korunuyor; lütfen daha sonra tekrar deneyin.</string>
+    <string name="city_selection_downloading">%1$s için namaz vakitleri indiriliyor…</string>
+    <string name="city_selection_success">%1$s için 1 yıllık namaz vakitleri indirildi.</string>
+    <string name="prayer_city_select_button">Namaz vakti şehrini seç (Diyanet)</string>
+    <string name="prayer_city_current">Diyanet vakit şehri: %1$s</string>
+    <string name="prayer_city_not_selected">Diyanet vakit şehri henüz seçilmedi.</string>
+    <string name="city_selection_use_location">Mevcut konumumu bul</string>
+    <string name="city_selection_locating">Konumunuz bulunuyor…</string>
+    <string name="city_selection_location_denied">Konum izni verilmedi. Şehrinizi listeden seçebilirsiniz.</string>
+    <string name="city_selection_location_unavailable">Konumunuz şu an belirlenemedi. Açık bir alanda "Mevcut konumumu bul" ile tekrar deneyebilir ya da şehrinizi listeden seçebilirsiniz.</string>
+    <string name="city_selection_location_no_match">Konumunuza uygun şehir bulunamadı. Lütfen listeden seçin.</string>
+    <string name="city_selection_location_pick_state">Konumunuza göre ülke: %1$s. Lütfen il / eyaletinizi seçin.</string>
+    <string name="city_selection_location_pick_city">Konumunuza göre il / eyalet: %1$s. İlçenizi seçin; ilçeniz listede yoksa il merkezini (%1$s) seçin.</string>
+    <string name="city_selection_location_confirm_title">Konumunuza göre şehriniz</string>
+    <string name="city_selection_location_confirm_message">%1$s için namaz vakitleri indirilsin mi?</string>
+    <string name="city_selection_location_confirm_yes">Evet, indir</string>
+    <string name="city_selection_location_confirm_no">Listeden seçeceğim</string>
+    <string name="location_off_title">Konum kapalı</string>
+    <string name="city_selection_location_off_message">Şehrinizi otomatik bulabilmemiz için cihazınızın konumunu açın. Açtıktan sonra geri dönün; arama kendiliğinden başlar.</string>
+    <string name="location_open_settings">Konumu aç</string>
+    <string name="location_off_message">Bu özellik için cihazınızın konumunu açın. Açtıktan sonra geri dönün; işlem kendiliğinden devam eder.</string>
+    <string name="location_off_decline">Vazgeç</string>
+    <string name="city_selection_location_off_list">Konum kapalı. Şehrinizi listeden seçebilirsiniz.</string>
+    <string name="location_no_fix">Konumunuz şu an belirlenemedi. Açık bir alanda tekrar deneyin.</string>
 </resources>

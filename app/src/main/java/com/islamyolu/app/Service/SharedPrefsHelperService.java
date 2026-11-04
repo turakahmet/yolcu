@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.islamyolu.app.prayertimes.PrayerCitySelection;
+
 public class SharedPrefsHelperService {
 
     private static final String TAG = "SharedPrefsHelper";
@@ -113,5 +115,43 @@ public class SharedPrefsHelperService {
 
     public void setCityNameFromPreferences(String cityName) {
         sharedPreferences.edit().putString("city_name", cityName).apply();
+    }
+
+    // --- Diyanet vakitleri için seçili şehir (LOCATION_PREFS; eski "city_name" akışından bağımsız) ---
+
+    private static final String KEY_PRAYER_CITY_ID = "prayer_city_id";
+    private static final String KEY_PRAYER_CITY_NAME = "prayer_city_name";
+    private static final String KEY_PRAYER_STATE_ID = "prayer_state_id";
+    private static final String KEY_PRAYER_STATE_NAME = "prayer_state_name";
+    private static final String KEY_PRAYER_COUNTRY_ID = "prayer_country_id";
+    private static final String KEY_PRAYER_COUNTRY_NAME = "prayer_country_name";
+    private static final int NO_ID = -1;
+
+    public void savePrayerCitySelection(PrayerCitySelection selection) {
+        locationPreferences().edit()
+                .putInt(KEY_PRAYER_CITY_ID, selection.getCityId())
+                .putString(KEY_PRAYER_CITY_NAME, selection.getCityName())
+                .putInt(KEY_PRAYER_STATE_ID, selection.getStateId())
+                .putString(KEY_PRAYER_STATE_NAME, selection.getStateName())
+                .putInt(KEY_PRAYER_COUNTRY_ID, selection.getCountryId())
+                .putString(KEY_PRAYER_COUNTRY_NAME, selection.getCountryName())
+                .apply();
+    }
+
+    /** Seçim yapılmamışsa null. */
+    public PrayerCitySelection getPrayerCitySelection() {
+        SharedPreferences prefs = locationPreferences();
+        int cityId = prefs.getInt(KEY_PRAYER_CITY_ID, NO_ID);
+        String cityName = prefs.getString(KEY_PRAYER_CITY_NAME, null);
+        if (cityId == NO_ID || cityName == null) {
+            return null;
+        }
+        return new PrayerCitySelection(cityId, cityName,
+                prefs.getInt(KEY_PRAYER_STATE_ID, NO_ID), prefs.getString(KEY_PRAYER_STATE_NAME, null),
+                prefs.getInt(KEY_PRAYER_COUNTRY_ID, NO_ID), prefs.getString(KEY_PRAYER_COUNTRY_NAME, null));
+    }
+
+    private SharedPreferences locationPreferences() {
+        return context.getSharedPreferences(LOCATION_PREFS, Context.MODE_PRIVATE);
     }
 }

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
@@ -12,8 +11,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Address;
+import android.location.Location;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +30,12 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.islamyolu.app.R;
+import com.islamyolu.app.Service.AddressResolver;
+import com.islamyolu.app.Service.LocationAccess;
 import com.islamyolu.app.Service.LocationService;
 import com.islamyolu.app.Service.SoundService;
 
+import java.util.Locale;
 import java.util.Objects;
 
 public class QiblaCompassFragment extends Fragment implements SensorEventListener {
@@ -59,7 +61,6 @@ public class QiblaCompassFragment extends Fragment implements SensorEventListene
     private Animation animation;
     private float[] mGravity = new float[3];
     private float[] mGeomagnetic = new float[3];
-    private LocationService locationService;
     private SoundService soundService;
     private Address addressDetail;
     private ProgressBar loadingLocationCompass;
@@ -67,6 +68,23 @@ public class QiblaCompassFragment extends Fragment implements SensorEventListene
     private Button compassInfoButton;
     private Dialog mDialog;
     private boolean locationCheckDone = false;
+
+    /** Kıble için hassas konum; izin, konum açık/kapalı ve ayarlara yönlendirme merkezi LocationAccess'te */
+    private final LocationAccess locationAccess = LocationAccess.register(this,
+            new LocationAccess.Options().precise(true),
+            new LocationAccess.Callback() {
+                @Override
+                public void onLocation(@NonNull Location location) {
+                    if (isAdded()) {
+                        onCompassLocation(location);
+                    }
+                }
+
+                @Override
+                public void onUnavailable(@NonNull LocationService.Unavailable reason) {
+                    onCompassLocationUnavailable(reason);
+                }
+            });
 
 
     @Nullable
@@ -89,48 +107,42 @@ public class QiblaCompassFragment extends Fragment implements SensorEventListene
 
     private void initializeLocationService() {
         if (locationCheckDone) return; // Tekrar girmesini engelle
-
-        locationService = LocationService.getInstance(requireContext());
-        locationService.checkLocationPermission(requireActivity(), () -> {
-            if (locationService.isLocationEnabled()) {
-                locationService.getCurrentLocation(new LocationService.OnLocationRetrieved() {
-                    @Override
-                    public void onSuccess(double latitude, double longitude, Address address) {
-                        userLatitude = latitude;
-                        userLongitude = longitude;
-                        addressDetail = address;
-                        loadingLocationCompass.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onFailure(String errorMessage) {
-                        Toast.makeText(getContext(), getString(R.string.location_fail) + errorMessage, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            } else {
-                showLocationSettingsDialog();
-
-            }
-        }, this::showPermissionDialog);
+        locationCheckDone = true;
+        locationAccess.requestSingleLocation(true);
     }
 
-    private void showLocationSettingsDialog() {
-        // Konum servisi kapalıysa, kullanıcıyı ayarlara yönlendirin.
-        new AlertDialog.Builder(requireContext())
-                .setTitle(getString(R.string.location_service_closed_header))
-                .setMessage(getString(R.string.location_service_closed_message))
-                .setPositiveButton(getString(R.string.evet), (dialog, which) -> {
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(intent);
-                })
-                .setNegativeButton(getString(R.string.hayir), (dialog, which) -> navigateToPreviousScreen())
-                .setCancelable(false)
-                .show();
+    private void onCompassLocation(Location location) {
+        userLatitude = location.getLatitude();
+        userLongitude = location.getLongitude();
+        loadingLocationCompass.setVisibility(View.GONE);
+        // Adres yalnızca ekranda gösterilir; cihaz dilinde çözümlenir
+        new AddressResolver(requireContext()).resolveAsync(userLatitude, userLongitude, Locale.getDefault(),
+                address -> {
+                    if (isAdded()) {
+                        addressDetail = address;
+                    }
+                });
+    }
+
+    private void onCompassLocationUnavailable(LocationService.Unavailable reason) {
+        if (!isAdded()) return;
+        switch (reason) {
+            case PERMISSION_DENIED:
+                showPermissionDialog();
+                break;
+            case SERVICES_OFF:
+                // Kullanıcı konumu açmadı: önceki davranış gibi geri dön
+                navigateToPreviousScreen();
+                break;
+            default:
+                loadingLocationCompass.setVisibility(View.GONE);
+                Toast.makeText(requireContext(), R.string.location_no_fix, Toast.LENGTH_LONG).show();
+                break;
+        }
     }
 
     private void showPermissionDialog() {
         if (getContext() == null) return;
-        locationCheckDone = true;
         // Konum izni verilmediyse, izin istemek için kullanıcıyı bilgilendirin.
         new AlertDialog.Builder(requireContext())
                 .setTitle(getString(R.string.location_permission_required_header))
