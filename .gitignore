@@ -13,3 +13,22 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# İmza anahtarları ve yayın çıktıları (asla repoya girmemeli)
+/key/
+*.jks
+*.keystore
+/app/release/
+
+# JVM çökme ve yerel log dosyaları
+hs_err_pid*.log
+replay_pid*.log
+*_logs.txt
+log_kaydi.txt
+
+# Kişisel IDE dosyaları
+/.vscode/
+/.idea/AndroidProjectSystem.xml
+/.idea/deviceManager.xml
+/.idea/runConfigurations.xml
+/.idea/studiobot.xml

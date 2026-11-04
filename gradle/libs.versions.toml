@@ -1,0 +1,119 @@
+# =====================================================================
+#  Yolcu - Sürüm Kataloğu (Version Catalog)
+#  Tüm kütüphane ve eklenti sürümleri bu dosyadan yönetilir.
+#  Kullanım: build.gradle içinde "libs.<takma-ad>" şeklinde erişilir.
+#  Not: Takma adlardaki "-" işareti erişimde "." olur
+#       (ör. "work-runtime" -> libs.work.runtime)
+# =====================================================================
+
+[versions]
+# --- Gradle Eklentileri ---
+agp = "8.13.2"                     # Android Gradle Plugin
+
+# --- Temel ve Arayüz (Core & UI) ---
+appcompat = "1.8.0"
+material = "1.14.0"
+cardview = "1.0.0"
+constraintlayout = "2.2.2"
+work = "2.12.0"
+
+# --- Yerel Veritabanı (Room) ---
+room = "2.8.5"
+
+# --- Sayfa Geçişleri (Navigation) ---
+navigation = "2.9.8"
+
+# --- Ağ İstekleri ve Veri Ayrıştırma (Web Services & Parsing) ---
+retrofit = "3.0.0"
+gson = "2.15.0"
+okhttp = "5.3.2"
+
+# --- Google Servisleri (Services & Utilities) ---
+play-services-location = "21.4.0"
+play-review = "2.0.2"
+
+# --- Üçüncü Parti Görsel Bileşenler (Third Party UI) ---
+stepview = "1.5.1"
+adhan = "0.0.5"
+photoview = "2.3.0"
+glide = "5.0.7"
+dotsindicator = "5.1.0"
+ummalqura = "2.0.2"
+
+# --- Test ---
+junit = "4.13.2"
+androidx-test-junit = "1.3.0"
+espresso = "3.7.0"
+
+
+[libraries]
+# --- Temel ve Arayüz (Core & UI) ---
+# AndroidX Appcompat: Geriye dönük uyumluluk ve temel arayüz bileşenleri
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+# Google Material Design: Modern arayüz bileşenleri, butonlar ve temalar
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+# CardView: Yuvarlatılmış köşeli ve gölgeli kart görünümleri
+cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
+# ConstraintLayout: Esnek ve yüksek performanslı yerleşim düzeni
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+# WorkManager: Güvenilir arka plan işlemleri (alarm, bildirim vb.)
+work-runtime = { group = "androidx.work", name = "work-runtime", version.ref = "work" }
+
+# --- Yerel Veritabanı (Room) ---
+# Room Runtime: Namaz vakitlerinin çevrim dışı saklandığı yerel SQLite veritabanı
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+# Room Compiler: DAO/Entity kodunu üretir (Java -> annotationProcessor ile kullanılır)
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+# Room Testing: Şema migration testleri için
+room-testing = { group = "androidx.room", name = "room-testing", version.ref = "room" }
+
+# --- Sayfa Geçişleri (Navigation) ---
+navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigation" }
+navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigation" }
+
+# --- Ağ İstekleri ve Veri Ayrıştırma (Web Services & Parsing) ---
+# Retrofit: Web servis istekleri için HTTP istemcisi
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+# Retrofit Gson dönüştürücüsü: JSON cevaplarını nesneye çevirir
+retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+# Retrofit Scalars dönüştürücüsü: Cevabı düz String olarak almak için
+retrofit-converter-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofit" }
+# Gson: JSON serileştirme / ayrıştırma
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+# OkHttp: Ağ katmanı
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+# OkHttp Logging: Ağ isteklerinin loglanması
+okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+
+# --- Google Servisleri (Services & Utilities) ---
+# Play Services Location: Konum alma (kıble yönü, namaz vakitleri vb.)
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" }
+# In-App Review: Uygulama içi puanlama penceresi
+play-review = { group = "com.google.android.play", name = "review", version.ref = "play-review" }
+
+# --- Üçüncü Parti Görsel Bileşenler (Third Party UI) ---
+# StepView: Soruların / aşamaların adım adım gösterimi
+stepview = { group = "com.github.shuhart", name = "stepview", version.ref = "stepview" }
+# Adhan: Namaz vakitleri hesaplama
+adhan = { group = "com.batoulapps.adhan", name = "adhan2", version.ref = "adhan" }
+# PhotoView: Resimlerde yakınlaştırma (zoom) desteği
+photoview = { group = "com.github.chrisbanes", name = "PhotoView", version.ref = "photoview" }
+# Glide: Hızlı ve bellek dostu resim yükleme
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+# DotsIndicator: Tanıtım (intro) ekranı sayfa noktaları
+dotsindicator = { group = "com.tbuonomo", name = "dotsindicator", version.ref = "dotsindicator" }
+# Ummalqura Calendar: Hicri takvim desteği
+ummalqura-calendar = { group = "com.github.msarhan", name = "ummalqura-calendar", version.ref = "ummalqura" }
+
+# --- Test ---
+# JUnit: Birim (unit) testleri
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+# AndroidX Test JUnit: Cihaz üzerinde çalışan testler
+androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-junit" }
+# Espresso: Arayüz (UI) testleri
+androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+
+
+[plugins]
+# Android uygulama eklentisi
+android-application = { id = "com.android.application", version.ref = "agp" }

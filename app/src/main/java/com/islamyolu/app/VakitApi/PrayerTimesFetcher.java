@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
@@ -22,25 +21,12 @@ import com.islamyolu.app.Entity.PrayerNames;
 import com.islamyolu.app.R;
 import com.islamyolu.app.Service.SharedPrefsHelperService;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class PrayerTimesFetcher extends Service {
 
@@ -75,84 +61,6 @@ public class PrayerTimesFetcher extends Service {
         this.remain_time_layout = remain_time_layout;
         this.toolbarKalanSureLabel = toolbarKalanSureLabel;
         sharedPrefsHelperService = new SharedPrefsHelperService(context, SETTINGS_PREFS);
-    }
-
-    // Namaz vakitlerini çekmek için method
-    public void fetchPrayerTimes(String url) {
-        OkHttpClient client = new OkHttpClient();
-
-        // Namaz vakitlerini çekeceğimiz URL
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        // İstek yapılıyor
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    // Simdiki zaman
-                    LocalTime currentTime = LocalTime.now();
-
-                    // HTML içeriğini al
-                    assert response.body() != null;
-                    String htmlContent = response.body().string();
-
-                    // HTML içeriğini Jsoup ile parse et
-                    Document doc = Jsoup.parse(htmlContent);
-
-                    // Vakitlerin bulunduğu div'i bul
-                    Element prayTimesDiv = doc.selectFirst("div.today-pray-times");
-
-                    // Her bir namaz vaktini al
-                    assert prayTimesDiv != null;
-                    Elements timeCells = prayTimesDiv.select("div.tpt-cell");
-
-                    // UI işlemleri ana thread'de yapılmalı
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        assert locationRefreshLayout != null;
-                        locationRefreshLayout.setVisibility(View.GONE);
-                        for (Element cell : timeCells) {
-                            String title = Objects.requireNonNull(cell.selectFirst("div.tpt-title")).text();
-                            String time = Objects.requireNonNull(cell.selectFirst("div.tpt-time")).text();
-                            switch (title) {
-                                case "İmsak":
-                                    imsakTime.setText(time);
-                                    break;
-                                case "Güneş":
-                                    gunesTime.setText(time);
-                                    break;
-                                case "Öğle":
-                                    ogleTime.setText(time);
-                                    break;
-                                case "İkindi":
-                                    ikindiTime.setText(time);
-                                    break;
-                                case "Akşam":
-                                    aksamTime.setText(time);
-                                    break;
-                                case "Yatsı":
-                                    yatsiTime.setText(time);
-                                    break;
-                            }
-                        }
-                        // Vakitlerin arka plan rengini ayarla
-                        updateBackgroundColor(currentTime);
-                    });
-                } else {
-                    // UI işlemleri yine ana thread'de yapılmalı
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        assert locationRefreshLayout != null;
-                        locationRefreshLayout.setVisibility(View.VISIBLE);
-                    });
-                }
-            }
-        });
     }
 
     public boolean fetchPrayerTimesNoAPI(String city) {

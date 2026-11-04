@@ -53,7 +53,6 @@ import com.islamyolu.app.Service.GoldService;
 import com.islamyolu.app.Service.SharedPrefsHelperService;
 import com.islamyolu.app.Service.SoundService;
 import com.islamyolu.app.VakitApi.City;
-import com.islamyolu.app.VakitApi.CityUrlMapping;
 import com.islamyolu.app.VakitApi.DailyPrayerWorkerReceiver;
 import com.islamyolu.app.VakitApi.NamazVakiti;
 import com.islamyolu.app.VakitApi.PrayerTimesFetcher;
@@ -409,18 +408,6 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         VakitNoApi vakitNoApi = new VakitNoApi();
         NamazVakiti namazVakiti = vakitNoApi.localPrayerTimes(Objects.requireNonNull(City.fromCityName(city)).getLatitude(), Objects.requireNonNull(City.fromCityName(city)).getLongitude());
         setupPrayerAlarms(namazVakiti);
-    }
-
-    // Namaz vakitlerini çekme
-    private void fetchPrayerTimes(String city) {
-        CityUrlMapping cityUrlMapping = new CityUrlMapping();
-        String url = cityUrlMapping.getUrlForCity(city);
-        if (url != null) {
-            PrayerTimesFetcher prayerTimesFetcher = new PrayerTimesFetcher(this, imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, imsakTimeLayout, gunesTimeLayout, ogleTimeLayout, ikindiTimeLayout, aksamTimeLayout, yatsiTimeLayout, locationRefreshLayout, kalanSureTextView, remain_time_layout, toolbarKalanSureLabel);
-            prayerTimesFetcher.fetchPrayerTimes(url);
-        } else {
-            Log.e("MainActivity", "Namaz vakitleri alınamadı: " + city + " için");
-        }
     }
 
     private void setupPrayerAlarms(NamazVakiti namazVakiti) {
