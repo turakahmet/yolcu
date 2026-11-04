@@ -1,7 +1,5 @@
 package com.islamyolu.app.monthlyCalender;
 
-import android.app.Dialog;
-import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,35 +7,56 @@ import android.os.Looper;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.islamyolu.app.Entity.PrayerNames;
 import com.islamyolu.app.R;
-import com.islamyolu.app.VakitApi.City;
-import com.islamyolu.app.VakitApi.NamazVakiti;
-import com.islamyolu.app.VakitApi.VakitNoApi;
-import com.islamyolu.app.main.MainActivity;
+import com.islamyolu.app.prayertimes.PrayerDisplay;
+import com.islamyolu.app.prayertimes.PrayerSlot;
+import com.islamyolu.app.prayertimes.PrayerTimeline;
+import com.islamyolu.app.prayertimes.db.PrayerDayEntity;
+import com.islamyolu.app.prayertimes.ui.PrayerTimesViewModel;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
+/**
+ * Aylık namaz takvimi: bugün ve sonraki 30 gün, Room'dan (§5). Vakitler şehrin yerel saatiyle,
+ * geri sayım şehrin gmt farkıyla hesaplanır; internet gerekmez.
+ */
 public class MonthlyPrayerActivity extends AppCompatActivity {
-    private TextView cityNameText, hijriDateText, remainingTimeTextMonthly, remainingTimeLabel, ogleTimeMonthly, ogleTimeLabel, imsakTimeMonthly, imsakTimeLabel, gunesTimeMonthly, gunesTimeLabel, aksamTimeMonthly, aksamTimeLabel, ikindiTimeMonthly, ikindiTimeLabel, yatsiTimeMonthly, yatsiTimeLabel;
-    private ImageView prayerTimeImage, ogleTimeIcon, imsakTimeIcon, gunesTimeIcon, aksamTimeIcon, ikindiTimeIcon, yatsiTimeIcon;
+
+    private static final int DAYS_AHEAD = 30;
+
+    private TextView cityNameText, hijriDateText, remainingTimeTextMonthly, remainingTimeLabel;
+    private ImageView prayerTimeImage;
     private RecyclerView prayerTimesRecycler;
-    private Handler handler;
-    private Runnable remainingTimeRunnable;
-    private VakitNoApi vakitNoApi;
-    private static final String TAG = "MonthlyPrayerActivity";
-    private NamazVakiti currentNamazVakiti;
-    private String getCityNameFromPreferences;
-    private Dialog mDialog;
-    private City city;
+    private final Map<PrayerSlot, TextView> times = new EnumMap<>(PrayerSlot.class);
+    private final Map<PrayerSlot, TextView> labels = new EnumMap<>(PrayerSlot.class);
+    private final Map<PrayerSlot, ImageView> icons = new EnumMap<>(PrayerSlot.class);
+
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private final Runnable remainingTimeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            updateRemainingTime();
+            handler.postDelayed(this, 1000);
+        }
+    };
+
+    private PrayerTimesViewModel viewModel;
+    private PrayerTimeline timeline;
+    private boolean warningShown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,18 +64,22 @@ public class MonthlyPrayerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_monthly_prayer);
 
         initializeViews();
-        setupRecyclerView();
-        loadCityData();
-        if (city != null) {
-            startRemainingTimeUpdate();
-            updatePrayerTimeImage();
-        } else {
-            new AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.uyariLabel))
-                    .setMessage(getString(R.string.namazVakitHesaplamaHata))
-                    .setPositiveButton(getString(R.string.tamam), (dialog, which) -> finish())
-                    .show();
-        }
+        prayerTimesRecycler.setLayoutManager(new LinearLayoutManager(this));
+
+        viewModel = new ViewModelProvider(this).get(PrayerTimesViewModel.class);
+        viewModel.getState().observe(this, this::render);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        viewModel.refresh(DAYS_AHEAD + 1);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(remainingTimeRunnable);
     }
 
     private void initializeViews() {
@@ -67,163 +90,113 @@ public class MonthlyPrayerActivity extends AppCompatActivity {
         prayerTimeImage = findViewById(R.id.prayer_time_image);
         prayerTimesRecycler = findViewById(R.id.prayer_times_recycler);
 
-        ogleTimeIcon = findViewById(R.id.ogle_time_icon);
-        ogleTimeMonthly = findViewById(R.id.ogle_time_monthly);
-        ogleTimeLabel = findViewById(R.id.ogle_time_label);
-
-        imsakTimeIcon = findViewById(R.id.imsak_time_icon);
-        imsakTimeMonthly = findViewById(R.id.imsak_time_monthly);
-        imsakTimeLabel = findViewById(R.id.imsak_time_label);
-
-        gunesTimeIcon = findViewById(R.id.gunes_time_icon);
-        gunesTimeMonthly = findViewById(R.id.gunes_time_monthly);
-        gunesTimeLabel = findViewById(R.id.gunes_time_label);
-
-        aksamTimeIcon = findViewById(R.id.aksam_time_icon);
-        aksamTimeMonthly = findViewById(R.id.aksam_time_monthly);
-        aksamTimeLabel = findViewById(R.id.aksam_time_label);
-
-        ikindiTimeIcon = findViewById(R.id.ikindi_time_icon);
-        ikindiTimeMonthly = findViewById(R.id.ikindi_time_monthly);
-        ikindiTimeLabel = findViewById(R.id.ikindi_time_label);
-
-        yatsiTimeIcon = findViewById(R.id.yatsi_time_icon);
-        yatsiTimeMonthly = findViewById(R.id.yatsi_time_monthly);
-        yatsiTimeLabel = findViewById(R.id.yatsi_time_label);
-
-
-        handler = new Handler(Looper.getMainLooper());
-        vakitNoApi = new VakitNoApi();
-        hijriDateText.setText(NamazVakiti.getInstance().getHicriDate());
-
+        bind(PrayerSlot.IMSAK, R.id.imsak_time_monthly, R.id.imsak_time_label, R.id.imsak_time_icon);
+        bind(PrayerSlot.GUNES, R.id.gunes_time_monthly, R.id.gunes_time_label, R.id.gunes_time_icon);
+        bind(PrayerSlot.OGLE, R.id.ogle_time_monthly, R.id.ogle_time_label, R.id.ogle_time_icon);
+        bind(PrayerSlot.IKINDI, R.id.ikindi_time_monthly, R.id.ikindi_time_label, R.id.ikindi_time_icon);
+        bind(PrayerSlot.AKSAM, R.id.aksam_time_monthly, R.id.aksam_time_label, R.id.aksam_time_icon);
+        bind(PrayerSlot.YATSI, R.id.yatsi_time_monthly, R.id.yatsi_time_label, R.id.yatsi_time_icon);
     }
 
-    private void setupRecyclerView() {
-        prayerTimesRecycler.setLayoutManager(new LinearLayoutManager(this));
-        // Adapter setup will be done when data is loaded
+    private void bind(PrayerSlot slot, int timeId, int labelId, int iconId) {
+        times.put(slot, findViewById(timeId));
+        labels.put(slot, findViewById(labelId));
+        icons.put(slot, findViewById(iconId));
     }
 
-    private void loadCityData() {
-        SharedPreferences locationPrefs = getSharedPreferences(MainActivity.LOCATION_PREFS, MODE_PRIVATE);
-        getCityNameFromPreferences = locationPrefs.getString("city_name", "");
+    private void render(PrayerTimesViewModel.State state) {
+        if (state.status == PrayerTimesViewModel.Status.NO_CITY) {
+            showWarningAndFinish();
+            return;
+        }
+        cityNameText.setText(state.selection != null ? state.selection.getCityName() : "");
+        timeline = state.timeline;
 
-        if (!getCityNameFromPreferences.isEmpty()) {
-            cityNameText.setText(getCityNameFromPreferences);
-            city = City.fromCityName(getCityNameFromPreferences);
-            if (city != null) {
-                loadMonthlyPrayerTimes(city);
+        Instant now = Instant.now();
+        PrayerDayEntity today = timeline.today(now);
+        hijriDateText.setText(PrayerDisplay.hijri(this, today != null ? today.getHijri() : null));
+        for (PrayerSlot slot : PrayerSlot.values()) {
+            times.get(slot).setText(today != null ? PrayerDisplay.time(slot.timeOf(today)) : PrayerDisplay.EMPTY_TIME);
+        }
+
+        // Bugünden sonraki günler (önceki sürümdeki gibi 30 gün)
+        List<PrayerDayEntity> upcoming = new ArrayList<>();
+        LocalDate todayDate = timeline.cityToday(now);
+        if (todayDate != null) {
+            for (PrayerDayEntity day : timeline.days()) {
+                LocalDate date = LocalDate.parse(day.getDate());
+                if (date.isAfter(todayDate) && upcoming.size() < DAYS_AHEAD) {
+                    upcoming.add(day);
+                }
             }
         }
-    }
+        prayerTimesRecycler.setAdapter(new MonthlyPrayerAdapter(upcoming,
+                getResources().getConfiguration().getLocales().get(0)));
 
-    private void loadMonthlyPrayerTimes(City city) {
-        List<NamazVakiti> monthlyTimes = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
-        dailyTimesLoad(city, calendar);
-
-
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
-
-        for (int i = 0; i < 30; i++) {
-            NamazVakiti times = vakitNoApi.localMountlyPrayerTimes(
-                    city.getLatitude(),
-                    city.getLongitude(),
-                    calendar
-            );
-            monthlyTimes.add(times);
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        if (state.status == PrayerTimesViewModel.Status.OK) {
+            updatePrayerTimeImage(timeline.next(now));
+            handler.removeCallbacks(remainingTimeRunnable);
+            handler.post(remainingTimeRunnable);
+        } else {
+            handler.removeCallbacks(remainingTimeRunnable);
+            remainingTimeLabel.setText(state.status == PrayerTimesViewModel.Status.UPDATING
+                    ? R.string.prayer_status_updating : R.string.prayer_status_outdated_offline);
+            remainingTimeTextMonthly.setText("");
         }
-        MonthlyPrayerAdapter adapter = new MonthlyPrayerAdapter(monthlyTimes);
-        prayerTimesRecycler.setAdapter(adapter);
-    }
-
-    private void dailyTimesLoad(City city, Calendar calendar) {
-        NamazVakiti dailyTimes = vakitNoApi.localMountlyPrayerTimes(
-                city.getLatitude(),
-                city.getLongitude(),
-                calendar
-        );
-        imsakTimeMonthly.setText(dailyTimes.getImsak());
-        gunesTimeMonthly.setText(dailyTimes.getGunes());
-        ogleTimeMonthly.setText(dailyTimes.getOgle());
-        ikindiTimeMonthly.setText(dailyTimes.getIkindi());
-        aksamTimeMonthly.setText(dailyTimes.getAksam());
-        yatsiTimeMonthly.setText(dailyTimes.getYatsi());
-    }
-
-    private void startRemainingTimeUpdate() {
-        remainingTimeRunnable = new Runnable() {
-            @Override
-            public void run() {
-                updateRemainingTime();
-                handler.postDelayed(this, 1000);
-            }
-        };
-        handler.post(remainingTimeRunnable);
     }
 
     private void updateRemainingTime() {
-        // Implement remaining time calculation similar to MainActivity
-        // Use the current prayer time and calculate remaining time
-        currentNamazVakiti = vakitNoApi.getLocalPrayerTimesByCityName(getCityNameFromPreferences);
-        remainingTimeLabel.setText(currentNamazVakiti.getGecerliVakit().getValue());
-        remainingTimeTextMonthly.setText(currentNamazVakiti.getNextPrayerTimeRemainingTimeFormatted(true));
-    }
-
-    private void updatePrayerTimeImage() {
-        // Update prayer time image based on current prayer time
-        // Example:
-        int imageResource;
-
-        if (NamazVakiti.getInstance().getNextPrayer() == null) {
-            imageResource = R.drawable.imsak_mountly;
-            prayerTimeImage.setImageResource(imageResource);
+        if (timeline == null) return;
+        Instant now = Instant.now();
+        PrayerTimeline.Moment next = timeline.next(now);
+        if (next == null) {
+            remainingTimeLabel.setText(R.string.prayer_status_outdated_offline);
+            remainingTimeTextMonthly.setText("");
             return;
         }
-
-        if (PrayerNames.IMSAK.getValue().equals(NamazVakiti.getInstance().getNextPrayer().getName())) {
-            imageResource = R.drawable.imsak_mountly;
-            imsakTimeIcon.setColorFilter(ContextCompat.getColor(this, R.color.current_namaz_time), PorterDuff.Mode.SRC_IN);
-            imsakTimeMonthly.setTextColor(ContextCompat.getColor(this, R.color.current_namaz_time));
-            imsakTimeLabel.setTextColor(ContextCompat.getColor(this, R.color.current_namaz_time));
-        } else if (PrayerNames.GUNES.getValue().equals(NamazVakiti.getInstance().getNextPrayer().getName())) {
-            imageResource = R.drawable.gunes_mountly;
-            gunesTimeIcon.setColorFilter(ContextCompat.getColor(this, R.color.current_namaz_time), PorterDuff.Mode.SRC_IN);
-            gunesTimeMonthly.setTextColor(ContextCompat.getColor(this, R.color.current_namaz_time));
-            gunesTimeLabel.setTextColor(ContextCompat.getColor(this, R.color.current_namaz_time));
-        } else if (PrayerNames.OGLE.getValue().equals(NamazVakiti.getInstance().getNextPrayer().getName())) {
-            imageResource = R.drawable.ogle_mountly;
-            ogleTimeIcon.setColorFilter(ContextCompat.getColor(this, R.color.current_namaz_time), PorterDuff.Mode.SRC_IN);
-            ogleTimeMonthly.setTextColor(ContextCompat.getColor(this, R.color.current_namaz_time));
-            ogleTimeLabel.setTextColor(ContextCompat.getColor(this, R.color.current_namaz_time));
-        } else if (PrayerNames.IKINDI.getValue().equals(NamazVakiti.getInstance().getNextPrayer().getName())) {
-            imageResource = R.drawable.ikindi_mountly;
-            ikindiTimeIcon.setColorFilter(ContextCompat.getColor(this, R.color.current_namaz_time), PorterDuff.Mode.SRC_IN);
-            ikindiTimeMonthly.setTextColor(ContextCompat.getColor(this, R.color.current_namaz_time));
-            ikindiTimeLabel.setTextColor(ContextCompat.getColor(this, R.color.current_namaz_time));
-        } else if (PrayerNames.AKSAM.getValue().equals(NamazVakiti.getInstance().getNextPrayer().getName())) {
-            imageResource = R.drawable.aksam_mountly;
-            aksamTimeIcon.setColorFilter(ContextCompat.getColor(this, R.color.current_namaz_time), PorterDuff.Mode.SRC_IN);
-            aksamTimeMonthly.setTextColor(ContextCompat.getColor(this, R.color.current_namaz_time));
-            aksamTimeLabel.setTextColor(ContextCompat.getColor(this, R.color.current_namaz_time));
-
-        } else if (PrayerNames.YATSI.getValue().equals(NamazVakiti.getInstance().getNextPrayer().getName())) {
-            imageResource = R.drawable.yatsi_mountly;
-            yatsiTimeIcon.setColorFilter(ContextCompat.getColor(this, R.color.current_namaz_time), PorterDuff.Mode.SRC_IN);
-            yatsiTimeMonthly.setTextColor(ContextCompat.getColor(this, R.color.current_namaz_time));
-            yatsiTimeLabel.setTextColor(ContextCompat.getColor(this, R.color.current_namaz_time));
-        } else {
-            imageResource = R.drawable.imsak_mountly;
-        }
-
-        prayerTimeImage.setImageResource(imageResource);
+        remainingTimeLabel.setText(PrayerDisplay.nameRes(next.slot));
+        remainingTimeTextMonthly.setText(PrayerDisplay.remaining(Duration.between(now, next.instant), true));
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (handler != null && remainingTimeRunnable != null) {
-            handler.removeCallbacks(remainingTimeRunnable);
+    /** Sıradaki vaktin görseli ve vurgusu (önceki sürümle aynı) */
+    private void updatePrayerTimeImage(PrayerTimeline.Moment next) {
+        if (next == null) {
+            prayerTimeImage.setImageResource(R.drawable.imsak_mountly);
+            return;
+        }
+        int highlight = ContextCompat.getColor(this, R.color.current_namaz_time);
+        icons.get(next.slot).setColorFilter(highlight, PorterDuff.Mode.SRC_IN);
+        times.get(next.slot).setTextColor(highlight);
+        labels.get(next.slot).setTextColor(highlight);
+        prayerTimeImage.setImageResource(imageFor(next.slot));
+    }
+
+    @DrawableRes
+    private static int imageFor(PrayerSlot slot) {
+        switch (slot) {
+            case GUNES:
+                return R.drawable.gunes_mountly;
+            case OGLE:
+                return R.drawable.ogle_mountly;
+            case IKINDI:
+                return R.drawable.ikindi_mountly;
+            case AKSAM:
+                return R.drawable.aksam_mountly;
+            case YATSI:
+                return R.drawable.yatsi_mountly;
+            default:
+                return R.drawable.imsak_mountly;
         }
     }
-} 
+
+    private void showWarningAndFinish() {
+        if (warningShown) return;
+        warningShown = true;
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.uyariLabel))
+                .setMessage(getString(R.string.prayer_monthly_needs_city))
+                .setPositiveButton(getString(R.string.tamam), (dialog, which) -> finish())
+                .setCancelable(false)
+                .show();
+    }
+}

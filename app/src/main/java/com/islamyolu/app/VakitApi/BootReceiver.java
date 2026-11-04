@@ -27,6 +27,12 @@ public class BootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (Objects.equals(intent.getAction(), Intent.ACTION_MY_PACKAGE_REPLACED)) {
+            // Uygulama güncellendi: kurulu alarmlar silinmiş olabilir, Room'daki vakitlerle yeniden kurulur
+            context.sendBroadcast(new Intent(context, DailyPrayerWorkerReceiver.class));
+            Log.d(TAG, "Uygulama güncellendi; alarmlar yeniden kuruluyor");
+            return;
+        }
         if (Objects.equals(intent.getAction(), Intent.ACTION_BOOT_COMPLETED)) {
             Log.d(TAG, "Cihaz yeniden başlatıldı");
 

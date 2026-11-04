@@ -36,8 +36,6 @@ import com.islamyolu.app.Service.SharedPrefsHelperService;
 import com.islamyolu.app.VakitApi.AlarmReceiver;
 import com.islamyolu.app.VakitApi.City;
 import com.islamyolu.app.VakitApi.DailyPrayerWorkerReceiver;
-import com.islamyolu.app.VakitApi.NamazVakiti;
-import com.islamyolu.app.VakitApi.VakitNoApi;
 import com.islamyolu.app.feedback.BilgilendirmeActivity;
 import com.islamyolu.app.feedback.FeedbackActivity;
 import com.islamyolu.app.feedback.PrivacyActivity;
@@ -49,7 +47,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
     private SwitchCompat switchNotificationAll, switchNotificationImsak, switchNotificationSabah, switchNotificationOgle, switchNotificationIkindi, switchNotificationAksam, switchNotificationYatsi, switchNotificationKerahat, switchNotificationSound, switchNotificationVakitHerzamanGoster, switchVakitSound;
@@ -144,7 +141,10 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    /** "Güncelle": konumdan il adını bulur (mevcut il listesiyle eşleşsin diye Türkçe). */
+    /**
+     * "Güncelle": konumdan il adını bulur (hava durumu bu ili kullanır). Namaz vakitleri artık bu ilden
+     * hesaplanmaz; Diyanet vakitleri aşağıdaki "Namaz vakti şehrini seç" ile seçilen yerden gelir.
+     */
     private void onSettingsLocation(Location location) {
         new AddressResolver(this).resolveAsync(location.getLatitude(), location.getLongitude(),
                 Locale.forLanguageTag("tr"), address -> {
@@ -157,12 +157,8 @@ public class SettingsActivity extends AppCompatActivity {
                         return;
                     }
                     sharedPrefsHelperService.setCityNameFromPreferences(cityName);
-                    VakitNoApi vakitNoApi = new VakitNoApi();
-                    NamazVakiti namazVakiti = vakitNoApi.localPrayerTimes(Objects.requireNonNull(City.fromCityName(cityName)).getLatitude(), Objects.requireNonNull(City.fromCityName(cityName)).getLongitude());
-                    setupPrayerAlarms(namazVakiti);
                     locationInfo.setText(getString(R.string.locaitonInfoText, cityName));
                     settingLocationButton.setEnabled(true);
-                    restartApp();
                 });
     }
 
@@ -179,37 +175,6 @@ public class SettingsActivity extends AppCompatActivity {
         prayerCityInfo.setText(selection != null
                 ? getString(R.string.prayer_city_current, selection.getDisplayName())
                 : getString(R.string.prayer_city_not_selected));
-    }
-
-    public void restartApp() {
-        Log.d(TAG, "Sistem yeniden başlatılıyor...");
-
-        Intent intent = getBaseContext().getPackageManager()
-                .getLaunchIntentForPackage(getBaseContext().getPackageName());
-
-        if (intent != null) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finishAffinity(); // Tüm aktiviteleri kapat
-            System.exit(0);   // Garantili kapatma (opsiyonel ama etkili)
-        }
-    }
-
-
-    private void setupPrayerAlarms(NamazVakiti namazVakiti) {
-        // DailyPrayerWorker'ı başlat ve namaz vakitlerini ilet
-        Intent intent = new Intent(this, DailyPrayerWorkerReceiver.class);
-
-        // Namaz vakitlerini intent'e ekle
-        intent.putExtra("imsak", namazVakiti.getImsak());
-        intent.putExtra("gunes", namazVakiti.getGunes());
-        intent.putExtra("ogle", namazVakiti.getOgle());
-        intent.putExtra("ikindi", namazVakiti.getIkindi());
-        intent.putExtra("aksam", namazVakiti.getAksam());
-        intent.putExtra("yatsi", namazVakiti.getYatsi());
-
-        sendBroadcast(intent);
-        Log.d(TAG, "Alarmlar kurulmak üzere DailyPrayerWorker başlatıldı - Vakitler iletildi");
     }
 
     private void changeRadioButton(int checkedId) {
@@ -240,30 +205,12 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void cancelAllPrayerAlarms() {
-        // Tüm namaz vakitleri için alarmları iptal et
-        if (NamazVakiti.getInstance().getImsak() != null) {
-            cancelNotification(this.getString(R.string.namaz_vakit_notification_header),
-                    this.getString(R.string.imsak_vakit_notification_body));
-        }
-        if (NamazVakiti.getInstance().getGunes() != null) {
-            cancelNotification(this.getString(R.string.namaz_vakit_notification_header),
-                    this.getString(R.string.gunes_vakit_notification_body));
-        }
-        if (NamazVakiti.getInstance().getOgle() != null) {
-            cancelNotification(this.getString(R.string.namaz_vakit_notification_header),
-                    this.getString(R.string.ogle_vakit_notification_body));
-        }
-        if (NamazVakiti.getInstance().getIkindi() != null) {
-            cancelNotification(this.getString(R.string.namaz_vakit_notification_header),
-                    this.getString(R.string.ikindi_vakit_notification_body));
-        }
-        if (NamazVakiti.getInstance().getAksam() != null) {
-            cancelNotification(this.getString(R.string.namaz_vakit_notification_header),
-                    this.getString(R.string.aksam_vakit_notification_body));
-        }
-        if (NamazVakiti.getInstance().getYatsi() != null) {
-            cancelNotification(this.getString(R.string.namaz_vakit_notification_header),
-                    this.getString(R.string.yatsi_vakit_notification_body));
+        // Tüm namaz vakitleri için alarmları iptal et (kurulmamış alarmı iptal etmek zararsızdır)
+        int[] bodies = {R.string.imsak_vakit_notification_body, R.string.gunes_vakit_notification_body,
+                R.string.ogle_vakit_notification_body, R.string.ikindi_vakit_notification_body,
+                R.string.aksam_vakit_notification_body, R.string.yatsi_vakit_notification_body};
+        for (int body : bodies) {
+            cancelNotification(getString(R.string.namaz_vakit_notification_header), getString(body));
         }
     }
 
@@ -522,13 +469,15 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void handlePermanentNotificationSwitch(boolean isChecked) {
         sharedPrefsHelperService.setSwitchState("switchNotificationVakitHerzamanGoster", isChecked);
-        if (NamazVakiti.getInstance().getGecerliVakit() == null) {
+        if (isChecked && sharedPrefsHelperService.getPrayerCitySelection() == null) {
+            // Vakitler Room'daki seçili şehirden gelir; şehir seçilmeden kalıcı bildirim gösterilemez
             new AlertDialog.Builder(this)
-                    .setTitle("Uyarı")
-                    .setMessage("Bu servis Türkiye içerisinde kullanılmaktadır. Cihazınızın Konum ve internet ayarlarını açarak ve gerekli izinleri vererek. Namaz vakitleri hesaplamasını sağlayınız sonrasında bu servisi aktif edebilirsiniz.")
-                    .setPositiveButton("Tamam", null)
+                    .setTitle(R.string.uyariLabel)
+                    .setMessage(R.string.prayer_status_no_city)
+                    .setPositiveButton(R.string.tamam, null)
                     .show();
             sharedPrefsHelperService.setSwitchState("switchNotificationVakitHerzamanGoster", false);
+            switchNotificationVakitHerzamanGoster.setChecked(false);
             return;
         }
         Intent serviceIntent = new Intent(this, PrayerNotificationService.class);
@@ -624,26 +573,10 @@ public class SettingsActivity extends AppCompatActivity {
     private void cancelAllPrayerSoundAlarms() {
         Log.d("SettingsActivity", "Tüm ezan sesi alarmları iptal ediliyor");
 
-        // Tüm namaz vakitleri için ses alarmlarını iptal et
-        if (NamazVakiti.getInstance().getImsak() != null) {
-            cancelPrayerSoundAlarm("İmsak");
+        // Tüm namaz vakitleri için ses alarmlarını iptal et (adlar DailyPrayerWorker'ın request code'larıyla aynı)
+        for (String prayerName : new String[]{"İmsak", "Güneş", "Öğle", "İkindi", "Akşam", "Yatsı"}) {
+            cancelPrayerSoundAlarm(prayerName);
         }
-        if (NamazVakiti.getInstance().getGunes() != null) {
-            cancelPrayerSoundAlarm("Güneş");
-        }
-        if (NamazVakiti.getInstance().getOgle() != null) {
-            cancelPrayerSoundAlarm("Öğle");
-        }
-        if (NamazVakiti.getInstance().getIkindi() != null) {
-            cancelPrayerSoundAlarm("İkindi");
-        }
-        if (NamazVakiti.getInstance().getAksam() != null) {
-            cancelPrayerSoundAlarm("Akşam");
-        }
-        if (NamazVakiti.getInstance().getYatsi() != null) {
-            cancelPrayerSoundAlarm("Yatsı");
-        }
-
     }
 
     private void cancelPrayerSoundAlarm(String prayerName) {

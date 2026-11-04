@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
@@ -22,12 +23,19 @@ import androidx.work.WorkerParameters;
 import com.islamyolu.app.R;
 import com.islamyolu.app.Service.SharedPrefsHelperService;
 import com.islamyolu.app.receiver.PrayerSoundReceiver;
+import com.islamyolu.app.prayertimes.CurrentPrayerTimes;
+import com.islamyolu.app.prayertimes.PrayerClock;
+import com.islamyolu.app.prayertimes.PrayerSlot;
+import com.islamyolu.app.prayertimes.PrayerTimeline;
+import com.islamyolu.app.prayertimes.db.PrayerDayEntity;
 import com.islamyolu.app.widget.PrayerTimesWidget;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class DailyPrayerWorker extends Worker {
@@ -43,46 +51,32 @@ public class DailyPrayerWorker extends Worker {
     @Override
     public Result doWork() {
         try {
-            String cityName = sharedPrefsHelperService.getCityNameFromPreferences();
-            if (cityName == null || cityName.isEmpty()) {
-                Log.d("DailyPrayerWorker", "Şehir bilgisi bulunamadı. Alarmlar kurulamıyor.");
-                return Result.retry(); // Daha sonra tekrar dene
+            // Vakitler Room'dan (Diyanet); kesin an şehrin o günkü gmt farkıyla hesaplanır (§5)
+            Instant now = Instant.now();
+            CurrentPrayerTimes current = CurrentPrayerTimes.load(getApplicationContext(), now);
+            if (current.selection == null) {
+                // Şehir seçilmemiş: seçim yapılınca PrayerTimesUpdateNotifier bu worker'ı tekrar çalıştırır
+                Log.d(TAG, "Namaz vakti şehri seçilmemiş. Alarmlar kurulamıyor.");
+                scheduleNextDayWorker();
+                return Result.success();
+            }
+            LocalDate today = current.timeline.cityToday(now);
+            if (today == null) {
+                // Bugünün verisi yok: senkron yenileyince alarmlar yeniden kurulur
+                Log.d(TAG, "Bugünün vakitleri Room'da yok. Alarmlar kurulamıyor.");
+                scheduleNextDayWorker();
+                return Result.success();
             }
 
-            Log.d("DailyPrayerWorker", "DailyPrayerWorker çalışıyor - Şehir: " + cityName);
+            // Alarmları kur (boş vakitler atlanır)
+            setPrayerAlarms(getApplicationContext(), current.timeline, today);
 
-            // Namaz vakitlerini al
-            VakitNoApi vakitNoApi = new VakitNoApi();
-            if (City.fromCityName(cityName) == null) {
-                Log.d("DailyPrayerWorker", "Şehir bilgisi bulunamadı. Alarmlar kurulamıyor.");
-                return Result.retry();
-            }
-            NamazVakiti namazVakiti = vakitNoApi.localPrayerTimes(Objects.requireNonNull(City.fromCityName(cityName)).getLatitude(), Objects.requireNonNull(City.fromCityName(cityName)).getLongitude());
-
-            if (namazVakiti == null) {
-                Log.d("DailyPrayerWorker", "Namaz vakitleri alınamadı. Alarmlar kurulamıyor.");
-                return Result.retry();
-            }
-
-            // Namaz vakitlerinin geçerli olup olmadığını kontrol et
-            if (!isValidPrayerTimes(namazVakiti)) {
-                Log.d("DailyPrayerWorker", "Namaz vakitleri geçersiz. Alarmlar kurulamıyor.");
-                return Result.retry();
-            }
-
-            Log.d("DailyPrayerWorker", "Namaz vakitleri alındı: " +
-                    "İmsak: " + namazVakiti.getImsak() + ", " +
-                    "Güneş: " + namazVakiti.getGunes() + ", " +
-                    "Öğle: " + namazVakiti.getOgle() + ", " +
-                    "İkindi: " + namazVakiti.getIkindi() + ", " +
-                    "Akşam: " + namazVakiti.getAksam() + ", " +
-                    "Yatsı: " + namazVakiti.getYatsi());
-
-            // Alarmları kur
-            setPrayerAlarms(getApplicationContext(), namazVakiti);
-
-            // Bir sonraki gün için worker'ı planla
-            scheduleNextDayWorker();
+            // Bir sonraki gün için worker'ı şehrin gece yarısına (00:02) planla; cihazın saat dilimine değil
+            PrayerDayEntity todayData = current.timeline.day(today);
+            Instant nextRun = todayData != null
+                    ? PrayerClock.nextDayAt(today, LocalTime.of(0, 2), todayData.getGmtOffsetMinutes())
+                    : null;
+            scheduleNextDayWorker(nextRun);
 
             if (isWidgetActive(getApplicationContext(), PrayerTimesWidget.class)) {
                 Log.d("DailyPrayerWorker", "widget güncellemesi yapıldı");
@@ -107,49 +101,47 @@ public class DailyPrayerWorker extends Worker {
         return appWidgetIds.length > 0;
     }
 
-    private boolean isValidPrayerTimes(NamazVakiti namazVakiti) {
-        // Tüm vakitlerin geçerli olup olmadığını kontrol et
-        return namazVakiti.getImsak() != null && !namazVakiti.getImsak().isEmpty() &&
-                namazVakiti.getGunes() != null && !namazVakiti.getGunes().isEmpty() &&
-                namazVakiti.getOgle() != null && !namazVakiti.getOgle().isEmpty() &&
-                namazVakiti.getIkindi() != null && !namazVakiti.getIkindi().isEmpty() &&
-                namazVakiti.getAksam() != null && !namazVakiti.getAksam().isEmpty() &&
-                namazVakiti.getYatsi() != null && !namazVakiti.getYatsi().isEmpty();
-    }
-
-
-    private void setPrayerAlarms(Context context, NamazVakiti namazVakiti) {
+    private void setPrayerAlarms(Context context, PrayerTimeline timeline, LocalDate today) {
         Calendar now = Calendar.getInstance();
         SharedPrefsHelperService prefsHelper = new SharedPrefsHelperService(context, SETTINGS_PREFS);
         int notificationMinutes = prefsHelper.getRadioButtonState("radioGroupVakit");
         int notificationMinusSabahEzaniIcin = 0;
         Log.d("DailyPrayerWorker", "Bildirim süresi: " + notificationMinutes + " dakika önce");
 
-        String[][] prayerSwitchPairs = {
-                {namazVakiti.getImsak(), "switchNotificationImsak", "İmsak"},
-                {namazVakiti.getGunes(), "switchNotificationSabah", "Güneş"},
-                {namazVakiti.getOgle(), "switchNotificationOgle", "Öğle"},
-                {namazVakiti.getIkindi(), "switchNotificationIkindi", "İkindi"},
-                {namazVakiti.getAksam(), "switchNotificationAksam", "Akşam"},
-                {namazVakiti.getYatsi(), "switchNotificationYatsi", "Yatsı"}
+        // Vakit, ayar anahtarı ve bildirim/ses içinde kullanılan ad (mevcut request code'lar korunur)
+        Object[][] prayerSwitchPairs = {
+                {PrayerSlot.IMSAK, "switchNotificationImsak", "İmsak"},
+                {PrayerSlot.GUNES, "switchNotificationSabah", "Güneş"},
+                {PrayerSlot.OGLE, "switchNotificationOgle", "Öğle"},
+                {PrayerSlot.IKINDI, "switchNotificationIkindi", "İkindi"},
+                {PrayerSlot.AKSAM, "switchNotificationAksam", "Akşam"},
+                {PrayerSlot.YATSI, "switchNotificationYatsi", "Yatsı"}
         };
 
-        for (String[] prayerInfo : prayerSwitchPairs) {
-            String prayerTime = prayerInfo[0];
-            String switchKey = prayerInfo[1];
-            String prayerName = prayerInfo[2];
-
-            if (!sharedPrefsHelperService.getSwitchState("switchNotificationAll") ||
-                    !sharedPrefsHelperService.getSwitchState(switchKey)) {
-                continue;
-            }
+        for (Object[] prayerInfo : prayerSwitchPairs) {
+            PrayerSlot slot = (PrayerSlot) prayerInfo[0];
+            String switchKey = (String) prayerInfo[1];
+            String prayerName = (String) prayerInfo[2];
 
             try {
-                String[] timeParts = prayerTime.split(":");
+                Instant prayerInstant = timeline.instantOf(today, slot);
+
+                // Önce bugünün bu vakit için kurulu alarmlarını kaldır: şehir değiştiyse eski şehrin saati,
+                // bildirim kapatıldıysa kapatılan vakit çalmasın (aynı request code ile)
+                Date idDate = prayerInstant != null ? new Date(prayerInstant.toEpochMilli()) : new Date();
+                cancelAlarmForPrayer(context, idDate, prayerName);
+                cancelPrayerSound(context, prayerName);
+
+                if (!sharedPrefsHelperService.getSwitchState("switchNotificationAll") ||
+                        !sharedPrefsHelperService.getSwitchState(switchKey)) {
+                    continue;
+                }
+                if (prayerInstant == null) {
+                    continue; // vakit oluşmuyor (kutup bölgesi): bildirim/alarm kurulmaz (§5)
+                }
+                // Kesin an şehrin o günkü gmt farkıyla (PrayerClock); cihaz saat dilimi kullanılmaz
                 Calendar prayerCal = Calendar.getInstance();
-                prayerCal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeParts[0]));
-                prayerCal.set(Calendar.MINUTE, Integer.parseInt(timeParts[1]));
-                prayerCal.set(Calendar.SECOND, 0);
+                prayerCal.setTimeInMillis(prayerInstant.toEpochMilli());
 
                 if (prayerCal.after(now)) {
                     String message = getNotificationMessage(getApplicationContext(), prayerName);
@@ -197,6 +189,21 @@ public class DailyPrayerWorker extends Worker {
             }
         } catch (Exception e) {
             Log.e("DailyPrayerWorker", "Alarm iptal edilirken hata: " + e.getMessage());
+        }
+    }
+
+    /** schedulePrayerSound ile aynı Intent ve request code: kurulmuşsa ezan sesi alarmını kaldırır. */
+    private void cancelPrayerSound(Context context, String prayerName) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager == null) return;
+        Intent intent = new Intent(context, PrayerSoundReceiver.class);
+        intent.setAction("com.myapp.yolcu.ACTION_ALARM_NOTIFICATION");
+        int requestCode = ("sound_" + prayerName + Calendar.getInstance().get(Calendar.DAY_OF_YEAR)).hashCode();
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent,
+                PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE);
+        if (pendingIntent != null) {
+            alarmManager.cancel(pendingIntent);
+            pendingIntent.cancel();
         }
     }
 
@@ -328,17 +335,27 @@ public class DailyPrayerWorker extends Worker {
         Log.d("DailyPrayerWorker", "Eski bildirim kayıtları temizlendi");
     }
 
+    /** Şehrin vakit verisi yoksa (seçim/veri yok, worker durduruldu) cihazın gece yarısına planlanır. */
     private void scheduleNextDayWorker() {
-        try {
-            // Bir sonraki gün için zamanı ayarla (00:02)
-            Calendar nextRun = Calendar.getInstance();
-            nextRun.add(Calendar.DAY_OF_YEAR, 1);
-            nextRun.set(Calendar.HOUR_OF_DAY, 0);
-            nextRun.set(Calendar.MINUTE, 2);
-            nextRun.set(Calendar.SECOND, 0);
-            nextRun.set(Calendar.MILLISECOND, 0);
+        scheduleNextDayWorker(null);
+    }
 
-            long delay = nextRun.getTimeInMillis() - System.currentTimeMillis();
+    /** @param cityNextRun şehrin ertesi günü 00:02 (gmt farkıyla); null ise cihazın gece yarısı */
+    private void scheduleNextDayWorker(@Nullable Instant cityNextRun) {
+        try {
+            Calendar nextRun = Calendar.getInstance();
+            if (cityNextRun != null) {
+                nextRun.setTimeInMillis(cityNextRun.toEpochMilli());
+            } else {
+                // Bir sonraki gün için zamanı ayarla (00:02)
+                nextRun.add(Calendar.DAY_OF_YEAR, 1);
+                nextRun.set(Calendar.HOUR_OF_DAY, 0);
+                nextRun.set(Calendar.MINUTE, 2);
+                nextRun.set(Calendar.SECOND, 0);
+                nextRun.set(Calendar.MILLISECOND, 0);
+            }
+
+            long delay = Math.max(0, nextRun.getTimeInMillis() - System.currentTimeMillis());
 
             Log.d("DailyPrayerWorker", String.format(
                     "Bir sonraki gün için worker planlanıyor:\n" +

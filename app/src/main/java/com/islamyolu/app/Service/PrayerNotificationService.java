@@ -19,21 +19,37 @@ import android.widget.RemoteViews;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.islamyolu.app.Entity.PrayerNames;
 import com.islamyolu.app.R;
-import com.islamyolu.app.VakitApi.NamazVakiti;
-import com.islamyolu.app.VakitApi.VakitNoApi;
 import com.islamyolu.app.main.MainActivity;
+import com.islamyolu.app.prayertimes.CurrentPrayerTimes;
+import com.islamyolu.app.prayertimes.PrayerDisplay;
+import com.islamyolu.app.prayertimes.PrayerSlot;
+import com.islamyolu.app.prayertimes.PrayerTimeline;
+import com.islamyolu.app.prayertimes.db.PrayerDayEntity;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/**
+ * "Vakti her zaman göster" kalıcı bildirimi. Vakitler Room'dan okunur (§5), geri sayım saniyede bir
+ * şehrin gmt farkıyla hesaplanır. Veri arka planda periyodik ve gün dönünce yeniden yüklenir.
+ */
 public class PrayerNotificationService extends Service {
     private static final String TAG = "PrayerNotificationService";
     private static final String CHANNEL_ID = "prayer_service_channel";
+    /** Senkronla gelen yeni veriyi yakalamak için Room'dan yeniden okuma aralığı */
+    private static final long RELOAD_INTERVAL_MS = 10 * 60 * 1000L;
+
     private Handler handler;
     private boolean isRunning = false;
-    private NamazVakiti currentNamazVakiti = new NamazVakiti();
     private NotificationManager notificationManager;
     private SharedPrefsHelperService sharedPrefsHelperSettingService;
-    private final VakitNoApi vakitNoApi = new VakitNoApi();
+    private final ExecutorService loader = Executors.newSingleThreadExecutor();
+    @Nullable private CurrentPrayerTimes current;
+    private long loadedAt;
+    private boolean loading;
 
     private final Runnable updateRunnable = new Runnable() {
         @Override
@@ -56,7 +72,7 @@ public class PrayerNotificationService extends Service {
     private void createNotificationChannel() {
         NotificationChannel channel = new NotificationChannel(
                 CHANNEL_ID,
-                "Namaz Vakitleri",
+                getString(R.string.namaz_vakit_notification_header),
                 NotificationManager.IMPORTANCE_DEFAULT
         );
         channel.setShowBadge(false);
@@ -68,66 +84,64 @@ public class PrayerNotificationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        try {
-            boolean showAlways = sharedPrefsHelperSettingService.getSwitchState("switchNotificationVakitHerzamanGoster");
-
-            if (showAlways) {
-                if (!isRunning || currentNamazVakiti == null) {
-                    String cityName = sharedPrefsHelperSettingService.getCityNameFromPreferences();
-                    currentNamazVakiti = vakitNoApi.getLocalPrayerTimesByCityName(cityName);
-
-                    if (currentNamazVakiti != null) {
-                        NamazVakiti.updateInstance(currentNamazVakiti);
-                        updatePrayerTimes();
-                        startPrayerTimeUpdates();
-                        isRunning = true;
-                        Log.d(TAG, "Service started and times updated");
-                    }
-                }
-                return START_STICKY;
-            } else {
-                stopForeground(Service.STOP_FOREGROUND_REMOVE);
-                stopSelf();
-                return START_NOT_STICKY;
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Service start error: " + e.getMessage(), e);
+        boolean showAlways = sharedPrefsHelperSettingService.getSwitchState("switchNotificationVakitHerzamanGoster");
+        if (!showAlways) {
+            stopForeground(Service.STOP_FOREGROUND_REMOVE);
+            stopSelf();
             return START_NOT_STICKY;
         }
+        if (!isRunning) {
+            reloadTimes();
+            handler.removeCallbacks(updateRunnable);
+            handler.post(updateRunnable);
+            Log.d(TAG, "Service started");
+        }
+        return START_STICKY;
     }
 
-    private void startPrayerTimeUpdates() {
-        handler.removeCallbacks(updateRunnable);
-        handler.post(updateRunnable);
+    /** Room'dan arka planda okur; ana thread'de disk işi yapılmaz. */
+    private void reloadTimes() {
+        if (loading) return;
+        loading = true;
+        loader.execute(() -> {
+            CurrentPrayerTimes loaded = CurrentPrayerTimes.load(getApplicationContext(), Instant.now());
+            handler.post(() -> {
+                current = loaded;
+                loadedAt = System.currentTimeMillis();
+                loading = false;
+                if (!isRunning && (loaded.selection == null || loaded.timeline.today(Instant.now()) == null)) {
+                    // Gösterilecek vakit yok (şehir seçilmemiş/veri bitmiş): bildirim açılamaz, servis kapanır
+                    Log.w(TAG, "Vakit verisi yok; kalıcı bildirim başlatılmadı");
+                    stopSelf();
+                }
+            });
+        });
     }
 
     private void updatePrayerTimes() {
-        try {
-            if (currentNamazVakiti.getGecerliVakit() == null) {
-                String cityName = sharedPrefsHelperSettingService.getCityNameFromPreferences();
-                currentNamazVakiti = vakitNoApi.getLocalPrayerTimesByCityName(cityName);
-                if (currentNamazVakiti.getGecerliVakit() != null) {
-                    NamazVakiti.updateInstance(currentNamazVakiti);
-                } else {
-                    onDestroy();
-                }
-            } else {
-                updatePrayerNotification();
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Vakit güncelleme hatası: " + e.getMessage(), e);
+        Instant now = Instant.now();
+        if (current == null) {
+            return; // ilk yükleme sürüyor
         }
+        PrayerTimeline.Moment next = current.timeline.next(now);
+        PrayerDayEntity today = current.timeline.today(now);
+        if (next == null || today == null || System.currentTimeMillis() - loadedAt > RELOAD_INTERVAL_MS) {
+            reloadTimes(); // gün döndü, veri yenilendi veya bitti
+        }
+        if (current.selection == null || next == null || today == null) {
+            return; // gösterilecek vakit yok; eski bildirim yerinde kalır
+        }
+        updatePrayerNotification(today, next, now);
     }
 
-
-    private void updatePrayerNotification() {
+    private void updatePrayerNotification(PrayerDayEntity today, PrayerTimeline.Moment next, Instant now) {
         try {
-            String cityName = sharedPrefsHelperSettingService.getCityNameFromPreferences();
-//            String remainingTime = getRemainingTimeFormatted();
+            String cityName = current.selection.getCityName();
+            String nextName = getString(PrayerDisplay.nameRes(next.slot));
+            String remainingTime = PrayerDisplay.remaining(Duration.between(now, next.instant), true);
 
             RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.notification_collapsed);
             RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.notification_expanded);
-
 
             // Ana aktiviteyi açmak için Intent oluştur
             Intent mainActivityIntent = new Intent(this, MainActivity.class);
@@ -135,8 +149,6 @@ public class PrayerNotificationService extends Service {
             mainActivityIntent.setAction(Intent.ACTION_MAIN);
             mainActivityIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 
-
-            // PendingIntent oluştur
             PendingIntent pendingIntent = PendingIntent.getActivity(
                     this,
                     0,
@@ -148,14 +160,14 @@ public class PrayerNotificationService extends Service {
             collapsedView.setOnClickPendingIntent(R.id.notification_collapsed_root, emptyIntent);
             expandedView.setOnClickPendingIntent(R.id.notification_expanded_root, pendingIntent);
 
-            String remainingTime = currentNamazVakiti.getNextPrayerTimeRemainingTimeFormatted(true);
-
             collapsedView.setTextViewText(R.id.remainingTime, remainingTime);
-            collapsedView.setTextViewText(R.id.remainingTimeLabel, String.format("sonra %s vakti", currentNamazVakiti.getNextPrayer().getName()));
-            collapsedView.setTextViewText(R.id.nextPrayerInfoRemainCity, String.format("%s | %s: %s", cityName, currentNamazVakiti.getNextPrayer().getName(), currentNamazVakiti.getNextPrayer().getTime()));
-            collapsedView.setTextViewText(R.id.hicriAy, "Hicri: " + currentNamazVakiti.getHicriDate());
+            collapsedView.setTextViewText(R.id.remainingTimeLabel, getString(R.string.prayer_notification_next, nextName));
+            collapsedView.setTextViewText(R.id.nextPrayerInfoRemainCity,
+                    cityName + " | " + getString(R.string.prayer_notification_time, nextName, next.time));
+            collapsedView.setTextViewText(R.id.hicriAy,
+                    getString(R.string.prayer_notification_hijri, PrayerDisplay.hijri(this, today.getHijri())));
 
-            setupExpandedView(expandedView, cityName, remainingTime);
+            setupExpandedView(expandedView, cityName, remainingTime, today, next.slot);
 
             Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                     .setSmallIcon(R.drawable.crescent)
@@ -172,45 +184,44 @@ public class PrayerNotificationService extends Service {
 
             if (!isRunning) {
                 startForeground(FOREGROUND_NOTIFICATION_ID, notification);
+                isRunning = true;
             } else {
                 notificationManager.notify(FOREGROUND_NOTIFICATION_ID, notification);
             }
-
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             Log.e(TAG, "Bildirim güncelleme hatası: " + e.getMessage(), e);
         }
     }
 
-    private void setupExpandedView(RemoteViews expandedView, String cityName, String remainingTime) {
+    private void setupExpandedView(RemoteViews expandedView, String cityName, String remainingTime,
+                                   PrayerDayEntity today, PrayerSlot nextSlot) {
         expandedView.setTextViewText(R.id.cityName, cityName);
         expandedView.setTextViewText(R.id.remainingTime, remainingTime);
 
-        int[] prayerTimeIds = {R.id.imsak, R.id.gunes, R.id.ogle, R.id.ikindi, R.id.aksam, R.id.yatsi};
-        for (int id : prayerTimeIds) {
-            expandedView.setInt(id, "setBackgroundResource", R.drawable.prayer_time_card_background);
+        for (PrayerSlot slot : PrayerSlot.values()) {
+            int viewId = viewIdFor(slot);
+            expandedView.setInt(viewId, "setBackgroundResource", slot == nextSlot
+                    ? R.drawable.prayer_time_card_background_active : R.drawable.prayer_time_card_background);
+            expandedView.setTextViewText(viewId, getString(R.string.prayer_notification_time,
+                    getString(PrayerDisplay.nameRes(slot)), PrayerDisplay.time(slot.timeOf(today))));
         }
-
-        int nextPrayerId = getViewIdForPrayer(currentNamazVakiti.getNextPrayer().getName());
-        if (nextPrayerId != 0) {
-            expandedView.setInt(nextPrayerId, "setBackgroundResource", R.drawable.prayer_time_card_background_active);
-        }
-
-        expandedView.setTextViewText(R.id.imsak, "İmsak: " + currentNamazVakiti.getImsak());
-        expandedView.setTextViewText(R.id.gunes, "Güneş: " + currentNamazVakiti.getGunes());
-        expandedView.setTextViewText(R.id.ogle, "Öğle: " + currentNamazVakiti.getOgle());
-        expandedView.setTextViewText(R.id.ikindi, "İkindi: " + currentNamazVakiti.getIkindi());
-        expandedView.setTextViewText(R.id.aksam, "Akşam: " + currentNamazVakiti.getAksam());
-        expandedView.setTextViewText(R.id.yatsi, "Yatsı: " + currentNamazVakiti.getYatsi());
     }
 
-    private int getViewIdForPrayer(String prayerName) {
-        if (prayerName.equals(PrayerNames.IMSAK.getValue())) return R.id.imsak;
-        if (prayerName.equals(PrayerNames.GUNES.getValue())) return R.id.gunes;
-        if (prayerName.equals(PrayerNames.OGLE.getValue())) return R.id.ogle;
-        if (prayerName.equals(PrayerNames.IKINDI.getValue())) return R.id.ikindi;
-        if (prayerName.equals(PrayerNames.AKSAM.getValue())) return R.id.aksam;
-        if (prayerName.equals(PrayerNames.YATSI.getValue())) return R.id.yatsi;
-        return 0;
+    private static int viewIdFor(PrayerSlot slot) {
+        switch (slot) {
+            case IMSAK:
+                return R.id.imsak;
+            case GUNES:
+                return R.id.gunes;
+            case OGLE:
+                return R.id.ogle;
+            case IKINDI:
+                return R.id.ikindi;
+            case AKSAM:
+                return R.id.aksam;
+            default:
+                return R.id.yatsi;
+        }
     }
 
     @Override
@@ -226,6 +237,7 @@ public class PrayerNotificationService extends Service {
         if (handler != null) {
             handler.removeCallbacks(updateRunnable);
         }
+        loader.shutdownNow();
         Log.d(TAG, "Service destroyed");
     }
 

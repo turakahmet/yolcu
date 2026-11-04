@@ -34,7 +34,6 @@ play-review = "2.0.2"
 
 # --- Üçüncü Parti Görsel Bileşenler (Third Party UI) ---
 stepview = "1.5.1"
-adhan = "0.0.5"
 photoview = "2.3.0"
 glide = "5.0.9"
 dotsindicator = "5.1.2"
@@ -94,8 +93,6 @@ play-review = { group = "com.google.android.play", name = "review", version.ref 
 # --- Üçüncü Parti Görsel Bileşenler (Third Party UI) ---
 # StepView: Soruların / aşamaların adım adım gösterimi
 stepview = { group = "com.github.shuhart", name = "stepview", version.ref = "stepview" }
-# Adhan: Namaz vakitleri hesaplama
-adhan = { group = "com.batoulapps.adhan", name = "adhan2", version.ref = "adhan" }
 # PhotoView: Resimlerde yakınlaştırma (zoom) desteği
 photoview = { group = "com.github.chrisbanes", name = "PhotoView", version.ref = "photoview" }
 # Glide: Hızlı ve bellek dostu resim yükleme

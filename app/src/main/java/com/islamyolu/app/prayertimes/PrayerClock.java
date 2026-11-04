@@ -46,6 +46,15 @@ public final class PrayerClock {
     }
 
     /**
+     * Şehirde ertesi günün belirli saatine karşılık gelen kesin an (ör. günlük alarm kurulumu için 00:02).
+     * Gece yarısında henüz bugünün farkı geçerli olduğundan (yaz saati 03:00'te değişir) bugünün gmt farkı kullanılır.
+     */
+    @NonNull
+    public static Instant nextDayAt(@NonNull LocalDate cityToday, @NonNull LocalTime localTime, int todayGmtOffsetMinutes) {
+        return LocalDateTime.of(cityToday.plusDays(1), localTime).toInstant(toZoneOffset(todayGmtOffsetMinutes));
+    }
+
+    /**
      * Şehrin şu anki yerel tarihi.
      * Bir gün, önceki günün farkıyla gece yarısında başlar ve kendi farkıyla ertesi gece yarısında
      * biter; geçiş günleri (23/25 saatlik günler) böylece boşluksuz ve çakışmasız kalır.

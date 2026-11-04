@@ -104,6 +104,25 @@ public class PrayerClockTest {
     }
 
     @Test
+    public void nextDayAt_sehrinGeceYarisiniKullanir() {
+        // Ankara (+3): 4 Kasım'ın ertesi günü 00:02 = 4 Kasım 21:02Z (cihaz GMT olsa da)
+        assertEquals(Instant.parse("2026-11-04T21:02:00Z"),
+                PrayerClock.nextDayAt(LocalDate.of(2026, 11, 4), java.time.LocalTime.of(0, 2), 180));
+        // Almanya geri alma günü: 25 Ekim 00:02 hâlâ yaz saati (+2) → 24 Ekim 22:02Z
+        assertEquals(Instant.parse("2026-10-24T22:02:00Z"),
+                PrayerClock.nextDayAt(LocalDate.of(2026, 10, 24), java.time.LocalTime.of(0, 2), 120));
+    }
+
+    @Test
+    public void alarmAni_yazSaatiGecisGunu() {
+        // 25 Ekim Almanya (+1): öğle 12:45 → 11:45Z; bir gün önce (+2) aynı saat 10:45Z
+        assertEquals(Instant.parse("2026-10-25T11:45:00Z"),
+                PrayerClock.toInstant(LocalDate.of(2026, 10, 25), "12:45", 60));
+        assertEquals(Instant.parse("2026-10-24T10:45:00Z"),
+                PrayerClock.toInstant(LocalDate.of(2026, 10, 24), "12:45", 120));
+    }
+
+    @Test
     public void cityToday_veriYoksaNull() {
         Map<LocalDate, Integer> offsets = offsets(LocalDate.of(2026, 1, 1), 180);
         assertNull(PrayerClock.cityToday(Instant.parse("2026-11-01T12:00:00Z"), offsets::get));

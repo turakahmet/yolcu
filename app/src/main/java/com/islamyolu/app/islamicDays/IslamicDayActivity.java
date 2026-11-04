@@ -19,7 +19,7 @@ import com.islamyolu.app.R;
 import com.islamyolu.app.Service.APIService;
 import com.islamyolu.app.Service.NetworkServiceUtil;
 import com.islamyolu.app.Utils.APIClient;
-import com.islamyolu.app.VakitApi.NamazVakiti;
+import com.islamyolu.app.prayertimes.PrayerDisplay;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -113,7 +113,7 @@ public class IslamicDayActivity extends AppCompatActivity {
         yearSelectSpinner = findViewById(R.id.yearSelectSpinner);
 
 
-        hijriDateText.setText(NamazVakiti.getInstance().getHicriDate());
+        hijriDateText.setText(PrayerDisplay.hijriTodayCalculated(this));
 
     }
 

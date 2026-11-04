@@ -23,13 +23,18 @@ import androidx.core.content.ContextCompat;
 import com.islamyolu.app.R;
 import com.islamyolu.app.Service.SharedPrefsHelperService;
 import com.islamyolu.app.VakitApi.City;
-import com.islamyolu.app.VakitApi.NamazVakiti;
-import com.islamyolu.app.VakitApi.VakitNoApi;
+import com.islamyolu.app.prayertimes.CurrentPrayerTimes;
+import com.islamyolu.app.prayertimes.PrayerDisplay;
+import com.islamyolu.app.prayertimes.PrayerSlot;
+import com.islamyolu.app.prayertimes.PrayerTimeline;
+import com.islamyolu.app.prayertimes.db.PrayerDayEntity;
 import com.islamyolu.app.main.MainActivity;
 import com.islamyolu.app.weather.WeatherData;
 import com.islamyolu.app.weather.WeatherIcon;
 import com.islamyolu.app.weather.WeatherService;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -39,7 +44,6 @@ public class PrayerTimesWidget extends AppWidgetProvider {
     private static final String WEATHER_UPDATE_ACTION = "com.myapp.yolcu.UPDATE_WEATHER";
     private static final long WEATHER_UPDATE_INTERVAL = 3600000; // 1 saat
     public static final String PACKAGE_NAME = "com.islamyolu.app";
-    private final VakitNoApi vakitNoApi = new VakitNoApi();
     private RemoteViews views;
     private ImageView widget_logo;
     private static final String ACTION_REFRESH_WEATHER = "com.myapp.yolcu.REFRESH_WEATHER";
@@ -81,7 +85,7 @@ public class PrayerTimesWidget extends AppWidgetProvider {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 
             // Önce varsayılan değerleri göster
-            setDefaultValues(views);
+            setDefaultValues(context, views);
             appWidgetManager.updateAppWidget(appWidgetId, views);
 
             // Go App butonunu tıklayınca uygulamayı başlatacak intent oluşturuluyor
@@ -100,21 +104,23 @@ public class PrayerTimesWidget extends AppWidgetProvider {
             } else {
                 Log.e(TAG, "Uygulama bulunamadı");
             }
-            // Arka planda vakitleri yükle
+            // Vakitler arka planda Room'dan okunur (§5); hava durumu eski il bilgisinden (city_name)
             new Thread(() -> {
                 try {
-                    SharedPrefsHelperService sharedPrefs = new SharedPrefsHelperService(context, MainActivity.SETTINGS_PREFS);
-                    String cityName = sharedPrefs.getCityNameFromPreferences();
-
-                    NamazVakiti namazVakiti = vakitNoApi.localPrayerTimes(Objects.requireNonNull(City.fromCityName(cityName)).getLatitude(), Objects.requireNonNull(City.fromCityName(cityName)).getLongitude());
+                    CurrentPrayerTimes current = CurrentPrayerTimes.load(context, Instant.now());
+                    String weatherCity = new SharedPrefsHelperService(context, MainActivity.SETTINGS_PREFS)
+                            .getCityNameFromPreferences();
+                    City weatherLocation = weatherCity != null ? City.fromCityName(weatherCity) : null;
 
                     new Handler(Looper.getMainLooper()).post(() -> {
-                        updateWidgetViews(context, views, namazVakiti, cityName, appWidgetManager, appWidgetId);
-                        updateWeatherInfo(context, views, Objects.requireNonNull(City.fromCityName(cityName)).getLatitude(), Objects.requireNonNull(City.fromCityName(cityName)).getLongitude(), appWidgetManager, appWidgetId);
+                        updateWidgetViews(context, views, current, appWidgetManager, appWidgetId);
+                        if (weatherLocation != null) {
+                            updateWeatherInfo(context, views, weatherLocation.getLatitude(), weatherLocation.getLongitude(), appWidgetManager, appWidgetId);
+                        }
                     });
 
-                } catch (Exception e) {
-                    Log.e(TAG, "Background update error: " + e.getMessage());
+                } catch (RuntimeException e) {
+                    Log.e(TAG, "Background update error: " + e.getMessage(), e);
                 }
             }).start();
 
@@ -123,48 +129,54 @@ public class PrayerTimesWidget extends AppWidgetProvider {
         }
     }
 
-    private void updateWidgetViews(Context context, RemoteViews views, NamazVakiti namazVakiti,
-                                   String cityName, AppWidgetManager appWidgetManager, int appWidgetId) {
+    private void updateWidgetViews(Context context, RemoteViews views, CurrentPrayerTimes current,
+                                   AppWidgetManager appWidgetManager, int appWidgetId) {
         try {
-
-
             int transparency = WidgetSettingsActivity.loadTransparencyPref(context, appWidgetId);
             // Şeffaflık alpha hesapla
             int alpha = 255 - (transparency * 255 / 100);
             int baseColor = ContextCompat.getColor(context, R.color.widget_background);
             int backgroundColor = Color.argb(alpha, Color.red(baseColor), Color.green(baseColor), Color.blue(baseColor));
             views.setInt(R.id.widget_layout, "setBackgroundColor", backgroundColor);
-            views.setTextViewText(R.id.widget_city_name, cityName);
-            views.setTextViewText(R.id.widget_hijri_date, namazVakiti.getHicriDate());
 
-//            // Context'i resetAllPanelsAndTexts metoduna geçir
-            String remainingTime = namazVakiti.getNextPrayerTimeRemainingTimeFormatted(false);
-//            Log.d("resetAllPanelsAndTexts", "Pane
+            Instant now = Instant.now();
+            PrayerDayEntity today = current.timeline.today(now);
+            PrayerTimeline.Moment next = current.timeline.next(now);
+            views.setTextViewText(R.id.widget_city_name, current.selection != null
+                    ? current.selection.getCityName() : context.getString(R.string.prayer_choose_city));
+            views.setTextViewText(R.id.widget_hijri_date, PrayerDisplay.hijri(context, today != null ? today.getHijri() : null));
 
-            // Sonraki vakit bilgilerini göster
-            if (namazVakiti.getGecerliVakit() != null) {
-                String nextPrayerName = getVakitDisplayName(namazVakiti.getGecerliVakit());
-
-                views.setTextViewText(R.id.widget_next_prayer_label, "~" + nextPrayerName + " Vaktine~");
-                views.setTextViewText(R.id.widget_next_prayer_time, remainingTime);
-
-                // Yaklaşan vaktin panel ve text renklerini güncelle
-                updateActivePanelAndTexts(views, namazVakiti.getGecerliVakit(), context);
+            resetAllPanelsAndTexts(views, context);
+            if (today != null && next != null) {
+                // Sonraki vakit ve kalan süre (şehrin gmt farkıyla)
+                views.setTextViewText(R.id.widget_next_prayer_label, context.getString(
+                        R.string.widget_next_prayer_label, context.getString(PrayerDisplay.nameRes(next.slot))));
+                views.setTextViewText(R.id.widget_next_prayer_time,
+                        PrayerDisplay.remaining(Duration.between(now, next.instant), false));
+                updateActivePanelAndTexts(views, next.slot, context);
+            } else {
+                // Şehir seçilmemiş veya veri bitmiş (§6)
+                views.setTextViewText(R.id.widget_next_prayer_label, context.getString(current.selection == null
+                        ? R.string.prayer_status_no_city : R.string.prayer_status_outdated_offline));
+                views.setTextViewText(R.id.widget_next_prayer_time, "");
             }
 
-            // Diğer vakitleri güncelle
-            views.setTextViewText(R.id.widget_imsak_time, namazVakiti.getImsak());
-            views.setTextViewText(R.id.widget_gunes_time, namazVakiti.getGunes());
-            views.setTextViewText(R.id.widget_ogle_time, namazVakiti.getOgle());
-            views.setTextViewText(R.id.widget_ikindi_time, namazVakiti.getIkindi());
-            views.setTextViewText(R.id.widget_aksam_time, namazVakiti.getAksam());
-            views.setTextViewText(R.id.widget_yatsi_time, namazVakiti.getYatsi());
+            views.setTextViewText(R.id.widget_imsak_time, timeOf(today, PrayerSlot.IMSAK));
+            views.setTextViewText(R.id.widget_gunes_time, timeOf(today, PrayerSlot.GUNES));
+            views.setTextViewText(R.id.widget_ogle_time, timeOf(today, PrayerSlot.OGLE));
+            views.setTextViewText(R.id.widget_ikindi_time, timeOf(today, PrayerSlot.IKINDI));
+            views.setTextViewText(R.id.widget_aksam_time, timeOf(today, PrayerSlot.AKSAM));
+            views.setTextViewText(R.id.widget_yatsi_time, timeOf(today, PrayerSlot.YATSI));
 
             appWidgetManager.updateAppWidget(appWidgetId, views);
             scheduleNextUpdate(context);
-        } catch (Exception e) {
-            Log.e(TAG, "Widget view update error: " + e.getMessage());
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Widget view update error: " + e.getMessage(), e);
         }
+    }
+
+    private static String timeOf(PrayerDayEntity today, PrayerSlot slot) {
+        return today != null ? PrayerDisplay.time(slot.timeOf(today)) : PrayerDisplay.EMPTY_TIME;
     }
 
 
@@ -193,7 +205,7 @@ public class PrayerTimesWidget extends AppWidgetProvider {
         views.setTextColor(R.id.widget_yatsi_time, defaultTextColor);
     }
 
-    private void updateActivePanelAndTexts(RemoteViews views, NamazVakiti.GecerliVakit vakit, Context context) {
+    private void updateActivePanelAndTexts(RemoteViews views, PrayerSlot vakit, Context context) {
         resetAllPanelsAndTexts(views, context);
 
         int panelId = getPanelIdForVakit(vakit);
@@ -211,7 +223,7 @@ public class PrayerTimesWidget extends AppWidgetProvider {
 
     }
 
-    private int getLabelIdForVakit(NamazVakiti.GecerliVakit vakit) {
+    private int getLabelIdForVakit(PrayerSlot vakit) {
         switch (vakit) {
             case IMSAK:
                 return R.id.widget_imsak;
@@ -230,7 +242,7 @@ public class PrayerTimesWidget extends AppWidgetProvider {
         }
     }
 
-    private int getTimeIdForVakit(NamazVakiti.GecerliVakit vakit) {
+    private int getTimeIdForVakit(PrayerSlot vakit) {
         switch (vakit) {
             case IMSAK:
                 return R.id.widget_imsak_time;
@@ -267,24 +279,6 @@ public class PrayerTimesWidget extends AppWidgetProvider {
     }
 
 
-    private String getVakitDisplayName(NamazVakiti.GecerliVakit vakit) {
-        switch (vakit) {
-            case IMSAK:
-                return "İmsak";
-            case GUNES:
-                return "Güneş";
-            case OGLE:
-                return "Öğle";
-            case IKINDI:
-                return "İkindi";
-            case AKSAM:
-                return "Akşam";
-            case YATSI:
-                return "Yatsı";
-            default:
-                return "Bilinmiyor";
-        }
-    }
 
 
     @Override
@@ -324,17 +318,17 @@ public class PrayerTimesWidget extends AppWidgetProvider {
         // Widget silindiğinde servisi etkileme
     }
 
-    private void setDefaultValues(RemoteViews views) {
-        views.setTextViewText(R.id.widget_city_name, "Yükleniyor...");
-        views.setTextViewText(R.id.widget_imsak_time, "--:--");
-        views.setTextViewText(R.id.widget_gunes_time, "--:--");
-        views.setTextViewText(R.id.widget_ogle_time, "--:--");
-        views.setTextViewText(R.id.widget_ikindi_time, "--:--");
-        views.setTextViewText(R.id.widget_aksam_time, "--:--");
-        views.setTextViewText(R.id.widget_yatsi_time, "--:--");
+    private void setDefaultValues(Context context, RemoteViews views) {
+        views.setTextViewText(R.id.widget_city_name, context.getString(R.string.widget_loading));
+        views.setTextViewText(R.id.widget_imsak_time, PrayerDisplay.EMPTY_TIME);
+        views.setTextViewText(R.id.widget_gunes_time, PrayerDisplay.EMPTY_TIME);
+        views.setTextViewText(R.id.widget_ogle_time, PrayerDisplay.EMPTY_TIME);
+        views.setTextViewText(R.id.widget_ikindi_time, PrayerDisplay.EMPTY_TIME);
+        views.setTextViewText(R.id.widget_aksam_time, PrayerDisplay.EMPTY_TIME);
+        views.setTextViewText(R.id.widget_yatsi_time, PrayerDisplay.EMPTY_TIME);
     }
 
-    private int getPanelIdForVakit(NamazVakiti.GecerliVakit vakit) {
+    private int getPanelIdForVakit(PrayerSlot vakit) {
         switch (vakit) {
             case IMSAK:
                 return R.id.panelImsak;

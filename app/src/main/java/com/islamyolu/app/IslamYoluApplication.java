@@ -10,6 +10,7 @@ import com.islamyolu.app.prayertimes.PrayerTimesParser;
 import com.islamyolu.app.prayertimes.PrayerTimesRepository;
 import com.islamyolu.app.prayertimes.PrayerTimesValidator;
 import com.islamyolu.app.prayertimes.remote.PrayerTimesApiClient;
+import com.islamyolu.app.prayertimes.sync.PrayerTimesSyncScheduler;
 
 import java.time.Clock;
 
@@ -21,6 +22,13 @@ public class IslamYoluApplication extends Application {
 
     private volatile AppDatabase database;
     private volatile PrayerTimesRepository prayerTimesRepository;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // Haftalık vakit senkronizasyonu + açılışta tek seferlik kontrol (veri yeterliyse indirmez)
+        PrayerTimesSyncScheduler.onAppStart(this);
+    }
 
     @NonNull
     public static IslamYoluApplication from(@NonNull Context context) {

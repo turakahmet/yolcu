@@ -1156,4 +1156,31 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="location_line_district">İlçe: %1$s</string>
     <string name="location_line_state">Eyalet: %1$s</string>
     <string name="location_line_city">Şehir: %1$s</string>
-    <string name="location_line_prayer_center">İlçeniz Diyanet listesinde ayrı yer almıyor; %1$s (il merkezi) namaz vakitleri kullanılacak.</string></resources>
+    <string name="location_line_prayer_center">İlçeniz Diyanet listesinde ayrı yer almıyor; %1$s (il merkezi) namaz vakitleri kullanılacak.</string>    <!-- Namaz vakitleri gösterimi (Room) -->
+    <string name="prayer_status_no_city">Namaz vakitleri için şehrinizi seçin</string>
+    <string name="prayer_status_outdated_offline">Vakitler güncel değil, internete bağlanın</string>
+    <string name="prayer_status_updating">Vakitler güncelleniyor…</string>
+    <string name="prayer_choose_city">Şehir seç</string>
+    <string name="kerahat_in_progress">KERAHAT VAKTİ İÇİNDESİNİZ</string>
+    <string name="prayer_remaining_with_kerahat">%1$s / %2$s</string>
+    <string name="widget_next_prayer_label">~%1$s Vaktine~</string>
+    <string name="widget_loading">Yükleniyor...</string>
+    <string name="prayer_notification_next">sonra %1$s vakti</string>
+    <string name="prayer_notification_hijri">Hicri: %1$s</string>
+    <string name="prayer_notification_time">%1$s: %2$s</string>
+    <string name="prayer_monthly_needs_city">Takvim için önce namaz vakti şehrinizi seçin.</string>
+    <string-array name="hijri_months">
+        <item>Muharrem</item>
+        <item>Safer</item>
+        <item>Rebiülevvel</item>
+        <item>Rebiülahir</item>
+        <item>Cemaziyelevvel</item>
+        <item>Cemaziyelahir</item>
+        <item>Recep</item>
+        <item>Şaban</item>
+        <item>Ramazan</item>
+        <item>Şevval</item>
+        <item>Zilkade</item>
+        <item>Zilhicce</item>
+    </string-array>
+</resources>

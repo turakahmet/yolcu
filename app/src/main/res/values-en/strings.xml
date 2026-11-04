@@ -22,7 +22,7 @@
     <string name="no_permit_location">Location permission denied</string>
     <string name="suggestion_location_permit">We recommend that you turn on notifications for prayer times and other announcements.</string>
     <string name="imsak">Fajr</string>
-    <string name="gunes">Sunsire</string>
+    <string name="gunes">Sunrise</string>
     <string name="ogle">Dhuhr</string>
     <string name="ikindi">Asr</string>
     <string name="aksam">Maghrib</string>
@@ -36,7 +36,7 @@
     <string name="username_edit">Enter username</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
-    <string name="gunes_kalan">time left to Sunsire</string>
+    <string name="gunes_kalan">time left to Sunrise</string>
     <string name="ogle_kalan">time left to Dhuhr</string>
     <string name="ikindi_kalan">time left to Asr</string>
     <string name="aksam_kalan">time left to Maghrib</string>
@@ -203,4 +203,31 @@
     <string name="location_line_district">District: %1$s</string>
     <string name="location_line_state">State: %1$s</string>
     <string name="location_line_city">City: %1$s</string>
-    <string name="location_line_prayer_center">Your district is not listed separately by Diyanet; prayer times for %1$s (provincial center) will be used.</string></resources>
+    <string name="location_line_prayer_center">Your district is not listed separately by Diyanet; prayer times for %1$s (provincial center) will be used.</string>    <!-- Prayer times display (Room) -->
+    <string name="prayer_status_no_city">Choose your city for prayer times</string>
+    <string name="prayer_status_outdated_offline">Prayer times are outdated, please connect to the internet</string>
+    <string name="prayer_status_updating">Updating prayer times…</string>
+    <string name="prayer_choose_city">Choose city</string>
+    <string name="kerahat_in_progress">YOU ARE IN A KERAHAT (DISLIKED) TIME</string>
+    <string name="prayer_remaining_with_kerahat">%1$s / %2$s</string>
+    <string name="widget_next_prayer_label">~Until %1$s~</string>
+    <string name="widget_loading">Loading...</string>
+    <string name="prayer_notification_next">until %1$s</string>
+    <string name="prayer_notification_hijri">Hijri: %1$s</string>
+    <string name="prayer_notification_time">%1$s: %2$s</string>
+    <string name="prayer_monthly_needs_city">Choose your prayer times city first to see the calendar.</string>
+    <string-array name="hijri_months">
+        <item>Muharram</item>
+        <item>Safar</item>
+        <item>Rabi\' al-Awwal</item>
+        <item>Rabi\' al-Thani</item>
+        <item>Jumada al-Awwal</item>
+        <item>Jumada al-Thani</item>
+        <item>Rajab</item>
+        <item>Sha\'ban</item>
+        <item>Ramadan</item>
+        <item>Shawwal</item>
+        <item>Dhu al-Qadah</item>
+        <item>Dhu al-Hijjah</item>
+    </string-array>
+</resources>

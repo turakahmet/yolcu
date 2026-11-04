@@ -2,6 +2,7 @@ package com.islamyolu.app.prayertimes.db;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Query;
 import androidx.room.Transaction;
@@ -76,6 +77,10 @@ public abstract class PrayerTimesDao {
     @Nullable
     @Query("SELECT * FROM prayer_day WHERE cityId = :cityId AND date = :date")
     public abstract PrayerDayEntity getDay(int cityId, String date);
+
+    /** Ekranlar için: aralıktaki günler; Room'a yeni veri yazıldığında kendiliğinden güncellenir. */
+    @Query("SELECT * FROM prayer_day WHERE cityId = :cityId AND date BETWEEN :fromDate AND :toDate ORDER BY date")
+    public abstract LiveData<List<PrayerDayEntity>> observeDays(int cityId, String fromDate, String toDate);
 
     /** [fromDate, toDate] aralığındaki günler, tarih sırasıyla. */
     @Query("SELECT * FROM prayer_day WHERE cityId = :cityId AND date BETWEEN :fromDate AND :toDate ORDER BY date")

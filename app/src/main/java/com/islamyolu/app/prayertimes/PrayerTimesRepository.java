@@ -5,6 +5,7 @@ import android.database.SQLException;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
+import androidx.lifecycle.LiveData;
 
 import com.islamyolu.app.Utils.AppLogger;
 import com.islamyolu.app.prayertimes.db.PrayerCityEntity;
@@ -13,6 +14,7 @@ import com.islamyolu.app.prayertimes.db.PrayerTimesDao;
 import com.islamyolu.app.prayertimes.remote.CountriesResponse;
 import com.islamyolu.app.prayertimes.remote.PlacesResponse;
 import com.islamyolu.app.prayertimes.remote.PrayerTimesApi;
+import com.islamyolu.app.prayertimes.sync.PrayerSyncPolicy;
 
 import java.io.IOException;
 import java.time.Clock;
@@ -98,6 +100,39 @@ public class PrayerTimesRepository {
         }
 
         return store(cityId, json, response.headers().get("ETag"));
+    }
+
+    // --- Okuma (§5): ekranlar LiveData, widget/bildirim/alarm arka planda ---
+
+    /**
+     * "Bugün" ve sıradaki vakit için gereken gün aralığı: UTC tarihinin bir gün öncesi ile iki gün sonrası.
+     * Şehrin yerel tarihi UTC'den en fazla bir gün farklı olduğundan bugün, dün ve yarın her zaman içindedir.
+     */
+    @NonNull
+    public static LocalDate[] timelineWindow(@NonNull Instant now) {
+        LocalDate utc = now.atOffset(ZoneOffset.UTC).toLocalDate();
+        return new LocalDate[]{utc.minusDays(1), utc.plusDays(2)};
+    }
+
+    /** Aralıktaki günler; Room güncellenince (senkron, şehir değişimi) kendiliğinden yeni değer yayar. */
+    @NonNull
+    public LiveData<List<PrayerDayEntity>> observeDays(int cityId, @NonNull LocalDate from, @NonNull LocalDate to) {
+        return dao.observeDays(cityId, from.toString(), to.toString());
+    }
+
+    /** Widget, kalıcı bildirim ve alarm kurulumu için şu anki vakit akışı. */
+    @WorkerThread
+    @NonNull
+    public PrayerTimeline loadTimeline(int cityId, @NonNull Instant now) {
+        LocalDate[] window = timelineWindow(now);
+        return PrayerTimeline.of(dao.getDays(cityId, window[0].toString(), window[1].toString()));
+    }
+
+    /** Arka plan senkronizasyonu için: bu şehrin indirilmesi gerekiyor mu (§4)? */
+    @WorkerThread
+    @NonNull
+    public PrayerSyncPolicy.Reason syncNeed(int cityId, @NonNull LocalDate today) {
+        return PrayerSyncPolicy.evaluate(dao.getCity(cityId), dao.getLastDate(cityId), today);
     }
 
     /** Ülke listesi (countries.json). Seçim ekranı içindir; Room'a yazılmaz. */

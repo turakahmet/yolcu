@@ -10,18 +10,22 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.islamyolu.app.R;
-import com.islamyolu.app.VakitApi.NamazVakiti;
+import com.islamyolu.app.prayertimes.PrayerDisplay;
+import com.islamyolu.app.prayertimes.db.PrayerDayEntity;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
+/** Aylık takvim satırları: Room'daki günler, şehrin yerel saatiyle; boş vakit "—". */
 public class MonthlyPrayerAdapter extends RecyclerView.Adapter<MonthlyPrayerAdapter.ViewHolder> {
-    private final List<NamazVakiti> prayerTimes;
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", new Locale("tr"));
+    private final List<PrayerDayEntity> days;
+    private final DateTimeFormatter dateFormat;
 
-    public MonthlyPrayerAdapter(List<NamazVakiti> prayerTimes) {
-        this.prayerTimes = prayerTimes;
+    public MonthlyPrayerAdapter(List<PrayerDayEntity> days, Locale locale) {
+        this.days = days;
+        this.dateFormat = DateTimeFormatter.ofPattern("d MMMM", locale);
     }
 
     @NonNull
@@ -34,7 +38,7 @@ public class MonthlyPrayerAdapter extends RecyclerView.Adapter<MonthlyPrayerAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        NamazVakiti prayer = prayerTimes.get(position);
+        PrayerDayEntity day = days.get(position);
 
         if (position % 2 == 0) {
             holder.itemView.setBackgroundResource(R.color.monthly_row_gray);
@@ -44,18 +48,18 @@ public class MonthlyPrayerAdapter extends RecyclerView.Adapter<MonthlyPrayerAdap
             holder.dateTextItem.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.monthly_row_text));
         }
 
-        holder.dateTextItem.setText(prayer.getMonthlyDay());
-        holder.imsakTimeItem.setText(prayer.getImsak());
-        holder.gunesTimeItem.setText(prayer.getGunes());
-        holder.ogleTimeItem.setText(prayer.getOgle());
-        holder.ikindiTimeItem.setText(prayer.getIkindi());
-        holder.aksamTimeItem.setText(prayer.getAksam());
-        holder.yatsiTimeItem.setText(prayer.getYatsi());
+        holder.dateTextItem.setText(LocalDate.parse(day.getDate()).format(dateFormat));
+        holder.imsakTimeItem.setText(PrayerDisplay.time(day.getFajr()));
+        holder.gunesTimeItem.setText(PrayerDisplay.time(day.getSunrise()));
+        holder.ogleTimeItem.setText(PrayerDisplay.time(day.getDhuhr()));
+        holder.ikindiTimeItem.setText(PrayerDisplay.time(day.getAsr()));
+        holder.aksamTimeItem.setText(PrayerDisplay.time(day.getMaghrib()));
+        holder.yatsiTimeItem.setText(PrayerDisplay.time(day.getIsha()));
     }
 
     @Override
     public int getItemCount() {
-        return prayerTimes.size();
+        return days.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -72,4 +76,4 @@ public class MonthlyPrayerAdapter extends RecyclerView.Adapter<MonthlyPrayerAdap
             yatsiTimeItem = view.findViewById(R.id.yatsi_time_item);
         }
     }
-} 
+}

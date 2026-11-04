@@ -27,6 +27,8 @@ import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -47,17 +49,16 @@ import com.islamyolu.app.Service.LocationAccess;
 import com.islamyolu.app.Service.LocationService;
 import com.islamyolu.app.Service.SharedPrefsHelperService;
 import com.islamyolu.app.Service.SoundService;
-import com.islamyolu.app.VakitApi.City;
 import com.islamyolu.app.VakitApi.DailyPrayerWorkerReceiver;
-import com.islamyolu.app.VakitApi.NamazVakiti;
-import com.islamyolu.app.VakitApi.PrayerTimesFetcher;
-import com.islamyolu.app.VakitApi.VakitNoApi;
 import com.islamyolu.app.databinding.ActivityMainBinding;
 import com.islamyolu.app.monthlyCalender.MonthlyPrayerActivity;
+import com.islamyolu.app.prayertimes.PrayerSlot;
+import com.islamyolu.app.prayertimes.ui.CitySelectionActivity;
+import com.islamyolu.app.prayertimes.ui.PrayerTimesPanel;
+import com.islamyolu.app.prayertimes.ui.PrayerTimesViewModel;
 import com.islamyolu.app.profile.Avatar;
 
 import java.util.Locale;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements ProfilePictureDialogFragment.ProfilePictureDialogListener {
 
@@ -100,6 +101,13 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
     private BadgeService badgeService;
     private GoldService goldService;
 
+    /** Ana ekran: bugün + yarının imsakı için yeterli gün */
+    private static final int MAIN_SCREEN_DAYS_AHEAD = 2;
+    private PrayerTimesViewModel prayerTimesViewModel;
+    private PrayerTimesPanel prayerTimesPanel;
+    @Nullable private PrayerTimesViewModel.State prayerState;
+    private boolean alarmsScheduled;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,9 +127,27 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         initialGoldAmount();
 //        checkInternetConnection();
 
-        // Refresh butonuna tıklama işlemi
-        // Kullanıcı istedi: konum kapalıysa "Konumu aç" penceresi gösterilir
-        refreshButton.setOnClickListener(v -> locationAccess.requestSingleLocation(true));
+        // Namaz vakitleri Room'dan LiveData ile gelir (§5); şehir seçilmemiş/veri bitmişse durum mesajı gösterilir (§6)
+        setupCityClick();
+        prayerTimesViewModel = new ViewModelProvider(this).get(PrayerTimesViewModel.class);
+        prayerTimesViewModel.getState().observe(this, state -> {
+            prayerState = state;
+            prayerTimesPanel.render(state);
+            // Önceki sürümdeki gibi her açılışta alarmlar bir kez yeniden kurulur
+            if (state.status == PrayerTimesViewModel.Status.OK && !alarmsScheduled) {
+                alarmsScheduled = true;
+                setupPrayerAlarms();
+            }
+        });
+
+        // Yenile: şehir seçilmemişse seçim ekranı, vakitler güncel değilse indirme yeniden denenir
+        refreshButton.setOnClickListener(v -> {
+            if (prayerState == null || prayerState.status == PrayerTimesViewModel.Status.NO_CITY) {
+                openCitySelection();
+            } else {
+                prayerTimesViewModel.retrySync();
+            }
+        });
         // Geri tuşu davranışını ayarla
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -137,15 +163,29 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         }
 
         remain_time_layout.setOnClickListener(v -> {
-            getSharedPreferences(MainActivity.LOCATION_PREFS, MODE_PRIVATE);
-            String getCityNameFromPreferences = locationPrefs.getString("city_name", "");
-            if (getCityNameFromPreferences.isEmpty()) {
-                Toast.makeText(this, "Takvim için konum ayarı yapmalısınız.", Toast.LENGTH_SHORT).show();
+            if (prayerState == null || prayerState.selection == null) {
+                Toast.makeText(this, R.string.prayer_monthly_needs_city, Toast.LENGTH_SHORT).show();
+                openCitySelection();
                 return;
             }
-            Intent intent = new Intent(MainActivity.this, MonthlyPrayerActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(MainActivity.this, MonthlyPrayerActivity.class));
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Şehir değişmiş veya gün dönmüş olabilir
+        prayerTimesViewModel.refresh(MAIN_SCREEN_DAYS_AHEAD);
+    }
+
+    /** Şehir adına dokununca Diyanet şehir seçimi açılır. */
+    private void setupCityClick() {
+        findViewById(R.id.location_layout).setOnClickListener(v -> openCitySelection());
+    }
+
+    private void openCitySelection() {
+        startActivity(new Intent(this, CitySelectionActivity.class));
     }
 
     private boolean hasNotificationPermission() {
@@ -263,6 +303,26 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         locationRefreshLayout = findViewById(R.id.location_refresh_Layout);
         remain_time_layout = findViewById(R.id.remain_time_layout);
         toolbarKalanSureLabel = findViewById(R.id.toolbarKalanSureLabel);
+
+        PrayerTimesPanel.Views panelViews = new PrayerTimesPanel.Views();
+        panelViews.times.put(PrayerSlot.IMSAK, imsakTime);
+        panelViews.times.put(PrayerSlot.GUNES, gunesTime);
+        panelViews.times.put(PrayerSlot.OGLE, ogleTime);
+        panelViews.times.put(PrayerSlot.IKINDI, ikindiTime);
+        panelViews.times.put(PrayerSlot.AKSAM, aksamTime);
+        panelViews.times.put(PrayerSlot.YATSI, yatsiTime);
+        panelViews.layouts.put(PrayerSlot.IMSAK, imsakTimeLayout);
+        panelViews.layouts.put(PrayerSlot.GUNES, gunesTimeLayout);
+        panelViews.layouts.put(PrayerSlot.OGLE, ogleTimeLayout);
+        panelViews.layouts.put(PrayerSlot.IKINDI, ikindiTimeLayout);
+        panelViews.layouts.put(PrayerSlot.AKSAM, aksamTimeLayout);
+        panelViews.layouts.put(PrayerSlot.YATSI, yatsiTimeLayout);
+        panelViews.remainingLabel = toolbarKalanSureLabel;
+        panelViews.remainingTime = kalanSureTextView;
+        panelViews.remainingLayout = remain_time_layout;
+        panelViews.cityName = locationTextView;
+        panelViews.refreshLayout = locationRefreshLayout;
+        prayerTimesPanel = new PrayerTimesPanel(this, panelViews, new SharedPrefsHelperService(this, SETTINGS_PREFS));
     }
 
 
@@ -273,23 +333,22 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
     }
 
 
-    /** Konum alınamazsa son kayıtlı konum kullanılır; o da yoksa yenile alanı gösterilir. */
+    /**
+     * Konum artık namaz vakti için kullanılmıyor (vakitler seçili şehrin Room verisinden gelir);
+     * yalnızca hava durumu için "city_name" güncellenir. Konum alınamazsa son kayıtlı konum denenir.
+     */
     private void onLocationUnavailable(LocationService.Unavailable reason) {
         if (reason == LocationService.Unavailable.PERMISSION_DENIED) {
-            locationRefreshLayout.setVisibility(View.VISIBLE);
             Toast.makeText(this, R.string.no_permit_location, Toast.LENGTH_SHORT).show();
             return;
         }
         Location savedLocation = loadLastKnownLocation();
         if (savedLocation != null) {
             handleNewLocation(savedLocation);
-        } else {
-            locationRefreshLayout.setVisibility(View.VISIBLE);
-            Toast.makeText(this, R.string.konumMevcutDegil, Toast.LENGTH_SHORT).show();
         }
     }
 
-    // Yeni konumu işleme (il adı, mevcut il listesiyle eşleşsin diye Türkçe çözümlenir)
+    // Yeni konumu işleme: hava durumu için il adı (mevcut il listesiyle eşleşsin diye Türkçe çözümlenir)
     private void handleNewLocation(Location location) {
         requestNotificationPermission();
 
@@ -302,47 +361,15 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
                     if (city == null || city.isEmpty()) {
                         return;
                     }
-                    locationTextView.setText(city);
-
-                    // Şehir bilgisini kaydet
                     locationPrefs.edit().putString("city_name", city).apply();
-                    Log.d("MainActivity", "Şehir bilgisi kaydedildi: " + city);
-
-                    // Namaz vakitlerini al ve alarmları kur
-                    fetchPrayerTimesNoAPI(city);
+                    Log.d("MainActivity", "Hava durumu için il kaydedildi");
                 });
     }
 
-    private void fetchPrayerTimesNoAPI(String city) {
-        if (City.fromCityName(city) == null) {
-            Toast.makeText(this, city + " Şehiri için Namaz vakitleri bulunamadı. Sorun devam ederse bizimle iletişime geçiniz.", Toast.LENGTH_LONG).show();
-            return;
-        }
-        PrayerTimesFetcher prayerTimesFetcher = new PrayerTimesFetcher(this, imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, imsakTimeLayout, gunesTimeLayout, ogleTimeLayout, ikindiTimeLayout, aksamTimeLayout, yatsiTimeLayout, locationRefreshLayout, kalanSureTextView, remain_time_layout, toolbarKalanSureLabel);
-        boolean vakitVarmi = prayerTimesFetcher.fetchPrayerTimesNoAPI(city);
-        if (!vakitVarmi) {
-            Toast.makeText(this, city + " Şehiri için Namaz vakitleri bulunamadı. Sorun devam ederse bizimle iletişime geçiniz.", Toast.LENGTH_LONG).show();
-            return;
-        }
-        VakitNoApi vakitNoApi = new VakitNoApi();
-        NamazVakiti namazVakiti = vakitNoApi.localPrayerTimes(Objects.requireNonNull(City.fromCityName(city)).getLatitude(), Objects.requireNonNull(City.fromCityName(city)).getLongitude());
-        setupPrayerAlarms(namazVakiti);
-    }
-
-    private void setupPrayerAlarms(NamazVakiti namazVakiti) {
-        // DailyPrayerWorker'ı başlat ve namaz vakitlerini ilet
-        Intent intent = new Intent(this, DailyPrayerWorkerReceiver.class);
-
-        // Namaz vakitlerini intent'e ekle
-        intent.putExtra("imsak", namazVakiti.getImsak());
-        intent.putExtra("gunes", namazVakiti.getGunes());
-        intent.putExtra("ogle", namazVakiti.getOgle());
-        intent.putExtra("ikindi", namazVakiti.getIkindi());
-        intent.putExtra("aksam", namazVakiti.getAksam());
-        intent.putExtra("yatsi", namazVakiti.getYatsi());
-
-        sendBroadcast(intent);
-        Log.d("MainActivity", "Alarmlar kurulmak üzere DailyPrayerWorker başlatıldı - Vakitler iletildi");
+    /** Açılışta bir kez: ezan/bildirim alarmları Room'daki bugünün vakitleriyle kurulur. */
+    private void setupPrayerAlarms() {
+        sendBroadcast(new Intent(this, DailyPrayerWorkerReceiver.class));
+        Log.d("MainActivity", "Alarmlar kurulmak üzere DailyPrayerWorker başlatıldı");
     }
 
     // Son bilinen konumu SharedPreferences'a kaydet
@@ -494,6 +521,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
     @Override
     protected void onPause() {
         super.onPause();
+        prayerTimesPanel.stop();
         Log.d("Lifecycle", "onPause called");
     }
 

@@ -81,7 +81,6 @@ dependencies {
 
     // --- Üçüncü Parti Görsel Bileşenler ---
     implementation libs.stepview
-    implementation libs.adhan
     implementation libs.photoview
     implementation libs.glide
     implementation libs.dotsindicator

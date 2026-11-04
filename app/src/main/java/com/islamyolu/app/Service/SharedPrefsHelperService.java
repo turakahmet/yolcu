@@ -113,8 +113,9 @@ public class SharedPrefsHelperService {
         return enabled;
     }
 
+    /** Okuma ile aynı dosyaya (LOCATION_PREFS) yazar; önceden yanlışlıkla ayar dosyasına yazıyordu. */
     public void setCityNameFromPreferences(String cityName) {
-        sharedPreferences.edit().putString("city_name", cityName).apply();
+        locationPreferences().edit().putString("city_name", cityName).apply();
     }
 
     // --- Diyanet vakitleri için seçili şehir (LOCATION_PREFS; eski "city_name" akışından bağımsız) ---

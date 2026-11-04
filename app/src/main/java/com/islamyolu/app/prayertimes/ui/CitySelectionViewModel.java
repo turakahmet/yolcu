@@ -28,6 +28,8 @@ import com.islamyolu.app.prayertimes.location.AddressParts;
 import com.islamyolu.app.prayertimes.location.PlaceMatcher;
 import com.islamyolu.app.prayertimes.remote.CountriesResponse;
 import com.islamyolu.app.prayertimes.remote.PlacesResponse;
+import com.islamyolu.app.prayertimes.sync.PrayerTimesSyncScheduler;
+import com.islamyolu.app.prayertimes.sync.PrayerTimesUpdateNotifier;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -548,6 +550,9 @@ public class CitySelectionViewModel extends AndroidViewModel {
             if (result.isSuccess()) {
                 // Seçim yalnızca vakitler Room'a yazıldıktan sonra kaydedilir
                 preferences.savePrayerCitySelection(selection);
+                // Yeni şehrin vakitleriyle alarmlar/widget'lar yenilenir; arka plan senkronu yeni şehre geçer
+                PrayerTimesUpdateNotifier.onPrayerTimesUpdated(getApplication());
+                PrayerTimesSyncScheduler.onCityChanged(getApplication());
             }
             runOnMain(() -> onCitySynced(item, result, retry));
         });
