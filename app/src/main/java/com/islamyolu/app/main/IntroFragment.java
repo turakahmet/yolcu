@@ -2,7 +2,6 @@ package com.islamyolu.app.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import com.islamyolu.app.R;
+import com.islamyolu.app.preferences.AppPreferences;
 
 
 public class IntroFragment extends Fragment {
@@ -55,8 +55,7 @@ public class IntroFragment extends Fragment {
                 startButton.setVisibility(View.VISIBLE);
                 startButton.setOnClickListener(v -> {
                     // Tanıtım tamamlandı olarak işaretle
-                    SharedPreferences prefs = requireActivity().getSharedPreferences("IntroPrefs", Context.MODE_PRIVATE);
-                    prefs.edit().putBoolean("isIntroCompleted", true).apply();
+                    AppPreferences.from(requireContext()).intro().setCompleted();
 
                     // MainActivity'ye geç
                     Intent intent = new Intent(requireContext(), MainActivity.class);

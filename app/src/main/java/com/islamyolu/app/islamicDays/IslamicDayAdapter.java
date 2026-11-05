@@ -17,7 +17,7 @@ import java.util.Locale;
 
 public class IslamicDayAdapter extends RecyclerView.Adapter<IslamicDayAdapter.ViewHolder> {
     private final List<DiniGun> diniGunList;
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", new Locale("tr"));
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", Locale.forLanguageTag("tr"));
 
     public IslamicDayAdapter(List<DiniGun> diniGunList) {
         this.diniGunList = diniGunList;

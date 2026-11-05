@@ -26,9 +26,5 @@
         <item name="elevation">15dp</item>
     </style>
 
-    <style name="Theme.Yolcu.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="Widget.MyApp.Button" parent="Widget.MaterialComponents.Button">
-        <item name="android:backgroundTint">@null</item>
-    </style>
 </resources>

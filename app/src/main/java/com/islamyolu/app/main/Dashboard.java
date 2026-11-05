@@ -42,7 +42,8 @@ import com.islamyolu.app.Entity.Hadis;
 import com.islamyolu.app.R;
 import com.islamyolu.app.Rozet.Badge;
 import com.islamyolu.app.Service.BadgeService;
-import com.islamyolu.app.Service.SharedPrefsHelperService;
+import com.islamyolu.app.preferences.AppPreferences;
+import com.islamyolu.app.preferences.LocationPreferences;
 import com.islamyolu.app.VakitApi.City;
 import com.islamyolu.app.databinding.FragmentDashboardBinding;
 import com.islamyolu.app.islamicDays.IslamicDayActivity;
@@ -83,7 +84,7 @@ public class Dashboard extends Fragment {
     private FrameLayout weatherFrame;
     private ConstraintLayout weatherPanel;
     boolean acikMi = false;
-    private SharedPrefsHelperService sharedPrefs;
+    private LocationPreferences sharedPrefs;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -112,8 +113,8 @@ public class Dashboard extends Fragment {
 
     private void initializeWeather(View root, Context context) {
         WeatherService weatherService = new WeatherService(context);
-        sharedPrefs = new SharedPrefsHelperService(context, MainActivity.SETTINGS_PREFS);
-        String cityName = sharedPrefs.getCityNameFromPreferences();
+        sharedPrefs = AppPreferences.from(context).location();
+        String cityName = sharedPrefs.getLegacyCityName();
         if (cityName == null || cityName.isEmpty()) {
             weatherPanel.setVisibility(View.VISIBLE);
             weatherFrame.setVisibility(View.INVISIBLE);
@@ -175,7 +176,7 @@ public class Dashboard extends Fragment {
                     try {
                         LocalDate date = LocalDate.parse(dateStr);
                         DayOfWeek dayOfWeek = date.getDayOfWeek();
-                        String dayShort = dayOfWeek.getDisplayName(TextStyle.SHORT, new Locale("tr"));
+                        String dayShort = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.forLanguageTag("tr"));
                         dayView.setText(dayShort.substring(0, 3)); // "Perşembe" -> "Per"
                     } catch (Exception e) {
                         dayView.setText("?");
@@ -441,7 +442,7 @@ public class Dashboard extends Fragment {
     }
 
     private void takvimFragment() {
-        String cityName = sharedPrefs.getCityNameFromPreferences();
+        String cityName = sharedPrefs.getLegacyCityName();
         if (cityName == null || cityName.isEmpty()) {
             Toast.makeText(getContext(), "Takvim için konum ayarı yapmalısınız.", Toast.LENGTH_SHORT).show();
             return;

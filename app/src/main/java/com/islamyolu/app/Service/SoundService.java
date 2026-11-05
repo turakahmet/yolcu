@@ -1,6 +1,5 @@
 package com.islamyolu.app.Service;
 
-import static com.islamyolu.app.main.MainActivity.SETTINGS_PREFS;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +7,7 @@ import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.islamyolu.app.R;
+import com.islamyolu.app.preferences.AppPreferences;
 
 public class SoundService {
     private static final String TAG = "SoundService";
@@ -17,7 +17,6 @@ public class SoundService {
     private CompletionCallback completionCallback;
     private boolean isPlaying = false;
     private boolean isCleaningUp = false;
-    private SharedPrefsHelperService sharedPrefsHelperService;
 
     public static synchronized SoundService getInstance(Context context) {
         if (instance == null) {
@@ -43,6 +42,11 @@ public class SoundService {
         context.startService(new Intent(context, PrayerSoundControlService.class));
     }
 
+    /** Ayarlar > Bildirim sesi açık mı (merkezi tercihten). */
+    private boolean isSoundOn() {
+        return context != null && AppPreferences.from(context).settings().isNotificationSoundOn();
+    }
+
     // Kendi callback interface'imizi tanımlayalım
     public interface CompletionCallback {
         void onAllSoundsCompleted();
@@ -55,8 +59,7 @@ public class SoundService {
     // Ses oynatma metodu - uzun sesler için
     private void playLongSound(int soundResourceId, MediaPlayer.OnCompletionListener completionListener) {
         try {
-            sharedPrefsHelperService = new SharedPrefsHelperService(getInstance().context, SETTINGS_PREFS);
-            if (!sharedPrefsHelperService.getSwitchState("switchNotificationSound")) {
+            if (!isSoundOn()) {
                 Log.d(TAG, soundResourceId + "switchNotificationSound kapalı");
 
                 return;
@@ -129,12 +132,9 @@ public class SoundService {
 
     // Kısa sesler için orijinal playSound metodu
     private void playSound(int soundResourceId) {
-        if (sharedPrefsHelperService == null && context != null)
-            sharedPrefsHelperService = new SharedPrefsHelperService(context.getApplicationContext(), SETTINGS_PREFS);
-        else {
-            assert sharedPrefsHelperService != null;
-            if (!sharedPrefsHelperService.getSwitchState("switchNotificationSound"))
-                return;
+        // Ayar her çalmada okunur (önceden ilk çalmada denetim atlanıyordu)
+        if (!isSoundOn()) {
+            return;
         }
 
         if (mediaPlayer != null) {

@@ -369,7 +369,7 @@ public class WordGameActivity extends AppCompatActivity {
         // StepView'i güncelle
         stepView.go(currentQuestionIndex, true); // Mevcut soru adımını güncelle (sarı renk)
         updateTextSize(question.getSoruMetni());
-        currentAnswer = question.getDogruCevap().toUpperCase(new Locale("tr", "TR")).replace(" ", ""); // Doğru cevabı büyük harfle al
+        currentAnswer = question.getDogruCevap().toUpperCase(Locale.forLanguageTag("tr-TR")).replace(" ", ""); // Doğru cevabı büyük harfle al
         questionSpaceHint.setText(question.questionSpaceHint());
         answerGrid.removeAllViews(); // Önceki yanıt kutucuklarını temizle
         // Satır sayacını

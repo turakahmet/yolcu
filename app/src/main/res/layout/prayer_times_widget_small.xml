@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Küçük widget (≈ ekranın 1/3'ü): yalnızca sıradaki vakit ve kalan süre.
-     Kalan süre Chronometer ile sistem tarafından sayılır; dakikalık güncelleme gerekmez. -->
+     Kalan süre saniyesiz SS:DD; her dakika başında yeniden çizilir. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_layout"
     android:layout_width="match_parent"
@@ -22,7 +22,7 @@
         android:textSize="13sp"
         android:textStyle="bold" />
 
-    <Chronometer
+    <TextView
         android:id="@+id/widget_next_prayer_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -10,7 +10,8 @@ import androidx.lifecycle.MediatorLiveData;
 
 import com.islamyolu.app.IslamYoluApplication;
 import com.islamyolu.app.Service.NetworkServiceUtil;
-import com.islamyolu.app.Service.SharedPrefsHelperService;
+import com.islamyolu.app.preferences.AppPreferences;
+import com.islamyolu.app.preferences.LocationPreferences;
 import com.islamyolu.app.main.MainActivity;
 import com.islamyolu.app.prayertimes.PrayerCitySelection;
 import com.islamyolu.app.prayertimes.PrayerTimeline;
@@ -54,7 +55,7 @@ public class PrayerTimesViewModel extends AndroidViewModel {
     }
 
     private final PrayerTimesRepository repository;
-    private final SharedPrefsHelperService preferences;
+    private final LocationPreferences preferences;
     private final NetworkServiceUtil network;
     private final MediatorLiveData<State> state = new MediatorLiveData<>();
 
@@ -65,7 +66,7 @@ public class PrayerTimesViewModel extends AndroidViewModel {
     public PrayerTimesViewModel(@NonNull Application application) {
         super(application);
         repository = IslamYoluApplication.from(application).getPrayerTimesRepository();
-        preferences = new SharedPrefsHelperService(application, MainActivity.LOCATION_PREFS);
+        preferences = AppPreferences.from(application).location();
         network = NetworkServiceUtil.getInstance(application);
     }
 

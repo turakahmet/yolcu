@@ -7,6 +7,7 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,16 +27,20 @@ import androidx.core.content.ContextCompat;
 
 import com.islamyolu.app.R;
 import com.islamyolu.app.Service.AddressResolver;
+import com.islamyolu.app.Service.BatteryOptimization;
 import com.islamyolu.app.Service.LocationAccess;
 import com.islamyolu.app.Service.LocationService;
 import com.islamyolu.app.Service.PrayerNotificationService;
-import com.islamyolu.app.Service.SharedPrefsHelperService;
+
 import com.islamyolu.app.VakitApi.City;
 import com.islamyolu.app.VakitApi.DailyPrayerWorkerReceiver;
 import com.islamyolu.app.feedback.BilgilendirmeActivity;
 import com.islamyolu.app.feedback.FeedbackActivity;
 import com.islamyolu.app.feedback.PrivacyActivity;
 import com.islamyolu.app.prayertimes.PrayerCitySelection;
+import com.islamyolu.app.preferences.AppPreferences;
+import com.islamyolu.app.preferences.LocationPreferences;
+import com.islamyolu.app.preferences.SettingsPreferences;
 import com.islamyolu.app.prayertimes.ui.CitySelectionActivity;
 
 import java.util.HashMap;
@@ -44,25 +49,26 @@ import java.util.Map;
 
 public class SettingsActivity extends AppCompatActivity {
     private SwitchCompat switchNotificationAll, switchNotificationImsak, switchNotificationSabah, switchNotificationOgle, switchNotificationIkindi, switchNotificationAksam, switchNotificationYatsi, switchNotificationKerahat, switchNotificationSound, switchNotificationVakitHerzamanGoster, switchVakitSound;
-    private SharedPrefsHelperService sharedPrefsHelperService;
+    private SettingsPreferences settings;
+    private LocationPreferences locationPrefs;
     private RadioGroup radioGroupVakit;
     private Spinner spinnerEzanSound, spinnerEzanDua;
-    private Button contactButton, privacyButton, bilgilendirmeButton, settingLocationButton, selectPrayerCityButton;
+    private Button contactButton, privacyButton, bilgilendirmeButton, settingLocationButton, selectPrayerCityButton, batteryOptimizationButton;
     private boolean isUserAction = true; // Kullanıcı aksiyonlarını takip etmek için flag
-    private TextView locationInfo, prayerCityInfo;
+    private TextView locationInfo, prayerCityInfo, batteryOptimizationInfo;
     private static final String TAG = "SettingsActivity";
 
 
     private final Map<Integer, String> switchKeyMap = new HashMap<Integer, String>() {{
-        put(R.id.switchNotification_Imsak, "switchNotificationImsak");
-        put(R.id.switchNotification_Sabah, "switchNotificationSabah");
-        put(R.id.switchNotification_Ogle, "switchNotificationOgle");
-        put(R.id.switchNotification_Ikindi, "switchNotificationIkindi");
-        put(R.id.switchNotification_Aksam, "switchNotificationAksam");
-        put(R.id.switchNotification_Yatsi, "switchNotificationYatsi");
-        put(R.id.switchNotification_VakitHerzamanGoster, "switchNotificationVakitHerzamanGoster");
-        put(R.id.switchNotification_Kerahat, "switchNotificationKerahat");
-        put(R.id.switchNotification_Sound, "switchNotificationSound");
+        put(R.id.switchNotification_Imsak, SettingsPreferences.KEY_NOTIFY_IMSAK);
+        put(R.id.switchNotification_Sabah, SettingsPreferences.KEY_NOTIFY_SABAH);
+        put(R.id.switchNotification_Ogle, SettingsPreferences.KEY_NOTIFY_OGLE);
+        put(R.id.switchNotification_Ikindi, SettingsPreferences.KEY_NOTIFY_IKINDI);
+        put(R.id.switchNotification_Aksam, SettingsPreferences.KEY_NOTIFY_AKSAM);
+        put(R.id.switchNotification_Yatsi, SettingsPreferences.KEY_NOTIFY_YATSI);
+        put(R.id.switchNotification_VakitHerzamanGoster, SettingsPreferences.KEY_ALWAYS_SHOW);
+        put(R.id.switchNotification_Kerahat, SettingsPreferences.KEY_KERAHAT);
+        put(R.id.switchNotification_Sound, SettingsPreferences.KEY_SOUND);
     }};
 
     private static final int REQUEST_NOTIFICATION_PERMISSION = 123;
@@ -93,14 +99,14 @@ public class SettingsActivity extends AppCompatActivity {
         radioGroupVakit.setOnCheckedChangeListener((group, checkedId) -> changeRadioButton(checkedId));
 
         // Switch durumunu yükle
-        boolean vakitSoundEnabled = sharedPrefsHelperService.isVakitSoundModeEnabled();
+        boolean vakitSoundEnabled = settings.isVakitSoundModeOn();
         Log.d(TAG, "Vakit ses modu switch durumu yükleniyor: " + vakitSoundEnabled);
         switchVakitSound.setChecked(vakitSoundEnabled);
 
         // Switch listener'ı ekle
         switchVakitSound.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Log.d(TAG, "Vakit ses modu switch değişti: " + isChecked);
-            sharedPrefsHelperService.setVakitSoundModeEnabled(isChecked);
+            settings.setVakitSoundMode(isChecked);
         });
 
         contactButton.setOnClickListener(v -> {
@@ -122,12 +128,19 @@ public class SettingsActivity extends AppCompatActivity {
         selectPrayerCityButton.setOnClickListener(v ->
                 startActivity(new Intent(this, CitySelectionActivity.class)));
 
+        batteryOptimizationButton.setOnClickListener(v -> new AlertDialog.Builder(this)
+                .setTitle(R.string.battery_optimization_dialog_title)
+                .setMessage(R.string.battery_optimization_dialog_message)
+                .setPositiveButton(R.string.battery_optimization_open, (d, w) -> BatteryOptimization.openSettings(this))
+                .setNegativeButton(R.string.cancel, null)
+                .show());
+
         settingLocationButton.setOnClickListener(v -> {
             locationInfo.setText(getString(R.string.loadingProcess));
             settingLocationButton.setEnabled(false);
             // 5 saniye sonra tekrar etkinleştir
 
-            new Handler().postDelayed(() -> {
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 settingLocationButton.setEnabled(true);
             }, 5000);
 
@@ -150,7 +163,7 @@ public class SettingsActivity extends AppCompatActivity {
                         showCityNotFound();
                         return;
                     }
-                    sharedPrefsHelperService.setCityNameFromPreferences(cityName);
+                    locationPrefs.setLegacyCityName(cityName);
                     locationInfo.setText(getString(R.string.locaitonInfoText, cityName));
                     settingLocationButton.setEnabled(true);
                 });
@@ -165,14 +178,18 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // Şehir seçim ekranından dönüldüğünde güncel seçimi göster
-        PrayerCitySelection selection = sharedPrefsHelperService.getPrayerCitySelection();
+        PrayerCitySelection selection = locationPrefs.getPrayerCitySelection();
         prayerCityInfo.setText(selection != null
                 ? getString(R.string.prayer_city_current, selection.getDisplayName())
                 : getString(R.string.prayer_city_not_selected));
+        // Ayar ekranından dönüldüğünde durum yenilensin
+        batteryOptimizationInfo.setText(BatteryOptimization.isIgnoring(this)
+                ? R.string.battery_optimization_unrestricted
+                : R.string.battery_optimization_restricted);
     }
 
     private void changeRadioButton(int checkedId) {
-        int previousValue = sharedPrefsHelperService.getRadioButtonState("radioGroupVakit");
+        int previousValue = settings.getReminderMinutes();
         int newValue;
 
         if (checkedId == R.id.radioButtonVakitBes) {
@@ -188,7 +205,7 @@ public class SettingsActivity extends AppCompatActivity {
         // Değer değişmişse alarmları güncelle
         if (previousValue != newValue) {
             // Yeni değeri kaydet
-            sharedPrefsHelperService.setRadioButtonState("radioGroupVakit", newValue);
+            settings.setReminderMinutes(newValue);
 
             // DailyPrayerWorker günün alarmlarını önce iptal edip yeni süreyle yeniden kurar
             setupNewPrayerAlarms();
@@ -201,11 +218,13 @@ public class SettingsActivity extends AppCompatActivity {
         sendBroadcast(intent);
 
         Log.d("SettingsActivity", "Prayer alarms updated with new timing: " +
-                sharedPrefsHelperService.getRadioButtonState("radioGroupVakit") + " minutes");
+                settings.getReminderMinutes() + " minutes");
     }
 
     private void initializeViews() {
-        sharedPrefsHelperService = new SharedPrefsHelperService(this, MainActivity.SETTINGS_PREFS);
+        AppPreferences preferences = AppPreferences.from(this);
+        settings = preferences.settings();
+        locationPrefs = preferences.location();
         switchNotificationAll = findViewById(R.id.switchNotification_All);
         switchNotificationImsak = findViewById(R.id.switchNotification_Imsak);
         switchNotificationSabah = findViewById(R.id.switchNotification_Sabah);
@@ -227,7 +246,9 @@ public class SettingsActivity extends AppCompatActivity {
         locationInfo = findViewById(R.id.locationInfo);
         prayerCityInfo = findViewById(R.id.prayerCityInfo);
         selectPrayerCityButton = findViewById(R.id.selectPrayerCityButton);
-        locationInfo.setText(getString(R.string.locaitonInfoText, sharedPrefsHelperService.getCityNameFromPreferences()));
+        batteryOptimizationInfo = findViewById(R.id.batteryOptimizationInfo);
+        batteryOptimizationButton = findViewById(R.id.batteryOptimizationButton);
+        locationInfo.setText(getString(R.string.locaitonInfoText, locationPrefs.getLegacyCityName()));
 
     }
 
@@ -263,7 +284,7 @@ public class SettingsActivity extends AppCompatActivity {
             return;
         }
         if (id == R.id.switchNotification_All) {
-            sharedPrefsHelperService.setSwitchState("switchNotificationAll", isChecked);
+            settings.setSwitch(SettingsPreferences.KEY_NOTIFY_ALL, isChecked);
             if (isChecked) {
                 allNotificationActive();
             } else {
@@ -277,7 +298,7 @@ public class SettingsActivity extends AppCompatActivity {
             String switchKey = getSwitchKey(id);
             if (switchKey != null) {
                 Log.d("SettingsActivity", switchKey + " switch değişti: " + isChecked);
-                sharedPrefsHelperService.setSwitchState(switchKey, isChecked);
+                settings.setSwitch(switchKey, isChecked);
                 updateAlarmForSwitch(switchKey, isChecked); // Sadece değişen switch için alarm güncelle
             }
         }
@@ -297,7 +318,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void updateAllAlarms() {
         try {
             // Tüm switch durumlarını kontrol et ve güncelle
-            boolean allEnabled = sharedPrefsHelperService.getSwitchState("switchNotificationAll");
+            boolean allEnabled = settings.isSwitchOn(SettingsPreferences.KEY_NOTIFY_ALL);
             Log.d("SettingsActivity", "Tüm bildirimler durumu: " + allEnabled);
 
             // DailyPrayerWorker'ı tetikle
@@ -312,7 +333,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void updateAlarmForSwitch(String switchKey, boolean isEnabled) {
         try {
             // SharedPreferences'a kaydet
-            sharedPrefsHelperService.setSwitchState(switchKey, isEnabled);
+            settings.setSwitch(switchKey, isEnabled);
             Log.d("SettingsActivity", "Switch durumu güncellendi: " + switchKey + " = " + isEnabled);
 
             // DailyPrayerWorker'ı tetikle
@@ -349,38 +370,38 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void prefenceChange(boolean isChecked) {
-        sharedPrefsHelperService.setSwitchState("switchNotificationImsak", isChecked);
-        sharedPrefsHelperService.setSwitchState("switchNotificationSabah", isChecked);
-        sharedPrefsHelperService.setSwitchState("switchNotificationOgle", isChecked);
-        sharedPrefsHelperService.setSwitchState("switchNotificationIkindi", isChecked);
-        sharedPrefsHelperService.setSwitchState("switchNotificationAksam", isChecked);
-        sharedPrefsHelperService.setSwitchState("switchNotificationYatsi", isChecked);
+        settings.setSwitch(SettingsPreferences.KEY_NOTIFY_IMSAK, isChecked);
+        settings.setSwitch(SettingsPreferences.KEY_NOTIFY_SABAH, isChecked);
+        settings.setSwitch(SettingsPreferences.KEY_NOTIFY_OGLE, isChecked);
+        settings.setSwitch(SettingsPreferences.KEY_NOTIFY_IKINDI, isChecked);
+        settings.setSwitch(SettingsPreferences.KEY_NOTIFY_AKSAM, isChecked);
+        settings.setSwitch(SettingsPreferences.KEY_NOTIFY_YATSI, isChecked);
 
     }
 
     private void loadSwitchStates() {
-        switchNotificationAll.setChecked(sharedPrefsHelperService.getSwitchState("switchNotificationAll"));
-        switchNotificationImsak.setChecked(sharedPrefsHelperService.getSwitchState("switchNotificationImsak"));
-        switchNotificationSabah.setChecked(sharedPrefsHelperService.getSwitchState("switchNotificationSabah"));
-        switchNotificationOgle.setChecked(sharedPrefsHelperService.getSwitchState("switchNotificationOgle"));
-        switchNotificationIkindi.setChecked(sharedPrefsHelperService.getSwitchState("switchNotificationIkindi"));
-        switchNotificationAksam.setChecked(sharedPrefsHelperService.getSwitchState("switchNotificationAksam"));
-        switchNotificationYatsi.setChecked(sharedPrefsHelperService.getSwitchState("switchNotificationYatsi"));
-        switchNotificationVakitHerzamanGoster.setChecked(sharedPrefsHelperService.getSwitchState("switchNotificationVakitHerzamanGoster"));
+        switchNotificationAll.setChecked(settings.isSwitchOn(SettingsPreferences.KEY_NOTIFY_ALL));
+        switchNotificationImsak.setChecked(settings.isSwitchOn(SettingsPreferences.KEY_NOTIFY_IMSAK));
+        switchNotificationSabah.setChecked(settings.isSwitchOn(SettingsPreferences.KEY_NOTIFY_SABAH));
+        switchNotificationOgle.setChecked(settings.isSwitchOn(SettingsPreferences.KEY_NOTIFY_OGLE));
+        switchNotificationIkindi.setChecked(settings.isSwitchOn(SettingsPreferences.KEY_NOTIFY_IKINDI));
+        switchNotificationAksam.setChecked(settings.isSwitchOn(SettingsPreferences.KEY_NOTIFY_AKSAM));
+        switchNotificationYatsi.setChecked(settings.isSwitchOn(SettingsPreferences.KEY_NOTIFY_YATSI));
+        switchNotificationVakitHerzamanGoster.setChecked(settings.isSwitchOn(SettingsPreferences.KEY_ALWAYS_SHOW));
 
-        if (sharedPrefsHelperService.getRadioButtonState("radioGroupVakit") == 5)
+        if (settings.getReminderMinutes() == 5)
             radioGroupVakit.check(R.id.radioButtonVakitBes);
-        else if (sharedPrefsHelperService.getRadioButtonState("radioGroupVakit") == 10)
+        else if (settings.getReminderMinutes() == 10)
             radioGroupVakit.check(R.id.radioButtonVakitOn);
-        else if (sharedPrefsHelperService.getRadioButtonState("radioGroupVakit") == 20)
+        else if (settings.getReminderMinutes() == 20)
             radioGroupVakit.check(R.id.radioButtonVakitYirmi);
 
-        switchNotificationKerahat.setChecked(sharedPrefsHelperService.getSwitchState("switchNotificationKerahat"));
-        switchNotificationSound.setChecked(sharedPrefsHelperService.getSwitchState("switchNotificationSound"));
+        switchNotificationKerahat.setChecked(settings.isSwitchOn(SettingsPreferences.KEY_KERAHAT));
+        switchNotificationSound.setChecked(settings.isSwitchOn(SettingsPreferences.KEY_SOUND));
 
         // Spinner durumlarını yükle
-        int ezanSoundPosition = sharedPrefsHelperService.getSpinnerSelection("spinner_ezan_sound", 3);
-        int ezanDuaPosition = sharedPrefsHelperService.getSpinnerSelection("spinner_ezan_dua", 2);
+        int ezanSoundPosition = settings.getEzanSoundType();
+        int ezanDuaPosition = settings.getEzanDuaType();
 
         Log.d("SettingsActivity", "Yüklenen spinner pozisyonları - Ezan: " + ezanSoundPosition + ", Dua: " + ezanDuaPosition);
 
@@ -420,45 +441,36 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void handlePermanentNotificationSwitch(boolean isChecked) {
-        sharedPrefsHelperService.setSwitchState("switchNotificationVakitHerzamanGoster", isChecked);
-        if (isChecked && sharedPrefsHelperService.getPrayerCitySelection() == null) {
+        settings.setSwitch(SettingsPreferences.KEY_ALWAYS_SHOW, isChecked);
+        if (isChecked && locationPrefs.getPrayerCitySelection() == null) {
             // Vakitler Room'daki seçili şehirden gelir; şehir seçilmeden kalıcı bildirim gösterilemez
             new AlertDialog.Builder(this)
                     .setTitle(R.string.uyariLabel)
                     .setMessage(R.string.prayer_status_no_city)
                     .setPositiveButton(R.string.tamam, null)
                     .show();
-            sharedPrefsHelperService.setSwitchState("switchNotificationVakitHerzamanGoster", false);
+            settings.setSwitch(SettingsPreferences.KEY_ALWAYS_SHOW, false);
             switchNotificationVakitHerzamanGoster.setChecked(false);
             return;
         }
-        Intent serviceIntent = new Intent(this, PrayerNotificationService.class);
         if (isChecked) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 15 = API 34
-                new AlertDialog.Builder(this)
-                        .setTitle("Dikkat")
-                        .setMessage("Android 15 ve üzeri cihazlarda bu hizmet cihaz yeniden başladığında otomatik olarak çalışmaz. Cihaz yeniden başladığında bu servisi manuel olarak yeniden etkinleştirmeniz gerekir.")
-                        .setPositiveButton("Tamam", null)
-                        .show();
-            }
-            startService(serviceIntent);
+            // Cihaz yeniden başlayınca servis artık kendiliğinden açılır (BootReceiver); uyarıya gerek yok
+            PrayerNotificationService.startIfEnabled(this);
         } else {
-            stopService(serviceIntent);
+            stopService(new Intent(this, PrayerNotificationService.class));
         }
     }
 
     private void setupSpinners() {
         // Ezan sesi spinner'ı için adapter
-        ArrayAdapter<CharSequence> ezanSoundAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item,
-                new String[]{"Ezan", "Kısa ezan", "Muhabbet", "Kısa Bildirim", "Kapalı"});
+        ArrayAdapter<CharSequence> ezanSoundAdapter = ArrayAdapter.createFromResource(this,
+                R.array.ezan_sound_options, android.R.layout.simple_spinner_item);
         ezanSoundAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEzanSound.setAdapter(ezanSoundAdapter);
 
         // Ezan duası spinner'ı için adapter
-        ArrayAdapter<CharSequence> ezanDuaAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item,
-                new String[]{"Ezan dua", "Ezan dua ve meal", "Kapalı"});
+        ArrayAdapter<CharSequence> ezanDuaAdapter = ArrayAdapter.createFromResource(this,
+                R.array.ezan_dua_options, android.R.layout.simple_spinner_item);
         ezanDuaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEzanDua.setAdapter(ezanDuaAdapter);
 
@@ -474,7 +486,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
 
                 // Seçimi kaydet
-                sharedPrefsHelperService.setSpinnerSelection("spinner_ezan_sound", position);
+                settings.setEzanSoundType(position);
                 Log.d("SettingsActivity", "Ezan sesi seçimi değişti: " + position);
 
                 // Worker ses alarmlarını iptal edip seçime göre yeniden kurar ("Kapalı" ise kurmaz)
@@ -499,7 +511,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
 
                 // Seçimi kaydet
-                sharedPrefsHelperService.setSpinnerSelection("spinner_ezan_dua", position);
+                settings.setEzanDuaType(position);
                 Log.d("SettingsActivity", "Ezan duası seçimi değişti: " + position);
 
                 // Worker ses alarmlarını iptal edip seçime göre yeniden kurar ("Kapalı" ise kurmaz)

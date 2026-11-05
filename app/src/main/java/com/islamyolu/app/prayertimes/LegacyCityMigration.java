@@ -7,9 +7,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.islamyolu.app.IslamYoluApplication;
-import com.islamyolu.app.Service.SharedPrefsHelperService;
+import com.islamyolu.app.preferences.AppPreferences;
+import com.islamyolu.app.preferences.LocationPreferences;
 import com.islamyolu.app.Utils.AppLogger;
-import com.islamyolu.app.main.MainActivity;
 import com.islamyolu.app.prayertimes.location.PlaceMatcher;
 import com.islamyolu.app.prayertimes.remote.PlacesResponse;
 import com.islamyolu.app.prayertimes.sync.PrayerTimesSyncScheduler;
@@ -22,7 +22,7 @@ import com.islamyolu.app.prayertimes.sync.PrayerTimesUpdateNotifier;
  *   <li>Eski il adı Diyanet listesindeki ilin merkez kaydıyla eşlenir; kullanıcıya onaylatılır
  *       (yanlış eşleşme sessizce kabul edilmez, §8).</li>
  *   <li>Geri alınabilir: "city_name" hiç değiştirilmez, yalnızca yeni anahtarlar yazılır
- *       ({@link SharedPrefsHelperService#revertLegacyMigration()}).</li>
+ *       ({@link LocationPreferences#revertLegacyMigration()}).</li>
  *   <li>Eşleşmezse veya kullanıcı reddederse şehir seçimi istenir; bir daha sorulmaz.</li>
  *   <li>İnternet yoksa bir sonraki açılışta yeniden denenir.</li>
  * </ul>
@@ -58,11 +58,11 @@ public final class LegacyCityMigration {
     @WorkerThread
     @Nullable
     public static Offer findOffer(@NonNull Context context) {
-        SharedPrefsHelperService prefs = prefs(context);
+        LocationPreferences prefs = prefs(context);
         if (prefs.getPrayerCitySelection() != null || prefs.getLegacyMigrationState() != null) {
             return null;
         }
-        String legacyName = prefs.getCityNameFromPreferences();
+        String legacyName = prefs.getLegacyCityName();
         if (legacyName == null || legacyName.trim().isEmpty()) {
             prefs.setLegacyMigrationState(STATE_NO_LEGACY);
             return null;
@@ -89,7 +89,7 @@ public final class LegacyCityMigration {
         PrayerSyncResult result = IslamYoluApplication.from(context).getPrayerTimesRepository()
                 .syncCity(offer.selection.getCityId());
         if (result.isSuccess()) {
-            SharedPrefsHelperService prefs = prefs(context);
+            LocationPreferences prefs = prefs(context);
             prefs.savePrayerCitySelection(offer.selection);
             prefs.setLegacyMigrationState(STATE_MIGRATED);
             PrayerTimesUpdateNotifier.onPrayerTimesUpdated(context);
@@ -103,8 +103,8 @@ public final class LegacyCityMigration {
         prefs(context).setLegacyMigrationState(STATE_DECLINED);
     }
 
-    private static SharedPrefsHelperService prefs(Context context) {
-        return new SharedPrefsHelperService(context.getApplicationContext(), MainActivity.LOCATION_PREFS);
+    private static LocationPreferences prefs(Context context) {
+        return AppPreferences.from(context).location();
     }
 
     private static String nonNull(@Nullable String value) {

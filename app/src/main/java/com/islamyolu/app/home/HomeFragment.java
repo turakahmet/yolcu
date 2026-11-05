@@ -3,11 +3,8 @@ package com.islamyolu.app.home;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +22,10 @@ import com.islamyolu.app.Entity.SoruTip;
 import com.islamyolu.app.R;
 import com.islamyolu.app.Rozet.BadgeType;
 import com.islamyolu.app.Service.BadgeService;
+import com.islamyolu.app.Service.NetworkServiceUtil;
 import com.islamyolu.app.Service.SoundService;
+import com.islamyolu.app.preferences.AppPreferences;
+import com.islamyolu.app.preferences.GamePreferences;
 import com.islamyolu.app.databinding.FragmentHomeBinding;
 import com.islamyolu.app.game.GenericGameActivity;
 import com.islamyolu.app.game.InfoGameActivity;
@@ -41,7 +41,6 @@ public class HomeFragment extends Fragment {
     private BadgeService badgeService;
     private Dialog mDialog;
 
-    private final String PREFS_NAME = "GameJoinPreferences";
     private final String INFO_GAME_COUNT_KEY = "infoGameCount";
     private final String WORD_GAME_COUNT_KEY = "wordGameCount";
     private final String MATCHES_GAME_COUNT_KEY = "matchesGameCount";
@@ -50,7 +49,7 @@ public class HomeFragment extends Fragment {
     private final String PEYGAMBERLER_GAME_COUNT_KEY = "peygamberlerGameCount";
     private final String ISLAMTARIHI_GAME_COUNT_KEY = "islamTarihiGameCount";
     private final int GAME_THRESHOLD = 10;  // 10 defa tıklama sonrası rozet için
-    private SharedPreferences sharedPreferences;
+    private GamePreferences gamePrefs;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -221,16 +220,13 @@ public class HomeFragment extends Fragment {
 
     private void incrementGameCount(String key) {
         // Tıklama sayısını artır
-        int currentCount = sharedPreferences.getInt(key, 0);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(key, currentCount + 1);
-        editor.apply();
+        gamePrefs.incrementJoinCount(key);
         checkAndAwardBadge(key);
     }
 
     private void checkAndAwardBadge(String key) {
         // Rozet verilmesi gereken durumu kontrol et
-        int currentCount = sharedPreferences.getInt(key, 0);
+        int currentCount = gamePrefs.getJoinCount(key);
         if (currentCount == GAME_THRESHOLD) {
             if (INFO_GAME_COUNT_KEY.equals(key))
                 badgeService.enableBadge(BadgeType.BILGI_YARISMA_5);
@@ -248,26 +244,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void initializeServices(ConstraintLayout root) {
-        sharedPreferences = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        gamePrefs = AppPreferences.from(requireContext()).game();
         soundService = new SoundService(root.getContext());
         badgeService = new BadgeService(root.getContext());
     }
 
     // İnternet bağlantısı kontrolü için yardımcı metod
     private boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (connectivityManager != null) {
-            NetworkCapabilities capabilities = connectivityManager
-                    .getNetworkCapabilities(connectivityManager.getActiveNetwork());
-
-            if (capabilities != null) {
-                return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-                        capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
-            }
-        }
-        return false;
+        return NetworkServiceUtil.isConnected(context);
     }
 
 

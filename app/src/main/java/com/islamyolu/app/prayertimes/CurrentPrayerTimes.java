@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.islamyolu.app.IslamYoluApplication;
-import com.islamyolu.app.Service.SharedPrefsHelperService;
+import com.islamyolu.app.preferences.AppPreferences;
 import com.islamyolu.app.main.MainActivity;
 
 import java.time.Instant;
@@ -33,7 +33,7 @@ public final class CurrentPrayerTimes {
     @NonNull
     public static CurrentPrayerTimes load(@NonNull Context context, @NonNull Instant now) {
         PrayerCitySelection selection =
-                new SharedPrefsHelperService(context, MainActivity.LOCATION_PREFS).getPrayerCitySelection();
+                AppPreferences.from(context).location().getPrayerCitySelection();
         if (selection == null) {
             return new CurrentPrayerTimes(null, PrayerTimeline.of(Collections.emptyList()));
         }

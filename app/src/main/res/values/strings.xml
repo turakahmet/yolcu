@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">İslam Yolu</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">TechTurak</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Ayarlar</string>
     <string name="menu_anasayfa">Ana Sayfa</string>
@@ -60,7 +57,6 @@
     <string name="default_timer">00</string>
     <string name="default_value">0</string>
     <string name="default_time_clock">00:01</string>
-    <string name="default_time_clock_detail" translatable="false">00:00:00</string>
     <string name="soru_yukleniyor">Soru yükleniyor</string>
     <string name="tamam">TAMAM</string>
     <string name="uyariLabel">Uyarı</string>
@@ -78,17 +74,13 @@
     <string name="harf_iste">Harf iste</string>
     <string name="joker_label">Joker</string>
     <string name="edit_username">Kullanıcı Adını Düzenle</string>
-    <string name="total_altin">000</string>
-    <string name="toplam_rozet">Kazanılan Rozet:</string>
     <string name="badge_icon">rozet simge</string>
     <string name="bilgi_yarisma">Kim hidayete erişmek ister?</string>
     <string name="kelime_yarismasi">Kelime-i Hikmet</string>
     <string name="yetersiz_kaynak_label">Yeterli kaynağınız yok!  Sorulara doğru yanıt vererek altın kazanabilirsin</string>
     <string name="esleme_yarismasi">Esma-i Hüsna Keşfi</string>
-    <string name="tebrikler">Tebrikler</string>
     <string name="testYazisi">Lorem Ipsum is simply</string>
     <string name="kirkhadis">40 Hadis-i Şerifi Öğrenelim</string>
-    <string name="dortbin_sunnet_adablari" translatable="false">4000 Sünnet ve Adabları</string>
     <string name="hadisinAnlami" translatable="false">Hadisi Anlayalım</string>
     <string name="hadisidenDersCikaralim" translatable="false">Hadisten Çıkarılan Dersler</string>
 
@@ -258,7 +250,6 @@
     <string name="location_permission_required_message">Konum servisini kullanabilmek için konum izni vermeniz gerekiyor.</string>
     <string name="dovizTuru">Döviz Türü</string>
     <string name="altinTuru">Altın Türü</string>
-    <string name="deteleButtonLabel">Sil</string>
     <string name="nisapMiktarHeader">Nisap tutarı servisten alınamadı! İşleme gram altın alış fiyatı değeri girerek devam edebilirsiniz.</string>
     <string name="nisapTutarUser">Gram altın fiyat giriniz</string>
     <string name="nisapMiktarInfo">Yapılan hesaplamalar ve değerler bilgi amaçlıdır sorumluluk kullanıcı aittir.</string>
@@ -473,7 +464,6 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="local_products_image">Yerli Ürünler İkonu</string>
     <string name="open_local_products_app">Uygulamayı Aç</string>
     <string name="app_logo_description" translatable="false">widget logo</string>
-    <string name="weather_icon_description" translatable="false">weather label</string>
     <string name="tempatura_default" translatable="false">0°C</string>
     <string name="testYazisiVakit">Vakit Hesaplanıyor</string>
     <string name="prayer_time_image_desc" translatable="false">Aylik vakit arkaplan resim</string>
@@ -481,8 +471,6 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="diniTakvim">Dini Günler</string>
     <string name="islamicDays">Dini Günler</string>
     <string name="yaklasanTarihYok">Yaklaşan Tarih Bulunamadı!</string>
-    <string name="ibadetCard_2" translatable="false">İslam’ın ve İmanın Şartları</string>
-    <string name="ibadetCard_3" translatable="false">Namaz İbadeti</string>
     <string name="introTitle" translatable="false">Giriş Başlık</string>
     <string name="introDescription" translatable="false">Giriş Açıklama</string>
     <string name="introStartButton">Başla</string>
@@ -498,8 +486,6 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="intro_5_desc" translatable="false">Güncel Kur Bilgileri ile Varlık Listenizi Oluşturun Zekâtınızı Kolayca Hesaplayın</string>
     <string name="intro_6" translatable="false">İslam Tarihinin Benzersiz Kutsal Emanetlerini Keşfedin</string>
     <string name="intro_6_desc" translatable="false">İslami Değerleri Dijital Ortamda İnceleyin. Görsel Anlatımlı İslami Değerlere Göz Atın</string>
-    <string name="intro_7" translatable="false">İhtiyaç Duyulan Pek Çok Bilgi için Reklamsız Tek Uygulama</string>
-    <string name="intro_7_desc" translatable="false">Uygulamanın Gelişiminde Bize Katılın</string>
     <string name="feedBackHeader">İletişim ve Destek</string>
     <string name="feedBackAd">Adınız</string>
     <string name="feedBackAciklama">Açıklama</string>
@@ -575,15 +561,11 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="wdiget_test_city" translatable="false">ANKARA</string>
     <string name="widget_settings_title" translatable="false">Widget Ayarları</string>
     <string name="transparency_value" translatable="false">Şeffaflık: %0</string>
-    <string name="widget_background_color" translatable="false">Arkaplan Rengi</string>
-    <string name="widget_beyaz" translatable="false">Beyaz</string>
-    <string name="wdiget_siyah" translatable="false">Siyah</string>
     <string name="test_rozeti" translatable="false">Test Rozeti</string>
     <string name="compassHardwareInfo" translatable="false">Kıble Bulucu özelliğini kullanabilmek için cihazınızda pusula (compass) sensörü bulunması gerekmektedir. Ancak cihazınız bu özelliği desteklemiyor. Diğer tüm özellikleri kullanmaya devam edebilirsiniz.</string>
     <string name="compassHardwareInfoHeader" translatable="false">Kıble Bulucu Desteklenmiyor</string>
     <string name="ebabyicon" translatable="false">erkekbabyIcon</string>
     <string name="kbabyicon" translatable="false">kızbabyIcon</string>
-    <string name="gunu_ismi" translatable="false">Günün ismi</string>
     <string name="badgeInfo" translatable="false">Henüz bu rozeti kazanmadın</string>
     <string name="nameRefresh" translatable="false">isim yenile icon</string>
     <string name="isimtagAnlam" translatable="false">"Anlamı: "</string>
@@ -633,7 +615,8 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string-array name="ezan_sound_options">
         <item>Ezan</item>
         <item>Kısa ezan</item>
-        <item>Bildirim</item>
+        <item>Muhabbet</item>
+        <item>Kısa Bildirim</item>
         <item>Kapalı</item>
     </string-array>
 
@@ -1177,4 +1160,20 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="legacy_migration_message">Önceki sürümde konumunuz %1$s olarak kayıtlı. Namaz vakitleri artık Diyanet\'ten ilçe bazında geliyor.\n\n%2$s (il merkezi) vakitleri indirilsin mi? İlçenizi daha sonra Ayarlar\'dan değiştirebilirsiniz.</string>
     <string name="legacy_migration_yes">Evet, indir</string>
     <string name="legacy_migration_other">Başka şehir seç</string>
-    <string name="legacy_migration_failed">Vakitler indirilemedi. Şehrinizi listeden seçebilirsiniz.</string></resources>
+    <string name="legacy_migration_failed">Vakitler indirilemedi. Şehrinizi listeden seçebilirsiniz.</string>
+    <string name="network_error_title">Bağlantı Hatası</string>
+    <string name="no_internet_title">İnternet Yok</string>
+    <string name="no_internet_continue_message">İnternet bağlantınız yok. Devam etmek istiyor musunuz?</string>
+    <string name="prayer_countdown_channel_name">Vakit geri sayımı</string>
+    <string name="prayer_countdown_channel_description">Sıradaki namaz vaktine kalan süreyi sessizce gösteren kalıcı bildirim</string>
+    <string name="prayer_notification_loading">Vakitler yükleniyor…</string>
+    <string name="prayer_alarm_channel_name">Namaz Vakitleri</string>
+    <string name="prayer_alarm_channel_description">Namaz vakti bildirimleri</string>
+    <!-- Pil optimizasyonu (Ayarlar) -->
+    <string name="battery_optimization_restricted">Pil optimizasyonu açık: vakit bildirimleri bazı cihazlarda gecikebilir veya gelmeyebilir.</string>
+    <string name="battery_optimization_unrestricted">Pil optimizasyonu kapalı: vakit bildirimleri zamanında gelir.</string>
+    <string name="battery_optimization_button">Bildirimlerin zamanında gelmesini sağla</string>
+    <string name="battery_optimization_dialog_title">Pil optimizasyonu</string>
+    <string name="battery_optimization_dialog_message">Açılan listede İslam Yolu\'nu bulun ve \"Optimize etme\" (veya \"Kısıtlama yok\") seçin.\n\nHonor/Huawei: Ayarlar › Pil › Uygulama başlatma › İslam Yolu › \"Otomatik yönet\"i kapatıp tüm seçenekleri açın.\n\nXiaomi: Uygulama ayarları › Pil tasarrufu › \"Kısıtlama yok\".\n\nSamsung: Pil › Arka plan kullanım sınırları › \"Hiç uyku moduna geçmeyen uygulamalar\" listesine ekleyin.</string>
+    <string name="battery_optimization_open">Ayarları aç</string>
+</resources>

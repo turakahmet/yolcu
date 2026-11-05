@@ -2,7 +2,6 @@ package com.islamyolu.app.Service;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,14 +12,15 @@ import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
 import com.islamyolu.app.Rozet.Badge;
 import com.islamyolu.app.Rozet.BadgeType;
+import com.islamyolu.app.preferences.AppPreferences;
+import com.islamyolu.app.preferences.BadgePreferences;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BadgeService {
 
-    private static final String PREFS_NAME = "BadgePreferences";
-    private SharedPreferences sharedPreferences;
+    private final BadgePreferences badgePrefs;
     private SoundService soundService;
     private Context context;
     private List<Badge> badges;
@@ -28,7 +28,7 @@ public class BadgeService {
 
     public BadgeService(Context context) {
         this.context = context;
-        sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        badgePrefs = AppPreferences.from(context).badges();
         soundService = new SoundService(context);
         initializeBadges();
     }
@@ -36,7 +36,7 @@ public class BadgeService {
     private void initializeBadges() {
         badges = new ArrayList<>();
         for (BadgeType badgeType : BadgeType.values()) {
-            boolean isEnabled = sharedPreferences.getBoolean(badgeType.name(), false);
+            boolean isEnabled = badgePrefs.isEarned(badgeType.name());
             badges.add(new Badge(badgeType, isEnabled));
         }
     }
@@ -57,14 +57,11 @@ public class BadgeService {
 
     public void enableBadge(BadgeType badgeType) {
         for (Badge badge : badges) {
-            if (badge.getBadgeType() == badgeType && !sharedPreferences.getBoolean(badge.getBadgeType().name(), false)) {
+            if (badge.getBadgeType() == badgeType && !badgePrefs.isEarned(badge.getBadgeType().name())) {
                 badge.setEnabled(true);
                 soundService.successRozet();
                 showToast("Tebrikler, " + badgeType.getLabel() + " rozetini kazandınız.");
-                // SharedPreferences'e kaydet
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(badgeType.name(), true);
-                editor.apply();
+                badgePrefs.setEarned(badgeType.name());
                 break;
             }
         }
@@ -74,7 +71,7 @@ public class BadgeService {
     public int getEnabledBadgeCount() {
         int rozetCount = 0;
         for (BadgeType badgeType : BadgeType.values()) {
-            boolean isEnabled = sharedPreferences.getBoolean(badgeType.name(), false);
+            boolean isEnabled = badgePrefs.isEarned(badgeType.name());
             if (isEnabled)
                 rozetCount += 1;
         }

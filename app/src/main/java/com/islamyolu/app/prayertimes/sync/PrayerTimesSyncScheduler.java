@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Namaz vakti senkronizasyonunun WorkManager planlaması (§4).
- * İş adları mevcut "DailyPrayerWork" (alarm kurulumu) ile çakışmaz.
+ * İş adları alarm kurulumunun yedek işi ("PrayerAlarmsBackup") ile çakışmaz.
  */
 public final class PrayerTimesSyncScheduler {
 

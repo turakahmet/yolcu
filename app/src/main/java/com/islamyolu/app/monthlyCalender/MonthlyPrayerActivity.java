@@ -16,13 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.islamyolu.app.R;
+import com.islamyolu.app.prayertimes.PrayerCountdown;
 import com.islamyolu.app.prayertimes.PrayerDisplay;
 import com.islamyolu.app.prayertimes.PrayerSlot;
 import com.islamyolu.app.prayertimes.PrayerTimeline;
 import com.islamyolu.app.prayertimes.db.PrayerDayEntity;
 import com.islamyolu.app.prayertimes.ui.PrayerTimesViewModel;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -49,8 +49,11 @@ public class MonthlyPrayerActivity extends AppCompatActivity {
     private final Runnable remainingTimeRunnable = new Runnable() {
         @Override
         public void run() {
-            updateRemainingTime();
-            handler.postDelayed(this, 1000);
+            long delay = updateRemainingTime();
+            if (delay > 0) {
+                // Saniye değiştiği anda (ana ekran ve widget ile aynı değer)
+                handler.postDelayed(this, delay + 15);
+            }
         }
     };
 
@@ -145,17 +148,18 @@ public class MonthlyPrayerActivity extends AppCompatActivity {
         }
     }
 
-    private void updateRemainingTime() {
-        if (timeline == null) return;
-        Instant now = Instant.now();
-        PrayerTimeline.Moment next = timeline.next(now);
-        if (next == null) {
+    /** @return bir sonraki çizime kadar ms; veri bittiyse 0 */
+    private long updateRemainingTime() {
+        if (timeline == null) return 0;
+        PrayerCountdown countdown = PrayerCountdown.of(timeline, Instant.now());
+        if (countdown == null) {
             remainingTimeLabel.setText(R.string.prayer_status_outdated_offline);
             remainingTimeTextMonthly.setText("");
-            return;
+            return 0;
         }
-        remainingTimeLabel.setText(PrayerDisplay.nameRes(next.slot));
-        remainingTimeTextMonthly.setText(PrayerDisplay.remaining(Duration.between(now, next.instant), true));
+        remainingTimeLabel.setText(PrayerDisplay.nameRes(countdown.next.slot));
+        remainingTimeTextMonthly.setText(countdown.text());
+        return countdown.millisUntilTick;
     }
 
     /** Sıradaki vaktin görseli ve vurgusu (önceki sürümle aynı) */

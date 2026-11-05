@@ -21,11 +21,19 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <!-- Kalan süre "03:" + "20:11": saat metin, dakika:saniye sistem kronometresi (uygulama
+                 saniyede bir bildirim göndermez; saniyeyi sistem akıtır) -->
             <TextView
+                android:id="@+id/remainingHours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Chronometer
                 android:id="@+id/remainingTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/default_time_clock_detail"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 

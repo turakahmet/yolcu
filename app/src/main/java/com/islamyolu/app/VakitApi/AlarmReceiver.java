@@ -1,182 +1,103 @@
 package com.islamyolu.app.VakitApi;
 
-import static com.islamyolu.app.VakitApi.NotificationConstants.FOREGROUND_NOTIFICATION_ID;
-import static com.islamyolu.app.main.MainActivity.SETTINGS_PREFS;
-
-import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.islamyolu.app.R;
-import com.islamyolu.app.Service.SharedPrefsHelperService;
 import com.islamyolu.app.main.MainActivity;
+import com.islamyolu.app.preferences.AppPreferences;
+import com.islamyolu.app.preferences.SentNotificationPreferences;
 
-import java.time.LocalDate;
-
+/**
+ * "Vakte X dakika kaldı" bildirimi. Alarmları {@link PrayerAlarmScheduler} kurar.
+ * Her bildirimden sonra alarmlar yeniden kurulur: zincir bir yerde koptuysa kendiliğinden toparlanır.
+ */
 public class AlarmReceiver extends BroadcastReceiver {
 
+    private static final String TAG = "AlarmReceiver";
     private static final String CHANNEL_ID = "namaz_vakitleri_channel";
-    public static final String ACTION_ALARM_NOTIFICATION = "com.myapp.yolcu.ACTION_ALARM_NOTIFICATION";
-    private static final String ACTION_CANCEL_NOTIFICATION = "com.myapp.yolcu.ACTION_CANCEL_NOTIFICATION";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("AlarmReceiver", "onReceive called with action: " + intent.getAction());
+        if (!PrayerAlarmScheduler.ACTION_PRAYER_ALARM.equals(intent.getAction())) {
+            return; // önceki sürümün "bildirimi kaldır" alarmları: artık setTimeoutAfter kullanılıyor
+        }
+        String notificationId = intent.getStringExtra(PrayerAlarmScheduler.EXTRA_NOTIFICATION_ID);
+        long prayerAt = intent.getLongExtra(PrayerAlarmScheduler.EXTRA_PRAYER_AT, 0L);
+        long now = System.currentTimeMillis();
 
-        if (intent != null) {
-            // Action kontrolünü düzelt
-            if (intent.getAction() != null &&
-                    intent.getAction().equals("com.myapp.yolcu.ACTION_ALARM_NOTIFICATION")) {
-
-                String notificationId = intent.getStringExtra("notificationId");
-
-                // Bildirim daha önce gönderilmemiş ise gönder
-                if (!isNotificationSent(context, notificationId)) {
-                    showNotification(context, intent);
-                    // Bildirimi gönderildi olarak işaretle
-                    markNotificationAsSent(context, notificationId);
-                }
-            } else if (ACTION_CANCEL_NOTIFICATION.equals(intent.getAction())) {
-                cancelNotification(context, intent.getIntExtra("notificationId", -1));
+        SentNotificationPreferences sent = AppPreferences.from(context).sentNotifications();
+        if (notificationId != null && sent.isSent(notificationId)) {
+            Log.d(TAG, "Zaten gönderildi: " + notificationId);
+        } else if (prayerAt > 0 && now >= prayerAt) {
+            // Cihaz alarmı vakit geçtikten sonra teslim etti: "X dakika kaldı" artık yanlış olur
+            Log.w(TAG, "Vakit geçmiş, geç gelen bildirim gösterilmedi: " + notificationId);
+        } else {
+            showNotification(context, intent, notificationId, prayerAt, now);
+            if (notificationId != null) {
+                sent.markSent(notificationId);
             }
         }
+
+        PendingResult result = goAsync();
+        PrayerAlarmScheduler.rescheduleAsync(context, result::finish);
     }
 
-    private void showNotification(Context context, Intent intent) {
-        String title = intent.getStringExtra("title");
-        String message = intent.getStringExtra("message");
-
-        Log.d("AlarmReceiver", "Showing notification - Title: " + title + ", Message: " + message);
-
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // Notification Channel oluştur (Android 8.0 ve üzeri için)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "Namaz Vakitleri",
-                    NotificationManager.IMPORTANCE_HIGH
-            );
-            channel.setDescription("Namaz vakti bildirimleri");
-            channel.enableLights(true);
-            channel.enableVibration(true);
-            notificationManager.createNotificationChannel(channel);
+    private void showNotification(Context context, Intent intent, String notificationId, long prayerAt, long now) {
+        NotificationManagerCompat manager = NotificationManagerCompat.from(context);
+        if (!manager.areNotificationsEnabled()) {
+            Log.w(TAG, "Uygulama bildirimleri kapalı; vakit bildirimi gösterilemedi");
+            return;
         }
+        createChannel(context);
 
-        // Ana aktiviteye yönlendirecek PendingIntent
-        Intent notificationIntent = new Intent(context, MainActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        int id = notificationId != null ? notificationId.hashCode() : (int) (now / 1000);
+        if (id == NotificationConstants.FOREGROUND_NOTIFICATION_ID) {
+            id++; // kalıcı bildirimin yerine geçmesin
+        }
+        Intent open = new Intent(context, MainActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, id, open,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        int notificationId = generateNotificationId(title, message);
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(
-                context,
-                notificationId,
-                notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
-
-        // Bildirimi oluştur
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.crescent)
-                .setContentTitle(title)
-                .setContentText(message)
+                .setContentTitle(intent.getStringExtra(PrayerAlarmScheduler.EXTRA_TITLE))
+                .setContentText(intent.getStringExtra(PrayerAlarmScheduler.EXTRA_MESSAGE))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .setCategory(NotificationCompat.CATEGORY_REMINDER)
                 .setAutoCancel(true)
-                .setContentIntent(pendingIntent)
+                .setContentIntent(contentIntent)
                 .setDefaults(NotificationCompat.DEFAULT_ALL);
-
-        // Bildirimi göster
-        notificationManager.notify(notificationId, builder.build());
-        Log.d("AlarmReceiver", "Notification shown with ID: " + notificationId);
-
-        scheduleNotificationRemoval(context, notificationId);
-    }
-
-    private int generateNotificationId(String title, String message) {
-        // Aynı namaz vakti için aynı ID'yi üret
-        String prayerType = extractPrayerType(title); // Örn: "IMSAK", "YATSI" vs.
-        String uniqueString = prayerType + "_" + LocalDate.now();
-        return Math.abs(uniqueString.hashCode());
-    }
-
-    private String extractPrayerType(String title) {
-        // Başlıktan namaz vaktini çıkar
-        if (title.contains("Imsak") || title.contains("İmsak")) return "IMSAK";
-        if (title.contains("Gunes") || title.contains("Güneş")) return "GUNES";
-        if (title.contains("Ogle") || title.contains("Öğle")) return "OGLE";
-        if (title.contains("Ikindi") || title.contains("İkindi")) return "IKINDI";
-        if (title.contains("Aksam") || title.contains("Akşam")) return "AKSAM";
-        if (title.contains("Yatsi") || title.contains("Yatsı")) return "YATSI";
-        return title;
-    }
-
-    private void scheduleNotificationRemoval(Context context, int notificationId) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        SharedPrefsHelperService sharedPrefsHelperService = new SharedPrefsHelperService(context, SETTINGS_PREFS);
-
-        Intent cancelIntent = new Intent(context, AlarmReceiver.class);
-        cancelIntent.setAction(ACTION_CANCEL_NOTIFICATION);
-        cancelIntent.putExtra("notificationId", notificationId);
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                context,
-                notificationId,
-                cancelIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
-
-        // Kullanıcının seçtiği süreyi al (dakika cinsinden)
-        int userSelectedMinutes = sharedPrefsHelperService.getRadioButtonState("radioGroupVakit");
-
-        // Bildirimi namaz vaktinde kaldır
-        long triggerTime = System.currentTimeMillis() + ((long) userSelectedMinutes * 60 * 1000);
-
-        if (alarmManager != null) {
-            alarmManager.setExact(
-                    AlarmManager.RTC_WAKEUP,
-                    triggerTime,
-                    pendingIntent
-            );
-            Log.d("AlarmReceiver", "Bildirim kaldırma alarmı kuruldu: " + notificationId +
-                    " - " + userSelectedMinutes + " dakika sonra kaldırılacak");
+        if (prayerAt > now) {
+            // Vakit girince kendiliğinden kalkar (eskiden ayrı bir alarm kuruluyordu)
+            builder.setTimeoutAfter(prayerAt - now);
+        }
+        try {
+            manager.notify(id, builder.build());
+            Log.d(TAG, "Vakit bildirimi gösterildi: " + notificationId);
+        } catch (SecurityException e) {
+            Log.w(TAG, "Bildirim izni yok", e); // Android 13+: POST_NOTIFICATIONS geri alınmış
         }
     }
 
-    private void cancelNotification(Context context, int notificationId) {
-        if (notificationId != -1 && notificationId != FOREGROUND_NOTIFICATION_ID) {
-            NotificationManager notificationManager =
-                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancel(notificationId);
-            Log.d("AlarmReceiver", "Bildirim kaldırıldı: " + notificationId);
-        } else if (notificationId == FOREGROUND_NOTIFICATION_ID) {
-            Log.d("AlarmReceiver", "Foreground bildirim kaldırılmıyor: " + notificationId);
-        }
-    }
-
-    private boolean isNotificationSent(Context context, String notificationId) {
-        SharedPreferences prefs = context.getSharedPreferences(
-                "SentNotifications",
-                Context.MODE_PRIVATE
-        );
-        return prefs.getBoolean(notificationId, false);
-    }
-
-    private void markNotificationAsSent(Context context, String notificationId) {
-        SharedPreferences prefs = context.getSharedPreferences(
-                "SentNotifications",
-                Context.MODE_PRIVATE
-        );
-        prefs.edit().putBoolean(notificationId, true).apply();
+    private static void createChannel(Context context) {
+        NotificationManager nm = context.getSystemService(NotificationManager.class);
+        if (nm == null) return;
+        // minSdk 27: her sürümde gerekli; tekrar oluşturmak zararsızdır (kullanıcı ayarlarını değiştirmez)
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                context.getString(R.string.prayer_alarm_channel_name), NotificationManager.IMPORTANCE_HIGH);
+        channel.setDescription(context.getString(R.string.prayer_alarm_channel_description));
+        channel.enableLights(true);
+        channel.enableVibration(true);
+        nm.createNotificationChannel(channel);
     }
 }

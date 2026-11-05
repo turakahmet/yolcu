@@ -1,6 +1,5 @@
 package com.islamyolu.app.receiver;
 
-import static com.islamyolu.app.main.MainActivity.SETTINGS_PREFS;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,7 +9,8 @@ import android.os.PowerManager;
 import android.util.Log;
 
 import com.islamyolu.app.Service.PrayerSoundControlService;
-import com.islamyolu.app.Service.SharedPrefsHelperService;
+import com.islamyolu.app.preferences.AppPreferences;
+import com.islamyolu.app.preferences.SettingsPreferences;
 import com.islamyolu.app.Service.SoundService;
 
 public class PrayerSoundReceiver extends BroadcastReceiver {
@@ -30,10 +30,10 @@ public class PrayerSoundReceiver extends BroadcastReceiver {
         }
 
         try {
-            SharedPrefsHelperService prefsHelper = new SharedPrefsHelperService(context, SETTINGS_PREFS);
+            SettingsPreferences prefsHelper = AppPreferences.from(context).settings();
 
             // Ses modunu kontrol et ve değiştir
-            if (prefsHelper.isVakitSoundModeEnabled()) {
+            if (prefsHelper.isVakitSoundModeOn()) {
                 setVibrationMode(context);
             }
 
@@ -55,7 +55,7 @@ public class PrayerSoundReceiver extends BroadcastReceiver {
             }
 
             // Tüm bildirimler kapalı ise çalma
-            if (!prefsHelper.getSwitchState("switchNotificationAll")) {
+            if (!prefsHelper.isAllNotificationsOn()) {
                 Log.d(TAG, "Tüm bildirimler kapalı");
                 cleanupSafely();
                 return;
@@ -68,7 +68,7 @@ public class PrayerSoundReceiver extends BroadcastReceiver {
             Log.d(TAG, String.format("Intent değerleri - ezanType: %d, duaType: %d", ezanType, duaType));
 
             // Ses kapalı ise çalma
-            if (!prefsHelper.getSwitchState("switchNotificationSound")) {
+            if (!prefsHelper.isNotificationSoundOn()) {
                 Log.d(TAG, "Bildirim sesi kapalı");
                 cleanupSafely();
                 return;
@@ -82,7 +82,7 @@ public class PrayerSoundReceiver extends BroadcastReceiver {
                 soundService.setCompletionCallback(() -> {
                     Log.d(TAG, "CompletionCallback tetiklendi");
                     // Ses modunu geri al buna şimdilik gerek yok
-//                    if (prefsHelper.isVakitSoundModeEnabled()) {
+//                    if (prefsHelper.isVakitSoundModeOn()) {
 //                        restoreRingerMode(context);
 //                    }
                     cleanupSafely();
@@ -158,7 +158,7 @@ public class PrayerSoundReceiver extends BroadcastReceiver {
             if (wakeLock == null) {
                 PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
                 wakeLock = powerManager.newWakeLock(
-                        PowerManager.PARTIAL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP,
+                        PowerManager.PARTIAL_WAKE_LOCK,
                         "MyApp:PrayerSoundWakeLock"
                 );
             }

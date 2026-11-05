@@ -1,5 +1,4 @@
 <resources>
-    <dimen name="fab_margin">48dp</dimen>
     <!-- Şehir seçimi kenar boşluğu (Tablet, açık katlanabilir, geniş bölünmüş ekran) -->
     <dimen name="city_selection_side_margin">48dp</dimen>
     <dimen name="city_selection_list_padding">44dp</dimen>

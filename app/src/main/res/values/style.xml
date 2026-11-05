@@ -28,12 +28,5 @@
         <item name="cornerRadius">10dp</item> <!-- Butonun kenarları yuvarlak olacak -->
         <item name="android:textColor">@color/infoGameText</item> <!-- Buton yazısı yeşil -->
     </style>
-    <style name="CustomButtonStyle">
-        <item name="android:background">@color/colorGray</item> <!-- Kırmızı Renk -->
-        <item name="android:textColor">#FFFFFF</item> <!-- Beyaz Metin -->
-        <item name="android:textStyle">bold</item> <!-- Kalın Metin -->
-        <item name="android:layout_margin">15dp</item> <!-- Buton Kenar Boşluğu -->
-        <item name="android:padding">10dp</item> <!-- İç Boşluk -->
-    </style>
 
 </resources>

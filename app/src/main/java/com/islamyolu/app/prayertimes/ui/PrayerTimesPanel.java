@@ -13,7 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.islamyolu.app.R;
-import com.islamyolu.app.Service.SharedPrefsHelperService;
+import com.islamyolu.app.preferences.SettingsPreferences;
+import com.islamyolu.app.prayertimes.PrayerCountdown;
 import com.islamyolu.app.prayertimes.PrayerDisplay;
 import com.islamyolu.app.prayertimes.PrayerSlot;
 import com.islamyolu.app.prayertimes.PrayerTimeline;
@@ -48,24 +49,38 @@ public class PrayerTimesPanel {
 
     private final Context context;
     private final Views views;
-    private final SharedPrefsHelperService settings;
+    private final SettingsPreferences settings;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable tick = new Runnable() {
         @Override
         public void run() {
-            if (renderCountdown()) {
-                handler.postDelayed(this, 1000);
+            long delay = renderCountdown();
+            if (delay > 0) {
+                // Gösterilen saniyenin değiştiği anda çizilir (sabit 1 sn aralık kayıp saniye atlıyordu)
+                handler.postDelayed(this, delay + TICK_SLACK_MS);
             }
         }
     };
 
+    /** Saniye sınırının hemen sonrasına düşmek için küçük pay */
+    private static final long TICK_SLACK_MS = 15;
+    private static final long RELOAD_THROTTLE_MS = 60_000;
+    private long lastReloadRequestMs;
+
     @Nullable private PrayerTimesViewModel.State state;
     @Nullable private PrayerSlot highlighted;
+    @Nullable private final Runnable onTimelineExhausted;
 
-    public PrayerTimesPanel(@NonNull Context context, @NonNull Views views, @NonNull SharedPrefsHelperService settings) {
+    /**
+     * @param onTimelineExhausted eldeki günler bittiğinde (uygulama günlerce açık kaldıysa) yeniden
+     *                            yükleme için çağrılır
+     */
+    public PrayerTimesPanel(@NonNull Context context, @NonNull Views views, @NonNull SettingsPreferences settings,
+                            @Nullable Runnable onTimelineExhausted) {
         this.context = context;
         this.views = views;
         this.settings = settings;
+        this.onTimelineExhausted = onTimelineExhausted;
     }
 
     public void render(@NonNull PrayerTimesViewModel.State newState) {
@@ -106,19 +121,27 @@ public class PrayerTimesPanel {
         }
     }
 
-    /** @return geri sayım sürsün mü */
-    private boolean renderCountdown() {
-        if (state == null) return false;
+    /** @return bir sonraki çizime kadar ms; geri sayım durduysa 0 */
+    private long renderCountdown() {
+        if (state == null) return 0;
         Instant now = Instant.now();
         PrayerTimeline timeline = state.timeline;
-        PrayerTimeline.Moment next = timeline.next(now);
+        PrayerCountdown countdown = PrayerCountdown.of(timeline, now);
         PrayerDayEntity today = timeline.today(now);
-        if (next == null || today == null) {
-            // Eldeki veri bitti; ekran öne gelince ViewModel yeniden yükler ve durumu belirler
+        if (countdown == null || today == null) {
+            // Eldeki günler bitti (ör. uygulama günlerce açık kaldı): Room'dan yeniden yüklenir;
+            // gerçekten veri yoksa ViewModel durumu belirler
             views.remainingTime.setText("");
             views.remainingLabel.setText(statusMessage(PrayerTimesViewModel.Status.OUTDATED_OFFLINE));
-            return false;
+            // Room'da da sonraki gün yoksa yükleme aynı sonucu verir: döngüye girmesin diye dakikada bir
+            long nowMs = System.currentTimeMillis();
+            if (onTimelineExhausted != null && nowMs - lastReloadRequestMs > RELOAD_THROTTLE_MS) {
+                lastReloadRequestMs = nowMs;
+                onTimelineExhausted.run();
+            }
+            return 0;
         }
+        PrayerTimeline.Moment next = countdown.next;
         if (next.slot != highlighted) {
             // Vakit değişti (gece yarısı yeni gün de dahil): bugünün vakitleri ve vurgu yenilenir
             showTodayTimes(today);
@@ -127,12 +150,12 @@ public class PrayerTimesPanel {
             views.layouts.get(next.slot).setBackgroundColor(color(R.color.current_namaz_time));
         }
 
-        Duration remaining = Duration.between(now, next.instant);
-        views.remainingTime.setText(PrayerDisplay.remaining(remaining, true));
+        Duration remaining = countdown.remaining();
+        views.remainingTime.setText(countdown.text());
         String label = context.getString(PrayerDisplay.remainingLabelRes(next.slot));
         LinearLayout nextLayout = views.layouts.get(next.slot);
         long minutes = remaining.toMinutes();
-        boolean kerahatEnabled = settings.getSwitchState("switchNotificationKerahat");
+        boolean kerahatEnabled = settings.isKerahatOn();
 
         if (minutes < 10) {
             setCountdownColor(nextLayout, R.color.remain_namaz_time_3, true);
@@ -152,7 +175,7 @@ public class PrayerTimesPanel {
             setCountdownColor(nextLayout, R.color.remain_namaz_time_1, false);
             views.remainingLabel.setText(label);
         }
-        return true;
+        return countdown.millisUntilTick;
     }
 
     /** Güneş doğduktan sonraki 45 dakika */

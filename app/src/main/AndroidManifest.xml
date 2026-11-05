@@ -17,9 +17,8 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-    <!-- Android 14 (API 34) için gerekli izinler -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <!-- Android 14+: kalıcı vakit bildirimi servisi (başka türe uymadığı için specialUse) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <uses-feature
         android:name="android.hardware.sensor.accelerometer"
@@ -97,11 +96,17 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+        <!-- Kalıcı vakit geri sayımı. Konum kullanmaz ve veri eşitlemez: eski "location|dataSync" türü
+             Android 14+'da konum izni yokken başlatmayı engelliyor, Android 15'te 6 saatte durduruluyordu. -->
         <service
             android:name=".Service.PrayerNotificationService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="location|dataSync" />
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Persistent notification that shows a live countdown to the next Islamic prayer time, enabled by the user in settings." />
+        </service>
 
         <receiver
             android:name=".VakitApi.BootReceiver"
@@ -119,6 +124,9 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED" />
+                <!-- Saat/saat dilimi değişince geri sayım yeniden hesaplanır (arka plan kısıtından muaf) -->
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
                 <action android:name="com.myapp.yolcu.UPDATE_WIDGET" />
                 <action android:name="com.myapp.yolcu.UPDATE_WEATHER" />
                 <action android:name="com.myapp.yolcu.REFRESH_WEATHER" />

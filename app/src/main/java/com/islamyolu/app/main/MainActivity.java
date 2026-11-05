@@ -4,7 +4,6 @@ import android.Manifest;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -44,7 +43,10 @@ import com.islamyolu.app.Service.BadgeService;
 import com.islamyolu.app.Service.GoldService;
 import com.islamyolu.app.Service.LocationAccess;
 import com.islamyolu.app.Service.LocationService;
-import com.islamyolu.app.Service.SharedPrefsHelperService;
+import com.islamyolu.app.preferences.AppPreferences;
+import com.islamyolu.app.preferences.LocationPreferences;
+import com.islamyolu.app.preferences.UserPreferences;
+import com.islamyolu.app.Service.PrayerNotificationService;
 import com.islamyolu.app.Service.SoundService;
 import com.islamyolu.app.VakitApi.DailyPrayerWorkerReceiver;
 import com.islamyolu.app.databinding.ActivityMainBinding;
@@ -83,17 +85,9 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
                 }
             });
 
-    // SharedPreferences için tanımlar
-    private SharedPreferences locationPrefs;
-    private SharedPreferences userPrefs;
-
-    public static final String LOCATION_PREFS = "location_prefs";
-    private static final String USER_PREFS = "user_prefs";
-    private static final String USERNAME_KEY = "username";
-    private static final String LAST_KNOWN_LAT_KEY = "last_known_latitude";
-    private static final String LAST_KNOWN_LON_KEY = "last_known_longitude";
-    private static final String AVATAR_ICON = "profile_picture_name";
-    public static final String SETTINGS_PREFS = "SettingPrefs";
+    // Yerel tercihler merkezi AppPreferences'tan
+    private LocationPreferences locationPrefs;
+    private UserPreferences userPrefs;
     private ImageButton refreshButton;
     private ImageView editIcon;
     private static final int REQUEST_NOTIFICATION_PERMISSION = 123;
@@ -118,11 +112,13 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // SharedPreferences ve servisler
-        SharedPrefsHelperService sharedPrefsHelperService = new SharedPrefsHelperService(getApplicationContext(), SETTINGS_PREFS);
-        locationPrefs = getSharedPreferences(LOCATION_PREFS, Context.MODE_PRIVATE);
-        userPrefs = getSharedPreferences(USER_PREFS, Context.MODE_PRIVATE);
-        sharedPrefsHelperService.defaultSettingPreference();
+        // Tercihler ve servisler
+        AppPreferences preferences = AppPreferences.from(this);
+        locationPrefs = preferences.location();
+        userPrefs = preferences.user();
+        preferences.settings().applyDefaultsOnFirstRun();
+        // Kalıcı vakit bildirimi açıksa ve sistem/üretici servisi kapattıysa yeniden başlatılır
+        PrayerNotificationService.startIfEnabled(this);
 
         initializeViews();
         initializeServices();
@@ -220,18 +216,14 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
 
 
         // Edit icon click listener
-        String savedUsername = userPrefs.getString(USERNAME_KEY, getString(R.string.defaultUserName));
+        String savedUsername = userPrefs.getUsername(getString(R.string.defaultUserName));
         // Kaydedilen kullanıcı adını TextView'e ata
         usernameTextView.setText(savedUsername);
         // Daha önce kaydedilmiş avatarı yükleme
-        String savedName = userPrefs.getString(AVATAR_ICON, Avatar.MAN_1.name());
+        String savedName = userPrefs.getAvatarName(Avatar.MAN_1.name());
         Avatar savedAvatar = Avatar.fromName(savedName);
         userAvatar.setImageResource(savedAvatar.getResId());
 
-//        // SharedPreferences içindeki tüm verileri temizle
-//        SharedPreferences.Editor editor = userPrefs.edit();
-//        editor.clear(); // Tüm verileri temizle
-//        editor.apply(); // Değişiklikleri kaydet
         editIcon.setOnClickListener(v -> {
             if (savedUsername.equals(getString(R.string.defaultUserName))) {
                 usernameTextView.setText("");
@@ -324,7 +316,8 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         panelViews.remainingLayout = remain_time_layout;
         panelViews.cityName = locationTextView;
         panelViews.refreshLayout = locationRefreshLayout;
-        prayerTimesPanel = new PrayerTimesPanel(this, panelViews, new SharedPrefsHelperService(this, SETTINGS_PREFS));
+        prayerTimesPanel = new PrayerTimesPanel(this, panelViews, AppPreferences.from(this).settings(),
+                () -> prayerTimesViewModel.refresh(MAIN_SCREEN_DAYS_AHEAD));
     }
 
 
@@ -363,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
                     if (city == null || city.isEmpty()) {
                         return;
                     }
-                    locationPrefs.edit().putString("city_name", city).apply();
+                    locationPrefs.setLegacyCityName(city);
                     Log.d("MainActivity", "Hava durumu için il kaydedildi");
                 });
     }
@@ -418,18 +411,15 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         Log.d("MainActivity", "Alarmlar kurulmak üzere DailyPrayerWorker başlatıldı");
     }
 
-    // Son bilinen konumu SharedPreferences'a kaydet
+    // Son bilinen konumu kaydet
     private void saveLastKnownLocation(Location location) {
-        SharedPreferences.Editor editor = locationPrefs.edit();
-        editor.putFloat(LAST_KNOWN_LAT_KEY, (float) location.getLatitude());
-        editor.putFloat(LAST_KNOWN_LON_KEY, (float) location.getLongitude());
-        editor.apply();
+        locationPrefs.saveLastKnownLocation(location.getLatitude(), location.getLongitude());
     }
 
-    // Son bilinen konumu SharedPreferences'dan yükle
+    // Son bilinen konumu yükle
     private Location loadLastKnownLocation() {
-        float lat = locationPrefs.getFloat(LAST_KNOWN_LAT_KEY, Float.NaN);
-        float lon = locationPrefs.getFloat(LAST_KNOWN_LON_KEY, Float.NaN);
+        float lat = locationPrefs.getLastKnownLatitude();
+        float lon = locationPrefs.getLastKnownLongitude();
         if (!Float.isNaN(lat) && !Float.isNaN(lon)) {
             Location location = new Location("");
             location.setLatitude(lat);
@@ -487,10 +477,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
                     } else {
                         usernameTextView.setText(newUsername);
 
-                        // SharedPreferences'a kaydet
-                        SharedPreferences.Editor editor = userPrefs.edit();
-                        editor.putString(USERNAME_KEY, newUsername);
-                        editor.apply();
+                        userPrefs.setUsername(newUsername);
 
                         // Kullanıcıya bilgi ver
                         Toast.makeText(MainActivity.this, getString(R.string.valid_username_1) + " " + newUsername, Toast.LENGTH_SHORT).show();
@@ -533,10 +520,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
     public void onProfilePictureSelected(Avatar avatar) {
         soundService.commonButtonEffect();
 
-        // SharedPreferences’a enum adı kaydet
-        SharedPreferences.Editor editor = userPrefs.edit();
-        editor.putString(AVATAR_ICON, avatar.name());
-        editor.apply();
+        userPrefs.setAvatarName(avatar.name());
 
         // Avatar göster
         userAvatar.setImageResource(avatar.getResId());

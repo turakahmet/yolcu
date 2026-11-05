@@ -7,6 +7,12 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 
+import com.islamyolu.app.R;
+
+/**
+ * İnternet bağlantısı kontrolü ve "internet yok" pencereleri için tek merkez; ekranlar
+ * ConnectivityManager'a doğrudan erişmez.
+ */
 public class NetworkServiceUtil {
 
     private static NetworkServiceUtil instance;
@@ -23,7 +29,15 @@ public class NetworkServiceUtil {
         return instance;
     }
 
-    // İnternet var mı kontrol et
+    /** Arka plan ve widget gibi örnek tutmayan yerler için kısa yol. */
+    public static boolean isConnected(Context context) {
+        return getInstance(context).isConnected();
+    }
+
+    /**
+     * Etkin ağ internet sunuyor mu. "VALIDATED" şartı aranmaz: Google bağlantı denetimine
+     * erişemeyen cihazlarda (ör. GMS'siz Huawei/Honor) internet olduğu halde yok sayılıyordu.
+     */
     public boolean isConnected() {
         ConnectivityManager cm =
                 (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -33,10 +47,12 @@ public class NetworkServiceUtil {
         if (network == null) return false;
 
         NetworkCapabilities capabilities = cm.getNetworkCapabilities(network);
-        return capabilities != null &&
-                (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                        || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-                        || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET));
+        return capabilities != null
+                && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+                || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN));
     }
 
     // Popup-1: Sadece uyarı göster
@@ -44,9 +60,9 @@ public class NetworkServiceUtil {
         if (activity == null || activity.isFinishing()) return;
 
         new AlertDialog.Builder(activity)
-                .setTitle("Bağlantı Hatası")
-                .setMessage("İnternet bağlantınızı kontrol edin.")
-                .setPositiveButton("Tamam", null)
+                .setTitle(R.string.network_error_title)
+                .setMessage(R.string.no_Internet)
+                .setPositiveButton(R.string.tamam, null)
                 .setCancelable(false)
                 .show();
     }
@@ -54,18 +70,8 @@ public class NetworkServiceUtil {
     // Popup-2: Kullanıcıya devam etmek istiyor musun sorusu
     public void showConfirmNoInternetDialog(Activity activity, OnUserChoiceListener listener) {
         if (activity == null || activity.isFinishing()) return;
-
-        new AlertDialog.Builder(activity)
-                .setTitle("İnternet Yok")
-                .setMessage("İnternet bağlantınız yok. Devam etmek istiyor musunuz?")
-                .setPositiveButton("Evet", (dialog, which) -> {
-                    if (listener != null) listener.onContinue();
-                })
-                .setNegativeButton("Hayır", (dialog, which) -> {
-                    if (listener != null) listener.onCancel();
-                })
-                .setCancelable(false)
-                .show();
+        showConfirmNoInternetDialog(activity, activity.getString(R.string.no_internet_title),
+                activity.getString(R.string.no_internet_continue_message), listener);
     }
 
     // Popup-2: Parametreli (mesajı dışarıdan alıyor)
@@ -78,10 +84,10 @@ public class NetworkServiceUtil {
         new AlertDialog.Builder(activity)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton("Evet", (dialog, which) -> {
+                .setPositiveButton(R.string.evet, (dialog, which) -> {
                     if (listener != null) listener.onContinue();
                 })
-                .setNegativeButton("Hayır", (dialog, which) -> {
+                .setNegativeButton(R.string.hayir, (dialog, which) -> {
                     if (listener != null) listener.onCancel();
                 })
                 .setCancelable(false)
@@ -95,5 +101,3 @@ public class NetworkServiceUtil {
         void onCancel();
     }
 }
-
-

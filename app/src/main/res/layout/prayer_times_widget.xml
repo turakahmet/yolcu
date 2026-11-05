@@ -122,8 +122,8 @@
                     tools:ignore="UseAppTint" />
             </LinearLayout>
 
-            <!-- Kalan süre sistem tarafından sayılır (geri sayım); dakikalık güncelleme gerekmez -->
-            <Chronometer
+            <!-- Kalan süre saniyesiz SS:DD; widget her dakika başında yeniden çizilir -->
+            <TextView
                 android:id="@+id/widget_next_prayer_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

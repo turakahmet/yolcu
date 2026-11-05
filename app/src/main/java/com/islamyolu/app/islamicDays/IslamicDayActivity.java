@@ -292,7 +292,7 @@ public class IslamicDayActivity extends AppCompatActivity {
     }
 
     private void yaklasanTarihGuncelle(List<DiniGun> diniGunList) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", new Locale("tr", "TR"));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.forLanguageTag("tr-TR"));
         Date currentDate = new Date();
 
         for (DiniGun diniGun : diniGunList) {
@@ -314,7 +314,7 @@ public class IslamicDayActivity extends AppCompatActivity {
 
     private void siralamaYap(List<DiniGun> diniGunList) {
         // Gün adını dikkate almadan Türkçe tarihleri parse edebilmek için formatter
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM yyyy", new Locale("tr")); // 'd' tek haneli günleri de kapsar
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.forLanguageTag("tr")); // 'd' tek haneli günleri de kapsar
 
         diniGunList.sort(Comparator.comparing(d -> {
             try {

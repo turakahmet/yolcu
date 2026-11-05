@@ -9,9 +9,7 @@ import androidx.annotation.StringRes;
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import com.islamyolu.app.R;
 
-import java.time.Duration;
 import java.util.Calendar;
-import java.util.Locale;
 
 /**
  * Namaz vakitlerinin ekranda gösterimi için ortak biçimlendirme: ana ekran, aylık takvim,
@@ -66,18 +64,6 @@ public final class PrayerDisplay {
             default:
                 return R.string.yatsi_kalan;
         }
-    }
-
-    /** Kalan süre: "02:15:09" veya saniyesiz "02:15" */
-    @NonNull
-    public static String remaining(@NonNull Duration duration, boolean withSeconds) {
-        long total = Math.max(0, duration.getSeconds());
-        long hours = total / 3600;
-        long minutes = (total % 3600) / 60;
-        long seconds = total % 60;
-        return withSeconds
-                ? String.format(Locale.ROOT, "%02d:%02d:%02d", hours, minutes, seconds)
-                : String.format(Locale.ROOT, "%02d:%02d", hours, minutes);
     }
 
     /**

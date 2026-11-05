@@ -7,7 +7,7 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import com.islamyolu.app.IslamYoluApplication;
-import com.islamyolu.app.Service.SharedPrefsHelperService;
+import com.islamyolu.app.preferences.AppPreferences;
 import com.islamyolu.app.Utils.AppLogger;
 import com.islamyolu.app.main.MainActivity;
 import com.islamyolu.app.prayertimes.PrayerCitySelection;
@@ -35,7 +35,7 @@ public class PrayerTimesSyncWorker extends Worker {
     public Result doWork() {
         Context context = getApplicationContext();
         PrayerCitySelection selection =
-                new SharedPrefsHelperService(context, MainActivity.LOCATION_PREFS).getPrayerCitySelection();
+                AppPreferences.from(context).location().getPrayerCitySelection();
         if (selection == null) {
             return Result.success(); // henüz şehir seçilmedi; seçim ekranı indirmeyi kendisi yapar
         }

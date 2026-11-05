@@ -73,15 +73,18 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
             TextView tvAciklama = shareView.findViewById(R.id.shareAciklama);
             ImageView ivImage = shareView.findViewById(R.id.shareImage);
 
-            IbadetCardLayout itemShare = ibadetCardLayoutList.get(holder.getAdapterPosition());
+            int adapterPosition = holder.getBindingAdapterPosition();
+            if (adapterPosition == RecyclerView.NO_POSITION) {
+                return; // öğe listeden kaldırılırken tıklandı
+            }
+            IbadetCardLayout itemShare = ibadetCardLayoutList.get(adapterPosition);
 
             tvBaslik.setText(itemShare.baslik);
             tvAciklama.setText(itemShare.anlam);
 
             // Glide ile resim yüklenirse:
-            holder.imageView.setDrawingCacheEnabled(true);
-            Bitmap originalBitmap = Bitmap.createBitmap(holder.imageView.getDrawingCache());
-            holder.imageView.setDrawingCacheEnabled(false);
+            // Ekrandaki görselin kopyası (eski drawing cache yerine görünümü bitmap'e çizer)
+            Bitmap originalBitmap = snapshot(holder.imageView);
 
 // Bunu paylaşım görünümüne uygula
             ivImage.setImageBitmap(originalBitmap);
@@ -131,6 +134,15 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
     @Override
     public int getItemCount() {
         return ibadetCardLayoutList.size();
+    }
+
+    /** Görünümün o anki halini bitmap'e çizer (deprecated drawing cache yerine). */
+    private static Bitmap snapshot(View view) {
+        int width = Math.max(1, view.getWidth());
+        int height = Math.max(1, view.getHeight());
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        view.draw(new Canvas(bitmap));
+        return bitmap;
     }
 
     public static class CardViewHolder extends RecyclerView.ViewHolder {

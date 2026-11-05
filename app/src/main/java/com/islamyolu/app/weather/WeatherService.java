@@ -1,11 +1,11 @@
 package com.islamyolu.app.weather;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.islamyolu.app.Service.WeatherApiService;
+import com.islamyolu.app.preferences.AppPreferences;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -132,28 +132,23 @@ public class WeatherService {
 
     // Son güncelleme zamanını SharedPreferences'a kaydet
     private void saveLastUpdateTime(long time) {
-        SharedPreferences prefs = context.getSharedPreferences("WeatherPrefs", Context.MODE_PRIVATE);
-        prefs.edit().putLong("last_update", time).apply();
+        AppPreferences.from(context).weather().setLastUpdate(time);
     }
 
     // Son güncelleme zamanını SharedPreferences'dan al
     private long getLastUpdateTime() {
-        SharedPreferences prefs = context.getSharedPreferences("WeatherPrefs", Context.MODE_PRIVATE);
-        return prefs.getLong("last_update", 0);
+        return AppPreferences.from(context).weather().getLastUpdate();
     }
 
     // Hava durumu verisini SharedPreferences'a kaydet
     private void saveWeatherData(WeatherData weatherData) {
-        SharedPreferences prefs = context.getSharedPreferences("WeatherPrefs", Context.MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = gson.toJson(weatherData);
-        prefs.edit().putString("weather_data", json).apply();
+        String json = new Gson().toJson(weatherData);
+        AppPreferences.from(context).weather().setDataJson(json);
     }
 
     // Kaydedilmiş hava durumu verisini al
     private WeatherData getCurrentWeatherData() {
-        SharedPreferences prefs = context.getSharedPreferences("WeatherPrefs", Context.MODE_PRIVATE);
-        String json = prefs.getString("weather_data", null);
+        String json = AppPreferences.from(context).weather().getDataJson();
         if (json != null) {
             Gson gson = new Gson();
             return gson.fromJson(json, WeatherData.class);

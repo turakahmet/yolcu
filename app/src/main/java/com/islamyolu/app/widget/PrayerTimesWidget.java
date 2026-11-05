@@ -7,13 +7,9 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -22,10 +18,12 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.islamyolu.app.R;
-import com.islamyolu.app.Service.SharedPrefsHelperService;
+import com.islamyolu.app.Service.NetworkServiceUtil;
+import com.islamyolu.app.preferences.AppPreferences;
 import com.islamyolu.app.VakitApi.City;
 import com.islamyolu.app.prayertimes.CurrentPrayerTimes;
 import com.islamyolu.app.prayertimes.PrayerClock;
+import com.islamyolu.app.prayertimes.PrayerCountdown;
 import com.islamyolu.app.prayertimes.PrayerDisplay;
 import com.islamyolu.app.prayertimes.PrayerSlot;
 import com.islamyolu.app.prayertimes.PrayerTimeline;
@@ -49,10 +47,11 @@ import java.util.concurrent.Executors;
  * <p>
  * Marka bağımsız çalışma için:
  * <ul>
- *   <li>Kalan süre Chronometer ile sistem tarafından sayılır; dakikalık alarm gerekmez
- *       (pil yönetimi agresif arayüzlerde dakikalık alarmlar gecikiyordu).</li>
- *   <li>Yeniden çizim yalnızca sıradaki vakitte ve şehrin gece yarısında yapılır; senkron/şehir
- *       değişiminde PrayerTimesUpdateNotifier tetikler.</li>
+ *   <li>Kalan süre saniyesiz "SS:DD" düz metindir; gösterilen dakika değiştiğinde yeniden çizilir.
+ *       Uyandırmayan (RTC) alarm kullanılır: ekran kapalıyken çalışmaz, pil harcamaz; ekran açılınca
+ *       hemen güncellenir. Düz metin gecikmede eksiye düşmez.</li>
+ *   <li>Şehrin gece yarısında da yeniden çizilir; senkron/şehir değişiminde
+ *       PrayerTimesUpdateNotifier tetikler.</li>
  *   <li>Arka plan işi goAsync ile yapılır; süreç iş bitmeden kapatılmaz.</li>
  *   <li>Boyuta göre düzen: küçükken yalnızca kalan süre, büyükken tüm bilgiler.</li>
  * </ul>
@@ -70,6 +69,10 @@ public class PrayerTimesWidget extends AppWidgetProvider {
     private static final int FULL_LAYOUT_MIN_HEIGHT_DP = 100;
     /** Veri yokken (şehir seçilmemiş/veri bitmiş) yeniden deneme aralığı */
     private static final Duration NO_DATA_RETRY = Duration.ofMinutes(30);
+    /** Dakika/vakit sınırından sonra yeniden çizim payı */
+    private static final long REDRAW_AFTER_MS = 300;
+    /** Exact alarm izni yoksa kabul edilen gecikme penceresi (sistem en az 10 dk'ya uzatabilir) */
+    private static final long INEXACT_WINDOW_MS = 60_000;
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
     @Override
@@ -79,7 +82,10 @@ public class PrayerTimesWidget extends AppWidgetProvider {
         String action = intent.getAction();
         if (action != null) {
             Log.d(TAG, "Received action: " + action);
-            if (ACTION_UPDATE.equals(action) || WEATHER_UPDATE_ACTION.equals(action)) {
+            if (ACTION_UPDATE.equals(action) || WEATHER_UPDATE_ACTION.equals(action)
+                    || Intent.ACTION_TIME_CHANGED.equals(action) || Intent.ACTION_TIMEZONE_CHANGED.equals(action)) {
+                // Saat/saat dilimi değişince kronometre tabanı yeniden hesaplanmalı (kronometre
+                // cihazın açık kalma süresine göre sayar, duvar saatine göre değil)
                 updateWidgets(context, allWidgetIds(context));
             } else if (ACTION_REFRESH_WEATHER.equals(action)) {
                 Log.d(TAG, "Weather refresh button clicked");
@@ -127,7 +133,7 @@ public class PrayerTimesWidget extends AppWidgetProvider {
                     RemoteViews views = buildViews(app, appWidgetId, current, now, full);
                     manager.updateAppWidget(appWidgetId, views);
                     if (full && weatherLocation != null) {
-                        updateWeatherInfo(app, views, weatherLocation.getLatitude(), weatherLocation.getLongitude(), manager, appWidgetId);
+                        updateWeatherInfo(app, weatherLocation.getLatitude(), weatherLocation.getLongitude(), manager, appWidgetId);
                     }
                 }
                 scheduleUpdateAt(app, nextRedrawAt(current, now));
@@ -142,8 +148,7 @@ public class PrayerTimesWidget extends AppWidgetProvider {
     /** Hava durumu eski il bilgisinden (city_name; Ayarlar > Güncelle) */
     @Nullable
     private static City weatherLocation(Context context) {
-        String weatherCity = new SharedPrefsHelperService(context, MainActivity.SETTINGS_PREFS)
-                .getCityNameFromPreferences();
+        String weatherCity = AppPreferences.from(context).location().getLegacyCityName();
         return weatherCity != null ? City.fromCityName(weatherCity) : null;
     }
 
@@ -179,22 +184,22 @@ public class PrayerTimesWidget extends AppWidgetProvider {
         }
 
         PrayerDayEntity today = current.timeline.today(now);
-        PrayerTimeline.Moment next = current.timeline.next(now);
+        PrayerCountdown countdown = PrayerCountdown.of(current.timeline, now);
+        PrayerTimeline.Moment next = countdown != null ? countdown.next : null;
         views.setTextViewText(R.id.widget_city_name, current.selection != null
                 ? current.selection.getCityName() : context.getString(R.string.prayer_choose_city));
 
         if (today != null && next != null) {
-            // Sıradaki vakte geri sayım: an şehrin gmt farkıyla; sayımı sistem yapar
+            // Sıradaki vakte kalan süre, saniyesiz "SS:DD" (uygulama ve bildirimle aynı hesap).
+            // Düz metin olduğu için gecikmede bile eksiye düşmez; her dakika başında yeniden çizilir.
             views.setTextViewText(R.id.widget_next_prayer_label, context.getString(
                     R.string.widget_next_prayer_label, context.getString(PrayerDisplay.nameRes(next.slot))));
-            long base = SystemClock.elapsedRealtime() + Duration.between(now, next.instant).toMillis();
-            views.setChronometer(R.id.widget_next_prayer_time, base, null, true);
-            views.setChronometerCountDown(R.id.widget_next_prayer_time, true);
+            views.setTextViewText(R.id.widget_next_prayer_time, countdown.textWithoutSeconds());
         } else {
             // Şehir seçilmemiş veya veri bitmiş (§6)
             views.setTextViewText(R.id.widget_next_prayer_label, context.getString(current.selection == null
                     ? R.string.prayer_status_no_city : R.string.prayer_status_outdated_offline));
-            views.setChronometer(R.id.widget_next_prayer_time, SystemClock.elapsedRealtime(), "", false);
+            views.setTextViewText(R.id.widget_next_prayer_time, "");
         }
 
         if (full) {
@@ -226,19 +231,22 @@ public class PrayerTimesWidget extends AppWidgetProvider {
     }
 
     /**
-     * Bir sonraki yeniden çizim: sıradaki vakit (vurgu ve geri sayım hedefi değişir) ya da şehrin
-     * gece yarısı (yeni günün vakitleri), hangisi önceyse. Veri yoksa 30 dakika sonra yeniden denenir.
+     * Bir sonraki yeniden çizim: gösterilen dakikanın değiştiği an (sıradaki vakit anı da bir dakika
+     * sınırıdır) ya da şehrin gece yarısı (yeni günün vakitleri), hangisi önceyse.
+     * Veri yoksa 30 dakika sonra yeniden denenir.
      */
     private static Instant nextRedrawAt(CurrentPrayerTimes current, Instant now) {
-        PrayerTimeline.Moment next = current.timeline.next(now);
+        PrayerCountdown countdown = PrayerCountdown.of(current.timeline, now);
         LocalDate today = current.timeline.cityToday(now);
         PrayerDayEntity todayData = today != null ? current.timeline.day(today) : null;
-        if (next == null || todayData == null) {
+        if (countdown == null || todayData == null) {
             return now.plus(NO_DATA_RETRY);
         }
+        Instant minuteTick = now.plusMillis(countdown.millisUntilMinuteTick());
         Instant midnight = PrayerClock.nextDayAt(today, LocalTime.MIDNIGHT, todayData.getGmtOffsetMinutes());
-        Instant target = next.instant.isBefore(midnight) ? next.instant : midnight;
-        return target.plusSeconds(1);
+        Instant target = minuteTick.isBefore(midnight) ? minuteTick : midnight;
+        // Sınırın hemen sonrasına düşsün (aynı dakikayı tekrar çizmesin)
+        return target.plusMillis(REDRAW_AFTER_MS);
     }
 
     private static String timeOf(PrayerDayEntity today, PrayerSlot slot) {
@@ -337,7 +345,8 @@ public class PrayerTimesWidget extends AppWidgetProvider {
 
     /**
      * Tek bir bekleyen güncelleme tutulur (aynı PendingIntent). Exact alarm izni varsa tam zamanında,
-     * yoksa Doze'da da çalışan yaklaşık alarm kullanılır. RTC (uyandırmaz): ekran açılınca teslim edilir.
+     * yoksa dar pencereli alarm kullanılır (setAndAllowWhileIdle saatlerce gecikebiliyordu ve bu sürede
+     * kronometre eksiye düşüyordu). RTC (uyandırmaz): ekran kapalıyken ekran açılınca teslim edilir.
      */
     private static void scheduleUpdateAt(Context context, Instant at) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -349,9 +358,10 @@ public class PrayerTimesWidget extends AppWidgetProvider {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         long triggerAt = at.toEpochMilli();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC, triggerAt, pendingIntent);
+            alarmManager.setWindow(AlarmManager.RTC, triggerAt, INEXACT_WINDOW_MS, pendingIntent);
         } else {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, triggerAt, pendingIntent);
+            // Dakikalık çizim yalnızca ekran açıkken anlamlı: uyku/Doze sırasında beklenir, kota harcanmaz
+            alarmManager.setExact(AlarmManager.RTC, triggerAt, pendingIntent);
         }
     }
 
@@ -360,10 +370,7 @@ public class PrayerTimesWidget extends AppWidgetProvider {
         super.onEnabled(context);
         Log.d(TAG, "Widget enabled");
 
-        SharedPreferences prefs = context.getSharedPreferences("WeatherPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putLong("last_update", 0);
-        editor.apply();
+        AppPreferences.from(context).weather().invalidate();
     }
 
     @Override
@@ -432,12 +439,18 @@ public class PrayerTimesWidget extends AppWidgetProvider {
     }
 
 
-    private void updateWeatherInfo(Context context, RemoteViews views, double latitude, double longitude,
+    /**
+     * Hava durumu yalnızca kendi alanlarını kısmi güncellemeyle yazar. Önceden tüm görünüm (eski
+     * geri sayım dahil) cevap gelince yeniden uygulanıyordu; cevap vakit geçtikten sonra gelirse
+     * widget geçmiş vakte sayıp eksiye düşüyor ve bir sonraki çizime kadar öyle kalıyordu.
+     */
+    private void updateWeatherInfo(Context context, double latitude, double longitude,
                                    AppWidgetManager appWidgetManager, int appWidgetId) {
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.prayer_times_widget);
         if (!isNetworkAvailable(context)) {
             Log.w(TAG, "İnternet bağlantısı yok");
             showRefreshButton(views, context, appWidgetId);
-            appWidgetManager.updateAppWidget(appWidgetId, views);
+            appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views);
             return;
         }
 
@@ -445,7 +458,7 @@ public class PrayerTimesWidget extends AppWidgetProvider {
         weatherService.getDailyWeatherAndForecastByDate(latitude, longitude, new WeatherService.WeatherCallback() {
             @Override
             public void onSuccess(WeatherData weatherData) {
-                if (weatherData.getCurrentWeather() != null) {
+                if (weatherData != null && weatherData.getCurrentWeather() != null) {
                     double temp = weatherData.getCurrentWeather().getTemperature();
                     int roundedTemp = (temp % 1.0 >= 0.5) ? (int) Math.ceil(temp) : (int) Math.floor(temp);
 
@@ -459,6 +472,7 @@ public class PrayerTimesWidget extends AppWidgetProvider {
                     if ("Bilinmiyor".equals(weatherDesc)) {
                         Log.e(TAG, "Hava durumu güncellenemedi weatherDesc Bilinmiyor");
                         showRefreshButton(views, context, appWidgetId);
+                        appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views);
                         return;
                     } else {
                         views.setViewVisibility(R.id.weather_wifi_icon, View.GONE);
@@ -475,14 +489,14 @@ public class PrayerTimesWidget extends AppWidgetProvider {
                     Log.e(TAG, "Hava durumu güncellenemedi: getCurrentWeather null");
                     showRefreshButton(views, context, appWidgetId);
                 }
-                appWidgetManager.updateAppWidget(appWidgetId, views);
+                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views);
             }
 
             @Override
             public void onError(String error) {
                 Log.e(TAG, "Hava durumu güncellenemedi: " + error);
                 showRefreshButton(views, context, appWidgetId);
-                appWidgetManager.updateAppWidget(appWidgetId, views);
+                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views);
             }
         });
     }
@@ -511,19 +525,7 @@ public class PrayerTimesWidget extends AppWidgetProvider {
 
     // İnternet bağlantısı kontrolü için yardımcı metod
     private boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (connectivityManager != null) {
-            NetworkCapabilities capabilities = connectivityManager
-                    .getNetworkCapabilities(connectivityManager.getActiveNetwork());
-
-            if (capabilities != null) {
-                return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-                        capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
-            }
-        }
-        return false;
+        return NetworkServiceUtil.isConnected(context);
     }
 }
 

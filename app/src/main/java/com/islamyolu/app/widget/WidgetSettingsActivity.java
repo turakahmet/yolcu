@@ -3,7 +3,6 @@ package com.islamyolu.app.widget;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -13,11 +12,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.islamyolu.app.R;
+import com.islamyolu.app.preferences.AppPreferences;
 
 public class WidgetSettingsActivity extends AppCompatActivity {
     private static final String TAG = "WidgetSettingsActivity";
-    private static final String PREFS_NAME = "com.islamyolu.app.widget.PrayerTimesWidget";
-    private static final String PREF_PREFIX_KEY = "widget_transparency_";
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
     @Override
@@ -104,15 +102,12 @@ public class WidgetSettingsActivity extends AppCompatActivity {
     }
 
     public static void saveTransparencyPref(Context context, int appWidgetId, int transparency) {
-        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
-        prefs.putInt(PREF_PREFIX_KEY + appWidgetId, transparency);
-        prefs.apply();
+        AppPreferences.from(context).widget().setTransparency(appWidgetId, transparency);
         Log.d(TAG, "Şeffaflık kaydedildi: " + transparency + " for widget: " + appWidgetId);
     }
 
     public static int loadTransparencyPref(Context context, int appWidgetId) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        return prefs.getInt(PREF_PREFIX_KEY + appWidgetId, 0); // Varsayılan değer 0 (şeffaf değil)
+        return AppPreferences.from(context).widget().getTransparency(appWidgetId);
     }
 
 }

@@ -16,7 +16,8 @@ import com.islamyolu.app.IslamYoluApplication;
 import com.islamyolu.app.R;
 import com.islamyolu.app.Service.LocationService;
 import com.islamyolu.app.Service.NetworkServiceUtil;
-import com.islamyolu.app.Service.SharedPrefsHelperService;
+import com.islamyolu.app.preferences.AppPreferences;
+import com.islamyolu.app.preferences.LocationPreferences;
 import com.islamyolu.app.main.MainActivity;
 import com.islamyolu.app.prayertimes.PlaceNameNormalizer;
 import com.islamyolu.app.prayertimes.PrayerCitySelection;
@@ -83,7 +84,7 @@ public class CitySelectionViewModel extends AndroidViewModel {
     private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
 
     private final PrayerTimesRepository repository;
-    private final SharedPrefsHelperService preferences;
+    private final LocationPreferences preferences;
     private final NetworkServiceUtil network;
     private final AddressResolver addressResolver;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -110,7 +111,7 @@ public class CitySelectionViewModel extends AndroidViewModel {
     public CitySelectionViewModel(@NonNull Application application) {
         super(application);
         repository = IslamYoluApplication.from(application).getPrayerTimesRepository();
-        preferences = new SharedPrefsHelperService(application, MainActivity.LOCATION_PREFS);
+        preferences = AppPreferences.from(application).location();
         network = NetworkServiceUtil.getInstance(application);
         addressResolver = new AddressResolver(application);
     }
