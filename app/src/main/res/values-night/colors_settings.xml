@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Yeni Ayarlar tasarımının koyu tema karşılıkları -->
+<resources>
+    <color name="settings_secondary">#81C784</color>
+    <color name="settings_accent">#A5D66A</color>
+    <color name="settings_on_primary">#0F2A1F</color>
+    <color name="settings_background">#101411</color>
+    <color name="settings_surface">#1B211C</color>
+    <color name="settings_surface_variant">#243427</color>
+    <color name="settings_text_primary">#E6EDE7</color>
+    <color name="settings_text_secondary">#A3ADA6</color>
+    <color name="settings_border">#2E372F</color>
+    <color name="settings_icon">#A5D66A</color>
+    <color name="settings_error">#EF8A80</color>
+    <color name="settings_header_start">#0B2A20</color>
+    <color name="settings_header_end">#1B5E20</color>
+</resources>

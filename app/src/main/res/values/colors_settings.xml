@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Yeni Ayarlar tasarımının renk paleti (açık tema). Koyu karşılıkları values-night/colors_settings.xml -->
+<resources>
+    <color name="settings_secondary">#2E7D32</color>
+    <color name="settings_accent">#A5D66A</color>
+    <color name="settings_on_primary">#FFFFFF</color>
+    <color name="settings_background">#F8F6EE</color>
+    <color name="settings_surface">#FFFFFF</color>
+    <color name="settings_surface_variant">#E8F5E9</color>
+    <color name="settings_text_primary">#26332C</color>
+    <color name="settings_text_secondary">#6B7280</color>
+    <color name="settings_border">#E5E7EB</color>
+    <color name="settings_icon">#2E7D32</color>
+    <color name="settings_error">#D6554A</color>
+    <color name="settings_header_start">#0F3D2E</color>
+    <color name="settings_header_end">#2E7D32</color>
+</resources>

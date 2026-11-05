@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Yeni Ayarlar ekranlarının teması ve ortak bileşen stilleri.
+    Material 3 (DayNight): açık/koyu renkler colors_settings.xml'den gelir. Uygulamanın geri kalanı
+    şimdilik eski MaterialComponents temasında kalır; yeni ekranlar bu temayı kullanarak geçirilir.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.Yolcu.Settings" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/settings_secondary</item>
+        <item name="colorOnPrimary">@color/settings_on_primary</item>
+        <item name="colorPrimaryContainer">@color/settings_surface_variant</item>
+        <item name="colorOnPrimaryContainer">@color/settings_text_primary</item>
+        <item name="colorSecondary">@color/settings_accent</item>
+        <item name="colorSecondaryContainer">@color/settings_surface_variant</item>
+        <item name="colorOnSecondaryContainer">@color/settings_text_primary</item>
+        <item name="colorError">@color/settings_error</item>
+        <item name="colorSurface">@color/settings_surface</item>
+        <item name="colorOnSurface">@color/settings_text_primary</item>
+        <item name="colorOnSurfaceVariant">@color/settings_text_secondary</item>
+        <item name="colorOutline">@color/settings_border</item>
+        <item name="android:colorBackground">@color/settings_background</item>
+        <item name="android:windowBackground">@color/settings_background</item>
+        <item name="android:textColorPrimary">@color/settings_text_primary</item>
+        <item name="android:textColorSecondary">@color/settings_text_secondary</item>
+        <!-- Başlık koyu yeşil olduğu için durum çubuğu ikonları her temada açık renk -->
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <!-- Kart: ince çerçeveli, gölgesiz, yuvarlak köşeli -->
+    <style name="Widget.Yolcu.Settings.Card" parent="Widget.Material3.CardView.Outlined">
+        <item name="cardBackgroundColor">@color/settings_surface</item>
+        <item name="strokeColor">@color/settings_border</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cardCornerRadius">@dimen/settings_card_radius</item>
+        <item name="android:layout_marginStart">@dimen/settings_screen_padding</item>
+        <item name="android:layout_marginEnd">@dimen/settings_screen_padding</item>
+        <item name="android:layout_marginBottom">@dimen/settings_card_spacing</item>
+    </style>
+
+    <!-- Kart üstündeki küçük bölüm başlığı -->
+    <style name="TextAppearance.Yolcu.Settings.Section" parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:textColor">@color/settings_icon</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Yolcu.Settings.RowTitle" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textColor">@color/settings_text_primary</item>
+    </style>
+
+    <style name="TextAppearance.Yolcu.Settings.RowSubtitle" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textColor">@color/settings_text_secondary</item>
+    </style>
+
+    <style name="Widget.Yolcu.Settings.SectionTitle" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/settings_section_inset</item>
+        <item name="android:layout_marginEnd">@dimen/settings_section_inset</item>
+        <item name="android:layout_marginTop">@dimen/settings_card_spacing</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.Yolcu.Settings.Section</item>
+        <item name="android:accessibilityHeading" tools:targetApi="28">true</item>
+    </style>
+
+    <!-- İkincil eylem butonu (çerçeveli); dolu ana buton ilk kullanıldığı görevde eklenecek -->
+    <style name="Widget.Yolcu.Settings.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/settings_secondary</item>
+        <item name="android:textColor">@color/settings_secondary</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="cornerRadius">12dp</item>
+    </style>
+</resources>

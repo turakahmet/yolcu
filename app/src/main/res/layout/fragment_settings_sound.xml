@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/settingsScroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/settings_screen_padding">
+
+        <TextView
+            style="@style/Widget.Yolcu.Settings.SectionTitle"
+            android:text="@string/settings_section_general" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Yolcu.Settings.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.islamyolu.app.settings.SettingsRowView
+                    android:id="@+id/rowAppSounds"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:rowDivider="true"
+                    app:rowIcon="@drawable/baseline_volume_up_24"
+                    app:rowSubtitle="@string/settings_app_sounds_subtitle"
+                    app:rowTitle="@string/sound_setting"
+                    app:rowType="toggle" />
+
+                <com.islamyolu.app.settings.SettingsRowView
+                    android:id="@+id/rowVibrateAtPrayer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:rowIcon="@drawable/ic_settings_vibration"
+                    app:rowSubtitle="@string/settings_vibrate_subtitle"
+                    app:rowTitle="@string/vakit_sound_setting"
+                    app:rowType="toggle" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            style="@style/Widget.Yolcu.Settings.SectionTitle"
+            android:text="@string/settings_section_ezan" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Yolcu.Settings.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/settings_row_padding_horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ezanSoundLayout"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/settings_ezan_sound_label"
+                    app:helperText="@string/medya_ses_seviyesini_etiket"
+                    app:startIconDrawable="@drawable/ic_settings_music"
+                    app:startIconTint="@color/settings_icon">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/ezanSoundDropdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        app:simpleItems="@array/ezan_sound_options" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ezanDuaLayout"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:hint="@string/ezan_duasi_etiket"
+                    app:helperText="@string/medya_ses_seviyesini_etiket"
+                    app:startIconDrawable="@drawable/baseline_menu_book_24"
+                    app:startIconTint="@color/settings_icon">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/ezanDuaDropdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        app:simpleItems="@array/ezan_dua_options" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

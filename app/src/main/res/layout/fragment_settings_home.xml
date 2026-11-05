@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ayarlar ana menüsü: 8 başlık, her biri kendi kartında. Açıklamalar SettingsHomeFragment'ta güncellenir. -->
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/settingsScroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/settings_screen_padding">
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Yolcu.Settings.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.islamyolu.app.settings.SettingsRowView
+                android:id="@+id/rowAccount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:rowIcon="@drawable/ic_settings_account"
+                app:rowSubtitle="@string/settings_coming_soon"
+                app:rowTitle="@string/settings_account_title" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Yolcu.Settings.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.islamyolu.app.settings.SettingsRowView
+                android:id="@+id/rowNotifications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:rowIcon="@drawable/baseline_notifications_24"
+                app:rowTitle="@string/settings_notifications_title" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Yolcu.Settings.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.islamyolu.app.settings.SettingsRowView
+                android:id="@+id/rowSound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:rowIcon="@drawable/baseline_volume_up_24"
+                app:rowTitle="@string/settings_sound_title" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Yolcu.Settings.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.islamyolu.app.settings.SettingsRowView
+                android:id="@+id/rowReminders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:rowIcon="@drawable/ic_settings_hourglass"
+                app:rowTitle="@string/settings_reminders_title" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Yolcu.Settings.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.islamyolu.app.settings.SettingsRowView
+                android:id="@+id/rowLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:rowIcon="@drawable/baseline_location_on_24"
+                app:rowTitle="@string/settings_location_title" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Yolcu.Settings.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.islamyolu.app.settings.SettingsRowView
+                android:id="@+id/rowApp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:rowIcon="@drawable/ic_settings_tune"
+                app:rowSubtitle="@string/settings_coming_soon"
+                app:rowTitle="@string/settings_app_title" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Yolcu.Settings.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.islamyolu.app.settings.SettingsRowView
+                android:id="@+id/rowData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:rowIcon="@drawable/ic_settings_storage"
+                app:rowSubtitle="@string/settings_coming_soon"
+                app:rowTitle="@string/settings_data_title" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Yolcu.Settings.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.islamyolu.app.settings.SettingsRowView
+                android:id="@+id/rowAbout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:rowIcon="@drawable/baseline_info_24"
+                app:rowSubtitle="@string/settings_about_subtitle"
+                app:rowTitle="@string/settings_about_title" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Alt bilgi: uygulama adı ve sürüm -->
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/baseline_mosque_24"
+            app:tint="@color/settings_icon" />
+
+        <TextView
+            android:id="@+id/settingsFooter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.Yolcu.Settings.RowSubtitle" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

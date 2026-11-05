@@ -84,7 +84,8 @@
         <activity android:name=".feedback.BilgilendirmeActivity" />
         <activity
             android:name=".main.SettingsActivity"
-            android:label="@string/action_settings" />
+            android:label="@string/action_settings"
+            android:theme="@style/Theme.Yolcu.Settings" />
         <activity
             android:name=".monthlyCalender.MonthlyPrayerActivity"
             android:label="@string/aylikNamazTakvim" />

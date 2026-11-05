@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ayarlar ekranlarının ölçüleri; tablet/katlanabilir için values-w600dp'de içerik genişliği sınırlanır -->
+<resources>
+    <dimen name="settings_screen_padding">16dp</dimen>
+    <dimen name="settings_section_inset">20dp</dimen>
+    <dimen name="settings_card_radius">16dp</dimen>
+    <dimen name="settings_card_spacing">12dp</dimen>
+    <dimen name="settings_row_min_height">64dp</dimen>
+    <dimen name="settings_row_padding_horizontal">16dp</dimen>
+    <dimen name="settings_row_padding_vertical">12dp</dimen>
+    <dimen name="settings_icon_container">40dp</dimen>
+    <dimen name="settings_icon_size">22dp</dimen>
+    <dimen name="settings_header_height">96dp</dimen>
+    <dimen name="settings_header_art">88dp</dimen>
+    <!-- Geniş ekranda kartlar ekranın tamamına yayılmasın -->
+    <dimen name="settings_content_max_width">640dp</dimen>
+</resources>

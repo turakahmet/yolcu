@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Ayarlar satırı (SettingsRowView): ikon + başlık + açıklama + sağda ok veya anahtar -->
+    <declare-styleable name="SettingsRowView">
+        <attr name="rowIcon" format="reference" />
+        <attr name="rowTitle" format="string" />
+        <attr name="rowSubtitle" format="string" />
+        <attr name="rowType" format="enum">
+            <!-- Alt ekrana gider: sağda ok -->
+            <enum name="navigation" value="0" />
+            <!-- Açık/kapalı anahtar: satıra dokunmak da değiştirir -->
+            <enum name="toggle" value="1" />
+            <!-- Yalnızca bilgi: dokunulmaz -->
+            <enum name="info" value="2" />
+        </attr>
+        <!-- Satırın altına ayırıcı çizgi (kart içinde ardışık satırlar için) -->
+        <attr name="rowDivider" format="boolean" />
+    </declare-styleable>
+</resources>

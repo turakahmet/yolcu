@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ayarlar içi gezinme: ana menü → başlık ekranları. Etiketler araç çubuğu başlığı olur. -->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings_navigation"
+    app:startDestination="@id/settingsHome">
+
+    <fragment
+        android:id="@+id/settingsHome"
+        android:name="com.islamyolu.app.settings.SettingsHomeFragment"
+        android:label="@string/action_settings"
+        tools:layout="@layout/fragment_settings_home">
+        <action
+            android:id="@+id/toNotifications"
+            app:destination="@id/settingsNotifications" />
+        <action
+            android:id="@+id/toSound"
+            app:destination="@id/settingsSound" />
+        <action
+            android:id="@+id/toReminders"
+            app:destination="@id/settingsReminders" />
+        <action
+            android:id="@+id/toLocation"
+            app:destination="@id/settingsLocation" />
+        <action
+            android:id="@+id/toAbout"
+            app:destination="@id/settingsAbout" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingsNotifications"
+        android:name="com.islamyolu.app.settings.NotificationSettingsFragment"
+        android:label="@string/settings_notifications_title"
+        tools:layout="@layout/fragment_settings_notifications" />
+
+    <fragment
+        android:id="@+id/settingsSound"
+        android:name="com.islamyolu.app.settings.SoundSettingsFragment"
+        android:label="@string/settings_sound_title"
+        tools:layout="@layout/fragment_settings_sound" />
+
+    <fragment
+        android:id="@+id/settingsReminders"
+        android:name="com.islamyolu.app.settings.ReminderSettingsFragment"
+        android:label="@string/settings_reminders_title"
+        tools:layout="@layout/fragment_settings_reminders" />
+
+    <fragment
+        android:id="@+id/settingsLocation"
+        android:name="com.islamyolu.app.settings.LocationSettingsFragment"
+        android:label="@string/settings_location_title"
+        tools:layout="@layout/fragment_settings_location" />
+
+    <fragment
+        android:id="@+id/settingsAbout"
+        android:name="com.islamyolu.app.settings.AboutSettingsFragment"
+        android:label="@string/settings_about_title"
+        tools:layout="@layout/fragment_settings_about" />
+</navigation>

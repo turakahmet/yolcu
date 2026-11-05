@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/settingsScroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/settings_screen_padding"
+        android:paddingBottom="@dimen/settings_screen_padding">
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Yolcu.Settings.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.islamyolu.app.settings.SettingsRowView
+                    android:id="@+id/rowContact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:rowDivider="true"
+                    app:rowIcon="@drawable/ic_settings_mail"
+                    app:rowSubtitle="@string/settings_contact_subtitle"
+                    app:rowTitle="@string/iletisim_etiket" />
+
+                <com.islamyolu.app.settings.SettingsRowView
+                    android:id="@+id/rowPrivacy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:rowDivider="true"
+                    app:rowIcon="@drawable/ic_settings_shield"
+                    app:rowTitle="@string/privacy_header" />
+
+                <com.islamyolu.app.settings.SettingsRowView
+                    android:id="@+id/rowDisclaimer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:rowDivider="true"
+                    app:rowIcon="@drawable/ic_settings_document"
+                    app:rowTitle="@string/bilgilendirmeHeader" />
+
+                <com.islamyolu.app.settings.SettingsRowView
+                    android:id="@+id/rowVersion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:rowIcon="@drawable/baseline_info_24"
+                    app:rowSubtitle="@string/app_version"
+                    app:rowTitle="@string/settings_version_title"
+                    app:rowType="info" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

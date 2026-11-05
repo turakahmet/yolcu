@@ -517,17 +517,8 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="matches_game_info">Aşağıdaki isimleri anlamları ile eşletiriniz</string>
     <string name="testVakit_icon" translatable="false">Vakit icon</string>
     <string name="bildirim_icon" translatable="false">Bildirim ikonu</string>
-    <string name="bildirimler_etiket" translatable="false">Bildirimler</string>
-    <string name="tum_bildirimler_etiket" translatable="false">Tüm Bildirimler</string>
-    <string name="vakit_oncesi_etiket" translatable="false">Vakit Öncesi Uyarı</string>
-    <string name="bes_dk_etiket" translatable="false">5 dk</string>
-    <string name="on_dk_etiket" translatable="false">10 dk</string>
-    <string name="yirmi_dk_etiket" translatable="false">20 dk</string>
-    <string name="ses_ayar_etiket" translatable="false">Ses Ayarı</string>
-    <string name="ezan_bildirim_sesi_etiket" translatable="false">Ezan bildirim sesi</string>
     <string name="medya_ses_seviyesini_etiket">(Medya Ses seviyesini kullanır)</string>
     <string name="ezan_duasi_etiket">Ezan duası</string>
-    <string name="iletisim_bilgi_etiket">İletişim ve Bilgi</string>
     <string name="iletisim_etiket">İletişim</string>
     <string name="harf_kutucugu" translatable="false">Harf Kutuları</string>
     <string name="onay_icon" translatable="false">Onay ikon</string>
@@ -1102,7 +1093,6 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="city_selection_download_error">Namaz vakitleri şu an indirilemedi. Mevcut verileriniz korunuyor; lütfen daha sonra tekrar deneyin.</string>
     <string name="city_selection_downloading">%1$s için namaz vakitleri indiriliyor…</string>
     <string name="city_selection_success">%1$s için 1 yıllık namaz vakitleri indirildi.</string>
-    <string name="prayer_city_select_button">Namaz vakti şehrini seç (Diyanet)</string>
     <string name="prayer_city_current">Diyanet vakit şehri: %1$s</string>
     <string name="prayer_city_not_selected">Diyanet vakit şehri henüz seçilmedi.</string>
     <string name="city_selection_use_location">Mevcut konumumu bul</string>
@@ -1176,4 +1166,47 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="battery_optimization_dialog_title">Pil optimizasyonu</string>
     <string name="battery_optimization_dialog_message">Açılan listede İslam Yolu\'nu bulun ve \"Optimize etme\" (veya \"Kısıtlama yok\") seçin.\n\nHonor/Huawei: Ayarlar › Pil › Uygulama başlatma › İslam Yolu › \"Otomatik yönet\"i kapatıp tüm seçenekleri açın.\n\nXiaomi: Uygulama ayarları › Pil tasarrufu › \"Kısıtlama yok\".\n\nSamsung: Pil › Arka plan kullanım sınırları › \"Hiç uyku moduna geçmeyen uygulamalar\" listesine ekleyin.</string>
     <string name="battery_optimization_open">Ayarları aç</string>
+    <!-- Yeni Ayarlar ekranları (Görev 1) -->
+    <string name="settings_navigate_up">Geri</string>
+    <string name="settings_coming_soon">Yakında</string>
+    <string name="settings_account_title">Hesap ve Senkronizasyon</string>
+    <string name="settings_notifications_title">Bildirimler</string>
+    <string name="settings_sound_title">Ses ve Titreşim</string>
+    <string name="settings_reminders_title">Hatırlatmalar ve Kerahat</string>
+    <string name="settings_location_title">Konum ve Vakit Hesabı</string>
+    <string name="settings_app_title">Uygulama Ayarları</string>
+    <string name="settings_data_title">Veri ve Depolama</string>
+    <string name="settings_about_title">Hakkında</string>
+    <string name="settings_about_subtitle">İletişim, gizlilik ve sürüm</string>
+    <string name="settings_notifications_summary">%1$d/%2$d namaz bildirimi aktif</string>
+    <string name="settings_notifications_off">Namaz bildirimleri kapalı</string>
+    <string name="settings_sound_summary_on">Ezan, bildirim ve titreşim ayarları</string>
+    <string name="settings_sound_summary_off">Uygulama sesleri kapalı</string>
+    <string name="settings_reminders_summary">Vakitten %1$d dk önce uyarı</string>
+    <string name="settings_reminders_summary_kerahat">Vakitten %1$d dk önce uyarı · Kerahat açık</string>
+    <string name="settings_footer">%1$s · v%2$s</string>
+    <string name="settings_section_prayer_notifications">Namaz Bildirimleri</string>
+    <string name="settings_section_general">Genel</string>
+    <string name="settings_notify_all">Tüm bildirimler</string>
+    <string name="settings_notify_all_subtitle">Altı vaktin bildirimini birlikte açar veya kapatır</string>
+    <string name="settings_always_show_subtitle">Sıradaki vakte kalan süreyi bildirim panelinde gösterir</string>
+    <string name="settings_notification_permission_denied">Bildirim izni verilmedi. İzni sistem ayarlarından açabilirsiniz.</string>
+    <string name="settings_app_sounds_subtitle">Ezan ve uygulama içi sesler</string>
+    <string name="settings_vibrate_subtitle">Vakit girince telefonu titreşime alır</string>
+    <string name="settings_section_ezan">Ezan</string>
+    <string name="settings_ezan_sound_label">Ezan bildirim sesi</string>
+    <string name="settings_section_before_prayer">Vakit Öncesi Uyarı</string>
+    <string name="settings_reminder_title">Hatırlatma süresi</string>
+    <string name="settings_reminder_subtitle">Bildirim vakitten bu kadar önce gelir</string>
+    <string name="settings_minutes_5">5 dk</string>
+    <string name="settings_minutes_10">10 dk</string>
+    <string name="settings_minutes_20">20 dk</string>
+    <string name="settings_section_kerahat">Kerahat</string>
+    <string name="settings_kerahat_subtitle">Kerahat vakitlerini ana ekranda gösterir</string>
+    <string name="settings_section_prayer_city">Namaz Vakitleri (Diyanet)</string>
+    <string name="settings_section_weather_city">Hava Durumu</string>
+    <string name="settings_weather_city_subtitle">Hava durumu için kullanılan şehir</string>
+    <string name="settings_update_from_location">Konumdan güncelle</string>
+    <string name="settings_contact_subtitle">Görüş, öneri ve hata bildirimi</string>
+    <string name="settings_version_title">Sürüm</string>
 </resources>
