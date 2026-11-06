@@ -23,7 +23,8 @@ import com.islamyolu.app.R;
 import com.islamyolu.app.Rozet.BadgeType;
 import com.islamyolu.app.Service.BadgeService;
 import com.islamyolu.app.Service.NetworkServiceUtil;
-import com.islamyolu.app.Service.SoundService;
+import com.islamyolu.app.sound.AppSound;
+import com.islamyolu.app.sound.SoundManager;
 import com.islamyolu.app.preferences.AppPreferences;
 import com.islamyolu.app.preferences.GamePreferences;
 import com.islamyolu.app.databinding.FragmentHomeBinding;
@@ -37,7 +38,7 @@ import java.util.Objects;
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
-    private SoundService soundService;
+    private SoundManager sounds;
     private BadgeService badgeService;
     private Dialog mDialog;
 
@@ -58,7 +59,7 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         initializeServices(binding.getRoot());
-        soundService.commonButtonEffect();
+        sounds.play(AppSound.COMMON_BUTTON);
 
         // "Oyna" butonlarını bağlama
         Button playInfoGameButton = root.findViewById(R.id.play_info_game_button);
@@ -77,7 +78,7 @@ public class HomeFragment extends Fragment {
                 return;
             }
             // Bilgi oyununu aç
-            soundService.playGameButtonEffect();
+            sounds.play(AppSound.PLAY_GAME);
             Intent intent = new Intent(getActivity(), InfoGameActivity.class);
             startActivity(intent);
         });
@@ -90,7 +91,7 @@ public class HomeFragment extends Fragment {
                 return;
             }
             // Kelime oyununu aç
-            soundService.playGameButtonEffect();
+            sounds.play(AppSound.PLAY_GAME);
             Intent intent = new Intent(getActivity(), WordGameActivity.class);
             startActivity(intent);
         });
@@ -103,7 +104,7 @@ public class HomeFragment extends Fragment {
                 return;
             }
             // Kelime oyununu aç
-            soundService.playGameButtonEffect();
+            sounds.play(AppSound.PLAY_GAME);
             Intent intent = new Intent(getActivity(), MatchesGameActivity.class);
             startActivity(intent);
         });
@@ -165,7 +166,7 @@ public class HomeFragment extends Fragment {
         // Kapat butonunu bul ve tıklama olayını ayarla
         Button closeButton = mDialog.findViewById(R.id.closeButton);
         closeButton.setOnClickListener(view -> {
-            soundService.commonButtonEffect();
+            sounds.play(AppSound.COMMON_BUTTON);
             mDialog.dismiss();
         });
 
@@ -210,7 +211,7 @@ public class HomeFragment extends Fragment {
             intent.putExtra("sure", sure);
             intent.putExtra("seviye", seviye);
             startActivity(intent);
-            soundService.playGameButtonEffect();
+            sounds.play(AppSound.PLAY_GAME);
             mDialog.dismiss();
         });
 
@@ -245,7 +246,7 @@ public class HomeFragment extends Fragment {
 
     private void initializeServices(ConstraintLayout root) {
         gamePrefs = AppPreferences.from(requireContext()).game();
-        soundService = new SoundService(root.getContext());
+        sounds = SoundManager.from(root.getContext());
         badgeService = new BadgeService(root.getContext());
     }
 
@@ -266,7 +267,7 @@ public class HomeFragment extends Fragment {
         // Kapat butonunu bul ve tıklama olayını ayarla
         Button closeButton = mDialog.findViewById(R.id.closeButton);
         closeButton.setOnClickListener(view -> {
-            soundService.commonButtonEffect();
+            sounds.play(AppSound.COMMON_BUTTON);
             mDialog.dismiss();
         });
         //hint text set

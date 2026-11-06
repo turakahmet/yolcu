@@ -16,7 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.islamyolu.app.Entity.Ibadet;
 import com.islamyolu.app.R;
 import com.islamyolu.app.Service.APIService;
-import com.islamyolu.app.Service.SoundService;
+import com.islamyolu.app.sound.AppSound;
+import com.islamyolu.app.sound.SoundManager;
 import com.islamyolu.app.Utils.APIUrl;
 import com.islamyolu.app.Utils.GithubClient;
 import com.islamyolu.app.databinding.FragmentIbadetBinding;
@@ -29,7 +30,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class IbadetFragment extends Fragment {
-    private SoundService soundService;
+    private SoundManager sounds;
     private FragmentIbadetBinding binding;
     private IbadetAdapter adapter;
     private List<Ibadet> ibadetList;
@@ -41,7 +42,7 @@ public class IbadetFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentIbadetBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        initializeSoundService(binding.getRoot());
+        initializeSounds(binding.getRoot());
         initializeViews(root);
 
         readTextFile(cardIndex);
@@ -116,9 +117,9 @@ public class IbadetFragment extends Fragment {
 
     }
 
-    private void initializeSoundService(ConstraintLayout root) {
-        soundService = new SoundService(root.getContext());
-        soundService.commonButtonEffect();
+    private void initializeSounds(ConstraintLayout root) {
+        sounds = SoundManager.from(root.getContext());
+        sounds.play(AppSound.COMMON_BUTTON);
 
     }
 

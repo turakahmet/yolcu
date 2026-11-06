@@ -21,11 +21,7 @@ import com.islamyolu.app.preferences.SettingsPreferences;
  */
 public class SettingsHomeFragment extends Fragment {
 
-    private static final String[] PRAYER_KEYS = {
-            SettingsPreferences.KEY_NOTIFY_IMSAK, SettingsPreferences.KEY_NOTIFY_SABAH,
-            SettingsPreferences.KEY_NOTIFY_OGLE, SettingsPreferences.KEY_NOTIFY_IKINDI,
-            SettingsPreferences.KEY_NOTIFY_AKSAM, SettingsPreferences.KEY_NOTIFY_YATSI
-    };
+    private static final String[] PRAYER_KEYS = SettingsPreferences.PRAYER_KEYS;
 
     private SettingsRowView rowNotifications;
     private SettingsRowView rowSound;
@@ -82,10 +78,11 @@ public class SettingsHomeFragment extends Fragment {
                 ? R.string.settings_sound_summary_on
                 : R.string.settings_sound_summary_off);
 
-        rowReminders.setSubtitle(getString(settings.isKerahatOn()
-                        ? R.string.settings_reminders_summary_kerahat
-                        : R.string.settings_reminders_summary,
-                settings.getReminderMinutes()));
+        rowReminders.setSubtitle(settings.isKerahatNotifyOn()
+                ? R.string.settings_reminders_summary_kerahat_notify
+                : settings.isKerahatOn()
+                ? R.string.settings_reminders_summary_kerahat_shown
+                : R.string.settings_reminders_summary_kerahat_off);
 
         PrayerCitySelection selection = preferences.location().getPrayerCitySelection();
         rowLocation.setSubtitle(selection != null

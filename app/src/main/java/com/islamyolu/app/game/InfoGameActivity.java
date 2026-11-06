@@ -37,7 +37,8 @@ import com.islamyolu.app.Rozet.BadgeType;
 import com.islamyolu.app.Service.APIService;
 import com.islamyolu.app.Service.BadgeService;
 import com.islamyolu.app.Service.GoldService;
-import com.islamyolu.app.Service.SoundService;
+import com.islamyolu.app.sound.AppSound;
+import com.islamyolu.app.sound.SoundManager;
 import com.islamyolu.app.Utils.APIClient;
 import com.shuhart.stepview.StepView;
 
@@ -88,7 +89,7 @@ public class InfoGameActivity extends AppCompatActivity {
     private List<Question> finalQuestions;
     private Animation buttonClickAnim;
     private GoldService goldService;
-    private SoundService soundService;
+    private SoundManager sounds;
     private BadgeService badgeService;
     private boolean jokerKullanmamaRozet = true;
     private int profit = 0;
@@ -133,7 +134,7 @@ public class InfoGameActivity extends AppCompatActivity {
     }
 
     private void initializeServices() {
-        soundService = new SoundService(this);
+        sounds = SoundManager.from(this);
         badgeService = new BadgeService(this);
     }
 
@@ -334,7 +335,7 @@ public class InfoGameActivity extends AppCompatActivity {
     }
 
     private void handleCorrectAnswer(Button selectedButton) {
-        soundService.successAnswer();
+        sounds.play(AppSound.SUCCESS);
         selectedButton.setBackgroundColor(ContextCompat.getColor(this, R.color.correctAnswer)); // Doğru cevap
         gold_status.setTextColor(ContextCompat.getColor(this, R.color.correctAnswer));
         if (currentQuestion.getZorlukSeviyesi() == 1) {
@@ -610,7 +611,7 @@ public class InfoGameActivity extends AppCompatActivity {
 
     private void handleJoker50() {
         if (!joker50Used && goldService.getGoldAmount() >= JOKER_YUZDE_50) {
-            soundService.jokerEffect();
+            sounds.play(AppSound.JOKER);
             jokerKullanmamaRozet = false;
             joker50Used = true;
             joker50.setEnabled(false);
@@ -621,7 +622,7 @@ public class InfoGameActivity extends AppCompatActivity {
             // Doğru cevabın indeksini kullanarak yanlış seçenekleri devre dışı bırak
             disableTwoWrongOptions(correctAnswerIndex);
         } else {
-            soundService.noUsedJokerEffect();
+            sounds.play(AppSound.NO_JOKER);
             goldService.yetersizKaynakDialog(this);
         }
     }
@@ -629,7 +630,7 @@ public class InfoGameActivity extends AppCompatActivity {
 
     private void handleJokerHint() {
         if (!jokerHintUsed && goldService.getGoldAmount() >= JOKER_IPUCU) {
-            soundService.jokerEffect();
+            sounds.play(AppSound.JOKER);
             jokerKullanmamaRozet = false;
             jokerHintUsed = true;
             jokerHint.setEnabled(false);
@@ -639,14 +640,14 @@ public class InfoGameActivity extends AppCompatActivity {
             goldAnimationMinus(JOKER_IPUCU);
             showHintPopup();
         } else {
-            soundService.noUsedJokerEffect();
+            sounds.play(AppSound.NO_JOKER);
             goldService.yetersizKaynakDialog(this);
         }
     }
 
     private void handleJokerDouble() {
         if (!jokerDoubleUsed && goldService.getGoldAmount() >= JOKER_CIFT_CEVAP) {
-            soundService.jokerEffect();
+            sounds.play(AppSound.JOKER);
             jokerKullanmamaRozet = false;
             jokerDoubleUsed = true;
             jokerDouble.setEnabled(false);
@@ -657,7 +658,7 @@ public class InfoGameActivity extends AppCompatActivity {
             goldAnimationMinus(JOKER_CIFT_CEVAP);
             enableDoubleAnswer();
         } else {
-            soundService.noUsedJokerEffect();
+            sounds.play(AppSound.NO_JOKER);
             goldService.yetersizKaynakDialog(this);
         }
     }
@@ -726,7 +727,7 @@ public class InfoGameActivity extends AppCompatActivity {
         // Kapat butonunu bul ve tıklama olayını ayarla
         Button closeButton = mDialog.findViewById(R.id.closeButtonEndGame);
         closeButton.setOnClickListener(view -> {
-            soundService.commonButtonEffect();
+            sounds.play(AppSound.COMMON_BUTTON);
             mDialog.dismiss();
             finish();
         });
@@ -738,23 +739,23 @@ public class InfoGameActivity extends AppCompatActivity {
             hitpouptext.setText(this.currentQuestion.getIpucu());
             correctAnswerEndGame.setText(getString(R.string.correctAnswerEndgameLabel) + "\n" + currentQuestion.getDogruCevap());
             imagePopUp.setImageResource(R.drawable.success);
-            soundService.timeoutEffect();
+            sounds.play(AppSound.TIMEOUT);
         } else if (Boolean.FALSE.equals(yarismaKazandiMi) && Boolean.FALSE.equals(cikisYapildi)) {
-            soundService.timeoutEffect();
+            sounds.play(AppSound.TIMEOUT);
             hitpouptext.setText(getString(R.string.timeupLabel));
             imagePopUp.setImageResource(R.drawable.time_passing);
         } else if (cikisYapildi) {
-            soundService.timeoutEffect();
+            sounds.play(AppSound.TIMEOUT);
             imagePopUp.setImageResource(R.drawable.leave);
         }
 
         if (stepView.getCurrentStep() == 0 && Boolean.FALSE.equals(sureDoldumu) && Boolean.FALSE.equals(yarismaKazandiMi) && Boolean.FALSE.equals(cikisYapildi)) {
-            soundService.wrongAnswer();
+            sounds.play(AppSound.FAILURE);
             imagePopUp.setImageResource(R.drawable.incorrect);
         }
         int currentStep;
         if (Boolean.TRUE.equals(yarismaKazandiMi) && Boolean.FALSE.equals(cikisYapildi)) {
-            soundService.winGameEffect();
+            sounds.play(AppSound.WIN_GAME);
             imagePopUp.setImageResource(R.drawable.winner);
             hitpouptext.setText(getString(R.string.winnerLabel));
             currentStep = stepView.getCurrentStep() + 1;
@@ -803,7 +804,7 @@ public class InfoGameActivity extends AppCompatActivity {
         // Kapat butonunu bul ve tıklama olayını ayarla
         Button closeButton = mDialog.findViewById(R.id.closeButton);
         closeButton.setOnClickListener(view -> {
-            soundService.commonButtonEffect();
+            sounds.play(AppSound.COMMON_BUTTON);
             mDialog.dismiss();
         });
         //hint text set

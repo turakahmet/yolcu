@@ -12,6 +12,8 @@
             <enum name="toggle" value="1" />
             <!-- Yalnızca bilgi: dokunulmaz -->
             <enum name="info" value="2" />
+            <!-- Anahtar + ok: anahtar açar/kapatır, satıra dokunmak detay ekranını açar -->
+            <enum name="toggleDetail" value="3" />
         </attr>
         <!-- Satırın altına ayırıcı çizgi (kart içinde ardışık satırlar için) -->
         <attr name="rowDivider" format="boolean" />

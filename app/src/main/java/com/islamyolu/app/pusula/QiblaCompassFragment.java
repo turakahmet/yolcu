@@ -33,7 +33,8 @@ import com.islamyolu.app.R;
 import com.islamyolu.app.Service.AddressResolver;
 import com.islamyolu.app.Service.LocationAccess;
 import com.islamyolu.app.Service.LocationService;
-import com.islamyolu.app.Service.SoundService;
+import com.islamyolu.app.sound.AppSound;
+import com.islamyolu.app.sound.SoundManager;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -61,7 +62,7 @@ public class QiblaCompassFragment extends Fragment implements SensorEventListene
     private Animation animation;
     private float[] mGravity = new float[3];
     private float[] mGeomagnetic = new float[3];
-    private SoundService soundService;
+    private SoundManager sounds;
     private Address addressDetail;
     private ProgressBar loadingLocationCompass;
     private QiblaDirectionView qiblaDirectionView;
@@ -101,8 +102,8 @@ public class QiblaCompassFragment extends Fragment implements SensorEventListene
     }
 
     private void initializeServices() {
-        soundService = new SoundService(requireContext());
-        soundService.commonButtonEffect();
+        sounds = SoundManager.from(requireContext());
+        sounds.play(AppSound.COMMON_BUTTON);
     }
 
     private void initializeLocationService() {

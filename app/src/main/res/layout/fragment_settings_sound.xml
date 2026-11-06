@@ -41,9 +41,28 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:rowIcon="@drawable/ic_settings_vibration"
-                    app:rowSubtitle="@string/settings_vibrate_subtitle"
                     app:rowTitle="@string/vakit_sound_setting"
                     app:rowType="toggle" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/silenceMinutesLayout"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/settings_row_padding_horizontal"
+                    android:layout_marginEnd="@dimen/settings_row_padding_horizontal"
+                    android:layout_marginBottom="@dimen/settings_row_padding_horizontal"
+                    android:hint="@string/settings_silence_duration"
+                    app:helperText="@string/settings_silence_helper"
+                    app:startIconDrawable="@drawable/ic_settings_hourglass"
+                    app:startIconTint="@color/settings_icon">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/silenceMinutesDropdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -68,7 +87,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/settings_ezan_sound_label"
-                    app:helperText="@string/medya_ses_seviyesini_etiket"
+                    app:helperText="@string/settings_ezan_helper"
                     app:startIconDrawable="@drawable/ic_settings_music"
                     app:startIconTint="@color/settings_icon">
 
@@ -79,6 +98,10 @@
                         android:inputType="none"
                         app:simpleItems="@array/ezan_sound_options" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <include
+                    android:id="@+id/ezanSoundPreview"
+                    layout="@layout/view_sound_preview" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/ezanDuaLayout"
@@ -98,6 +121,10 @@
                         android:inputType="none"
                         app:simpleItems="@array/ezan_dua_options" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <include
+                    android:id="@+id/ezanDuaPreview"
+                    layout="@layout/view_sound_preview" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

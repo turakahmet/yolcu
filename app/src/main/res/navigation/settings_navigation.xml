@@ -32,7 +32,25 @@
         android:id="@+id/settingsNotifications"
         android:name="com.islamyolu.app.settings.NotificationSettingsFragment"
         android:label="@string/settings_notifications_title"
-        tools:layout="@layout/fragment_settings_notifications" />
+        tools:layout="@layout/fragment_settings_notifications">
+        <action
+            android:id="@+id/toPrayer"
+            app:destination="@id/settingsPrayer" />
+    </fragment>
+
+    <!-- Tek vaktin ayarları; başlık vaktin adıdır -->
+    <fragment
+        android:id="@+id/settingsPrayer"
+        android:name="com.islamyolu.app.settings.PrayerSettingsFragment"
+        android:label="{prayerTitle}"
+        tools:layout="@layout/fragment_settings_prayer">
+        <argument
+            android:name="prayerKey"
+            app:argType="string" />
+        <argument
+            android:name="prayerTitle"
+            app:argType="string" />
+    </fragment>
 
     <fragment
         android:id="@+id/settingsSound"
@@ -44,7 +62,12 @@
         android:id="@+id/settingsReminders"
         android:name="com.islamyolu.app.settings.ReminderSettingsFragment"
         android:label="@string/settings_reminders_title"
-        tools:layout="@layout/fragment_settings_reminders" />
+        tools:layout="@layout/fragment_settings_reminders">
+        <!-- Vakit öncesi süreler Bildirimler ekranında, vakit başına ayarlanır -->
+        <action
+            android:id="@+id/toNotificationsFromReminders"
+            app:destination="@id/settingsNotifications" />
+    </fragment>
 
     <fragment
         android:id="@+id/settingsLocation"

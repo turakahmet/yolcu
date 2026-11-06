@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Parcelable;
+import android.util.SparseArray;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -42,6 +44,7 @@ public class SettingsRowView extends LinearLayout {
     private static final int TYPE_NAVIGATION = 0;
     private static final int TYPE_TOGGLE = 1;
     private static final int TYPE_INFO = 2;
+    private static final int TYPE_TOGGLE_DETAIL = 3;
 
     private final View iconContainer;
     private final ImageView icon;
@@ -83,13 +86,19 @@ public class SettingsRowView extends LinearLayout {
             a.recycle();
         }
 
-        chevron.setVisibility(type == TYPE_NAVIGATION ? VISIBLE : GONE);
-        toggle.setVisibility(type == TYPE_TOGGLE ? VISIBLE : GONE);
+        chevron.setVisibility(type == TYPE_NAVIGATION || type == TYPE_TOGGLE_DETAIL ? VISIBLE : GONE);
+        toggle.setVisibility(type == TYPE_TOGGLE || type == TYPE_TOGGLE_DETAIL ? VISIBLE : GONE);
         if (type == TYPE_TOGGLE) {
             // Satıra dokunmak anahtarı değiştirir; anahtarın kendisi ayrıca odak almaz
             toggle.setClickable(false);
             toggle.setFocusable(false);
             super.setOnClickListener(v -> toggle.toggle());
+        } else if (type == TYPE_TOGGLE_DETAIL) {
+            // Anahtar kendi başına dokunulur ve ekran okuyucuda ayrı öğedir; satır detayı açar
+            toggle.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
+            toggle.setContentDescription(title.getText());
+        }
+        if (toggle.getVisibility() == VISIBLE) {
             toggle.setOnCheckedChangeListener(this::onSwitchChanged);
         }
         if (type != TYPE_INFO) {
@@ -122,6 +131,14 @@ public class SettingsRowView extends LinearLayout {
 
     public void setTitle(@StringRes int resId) {
         title.setText(resId);
+        if (type == TYPE_TOGGLE_DETAIL) {
+            toggle.setContentDescription(title.getText());
+        }
+    }
+
+    @NonNull
+    public CharSequence getTitle() {
+        return title.getText();
     }
 
     public void setSubtitle(@Nullable CharSequence text) {
@@ -153,6 +170,21 @@ public class SettingsRowView extends LinearLayout {
         super.setEnabled(enabled);
         setAlpha(enabled ? 1f : 0.5f);
         toggle.setEnabled(enabled);
+    }
+
+    /*
+     * Alt görünümlerin (anahtar vb.) durumu SAKLANMAZ: her satırdaki anahtar aynı kimliği taşıdığından
+     * Android geri dönüşte tek bir kayıtlı değeri tüm anahtarlara yüklüyor, bu da kullanıcı dokunmuş gibi
+     * dinleyiciyi tetikleyip ayarları kapatıyordu. Değerler her zaman tercihlerden yeniden bağlanır.
+     */
+    @Override
+    protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
+        dispatchFreezeSelfOnly(container);
+    }
+
+    @Override
+    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
+        dispatchThawSelfOnly(container);
     }
 
     @Override

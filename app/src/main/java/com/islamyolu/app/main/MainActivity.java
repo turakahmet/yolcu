@@ -47,7 +47,8 @@ import com.islamyolu.app.preferences.AppPreferences;
 import com.islamyolu.app.preferences.LocationPreferences;
 import com.islamyolu.app.preferences.UserPreferences;
 import com.islamyolu.app.Service.PrayerNotificationService;
-import com.islamyolu.app.Service.SoundService;
+import com.islamyolu.app.sound.AppSound;
+import com.islamyolu.app.sound.SoundManager;
 import com.islamyolu.app.VakitApi.DailyPrayerWorkerReceiver;
 import com.islamyolu.app.databinding.ActivityMainBinding;
 import com.islamyolu.app.monthlyCalender.MonthlyPrayerActivity;
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
     private ImageView editIcon;
     private static final int REQUEST_NOTIFICATION_PERMISSION = 123;
     private ShapeableImageView userAvatar;
-    private SoundService soundService;
+    private SoundManager sounds;
     private BadgeService badgeService;
     private GoldService goldService;
 
@@ -232,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         });
 
         userAvatar.setOnClickListener(v -> {
-            soundService.commonButtonEffect();
+            sounds.play(AppSound.COMMON_BUTTON);
             ProfilePictureDialogFragment dialogFragment = new ProfilePictureDialogFragment();
             dialogFragment.show(getSupportFragmentManager(), "profilePictureDialog");
             dialogFragment.setCancelable(false);
@@ -272,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
     }
 
     private void initializeServices() {
-        soundService = new SoundService(this);
+        sounds = SoundManager.from(this);
         badgeService = new BadgeService(this);
     }
 
@@ -518,7 +519,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
 
     @Override
     public void onProfilePictureSelected(Avatar avatar) {
-        soundService.commonButtonEffect();
+        sounds.play(AppSound.COMMON_BUTTON);
 
         userPrefs.setAvatarName(avatar.name());
 

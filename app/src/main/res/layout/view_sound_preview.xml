@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ses önizleme satırı: oynat/durdur + ilerleme + süre (SoundPreviewPlayer yönetir) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="4dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/previewButton"
+        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/settings_preview_play"
+        app:icon="@drawable/ic_settings_play" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/previewProgress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:importantForAccessibility="no"
+        app:trackCornerRadius="2dp" />
+
+    <TextView
+        android:id="@+id/previewTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Yolcu.Settings.RowSubtitle"
+        tools:text="00:12 / 00:34" />
+</LinearLayout>

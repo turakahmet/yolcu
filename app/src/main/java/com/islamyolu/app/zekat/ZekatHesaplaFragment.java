@@ -31,7 +31,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.islamyolu.app.R;
-import com.islamyolu.app.Service.SoundService;
+import com.islamyolu.app.sound.AppSound;
+import com.islamyolu.app.sound.SoundManager;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -56,7 +57,7 @@ public class ZekatHesaplaFragment extends Fragment {
     private ImageButton buttonPaylas, zekatInfo;
     private ImageView spinnerAltIcon;
     private CheckBox kurBilgileriDegistirCheckBox;
-    private SoundService soundService;
+    private SoundManager sounds;
     private RadioGroup radioGroupVarlikTipi;
     private boolean varlikMi = true;
     private boolean servisAktifMi = true;
@@ -131,8 +132,8 @@ public class ZekatHesaplaFragment extends Fragment {
     }
 
     private void initializeServices() {
-        soundService = new SoundService(requireContext());
-        soundService.commonButtonEffect();
+        sounds = SoundManager.from(requireContext());
+        sounds.play(AppSound.COMMON_BUTTON);
     }
 
     private void initializeViews(View view) {

@@ -13,19 +13,20 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.islamyolu.app.R;
-import com.islamyolu.app.Service.SoundService;
+import com.islamyolu.app.sound.AppSound;
+import com.islamyolu.app.sound.SoundManager;
 
 import java.util.List;
 
 public class DigitalMuzeAdapter extends RecyclerView.Adapter<DigitalMuzeAdapter.DigitalMuzelViewHolder> {
     private Context context;
     private List<MuzeBilgi> muzeBilgiList;
-    private SoundService soundService;
+    private SoundManager sounds;
 
     public DigitalMuzeAdapter(Context context, List<MuzeBilgi> muzeBilgiList) {
         this.context = context;
         this.muzeBilgiList = muzeBilgiList;
-        this.soundService = new SoundService(context);
+        this.sounds = SoundManager.from(context);
     }
 
     @NonNull
@@ -45,7 +46,7 @@ public class DigitalMuzeAdapter extends RecyclerView.Adapter<DigitalMuzeAdapter.
 
         // CardView'e tıklama dinleyici ekleme
         holder.cardView.setOnClickListener(v -> {
-            soundService.commonButtonEffect();
+            sounds.play(AppSound.COMMON_BUTTON);
             Intent intent = new Intent(context, MuzeDetailActivity.class);
             intent.putExtra("baslik", muzeBilgi.getBaslik());
             intent.putExtra("aciklama", muzeBilgi.getAciklama());

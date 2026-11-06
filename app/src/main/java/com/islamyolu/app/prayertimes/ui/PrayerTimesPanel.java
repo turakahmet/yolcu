@@ -16,6 +16,7 @@ import com.islamyolu.app.R;
 import com.islamyolu.app.preferences.SettingsPreferences;
 import com.islamyolu.app.prayertimes.PrayerCountdown;
 import com.islamyolu.app.prayertimes.PrayerDisplay;
+import com.islamyolu.app.prayertimes.Kerahat;
 import com.islamyolu.app.prayertimes.PrayerSlot;
 import com.islamyolu.app.prayertimes.PrayerTimeline;
 import com.islamyolu.app.prayertimes.db.PrayerDayEntity;
@@ -34,8 +35,6 @@ import java.util.Map;
  */
 public class PrayerTimesPanel {
 
-    /** Kerahat süresi (dakika) — önceki sürümdeki değer */
-    private static final int KERAHAT_MINUTES = 45;
 
     public static final class Views {
         public final Map<PrayerSlot, TextView> times = new EnumMap<>(PrayerSlot.class);
@@ -163,8 +162,8 @@ public class PrayerTimesPanel {
         } else if (minutes < 20) {
             setCountdownColor(nextLayout, R.color.remain_namaz_time_2, true);
             views.remainingLabel.setText(label);
-        } else if (kerahatEnabled && minutes < KERAHAT_MINUTES
-                && (next.slot == PrayerSlot.OGLE || next.slot == PrayerSlot.AKSAM)) {
+        } else if (kerahatEnabled && minutes < Kerahat.MINUTES
+                && Kerahat.precedes(next.slot)) {
             setCountdownColor(nextLayout, R.color.remain_kerahat_time, true);
             views.remainingLabel.setText(context.getString(R.string.prayer_remaining_with_kerahat,
                     label, context.getString(R.string.kerahat_in_progress)));
@@ -182,7 +181,7 @@ public class PrayerTimesPanel {
     private static boolean isAfterSunriseKerahat(PrayerTimeline timeline, LocalDate date, Instant now) {
         Instant sunrise = timeline.instantOf(date, PrayerSlot.GUNES);
         return sunrise != null && now.isAfter(sunrise)
-                && now.isBefore(sunrise.plus(Duration.ofMinutes(KERAHAT_MINUTES)));
+                && now.isBefore(sunrise.plus(Duration.ofMinutes(Kerahat.MINUTES)));
     }
 
     private void setCountdownColor(LinearLayout nextLayout, @ColorRes int colorRes, boolean alsoNextLayout) {

@@ -34,7 +34,8 @@ public class SettingsActivity extends AppCompatActivity {
         }
         NavController navController = host.getNavController();
         navController.addOnDestinationChangedListener((controller, destination, arguments) ->
-                toolbar.setTitle(destination.getLabel()));
+                // "{prayerTitle}" gibi etiketler argümanla doldurulur (vakit detay ekranı)
+                toolbar.setTitle(destination.fillInLabel(this, arguments)));
         // Geri oku: alt ekrandan ana menüye, ana menüden uygulamaya döner
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 

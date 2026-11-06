@@ -14,19 +14,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.islamyolu.app.Entity.Ibadet;
 import com.islamyolu.app.R;
-import com.islamyolu.app.Service.SoundService;
+import com.islamyolu.app.sound.AppSound;
+import com.islamyolu.app.sound.SoundManager;
 
 import java.util.List;
 
 public class KirkHadisAdapter extends RecyclerView.Adapter<KirkHadisAdapter.KirkHadisViewHolder> {
     private Context context;
     private List<Ibadet> kirkHadisList;
-    private SoundService soundService;
+    private SoundManager sounds;
 
     public KirkHadisAdapter(Context context, List<Ibadet> kirkHadisList) {
         this.context = context;
         this.kirkHadisList = kirkHadisList;
-        this.soundService = new SoundService(context);
+        this.sounds = SoundManager.from(context);
     }
 
     @NonNull
@@ -46,7 +47,7 @@ public class KirkHadisAdapter extends RecyclerView.Adapter<KirkHadisAdapter.Kirk
 
         // CardView'e tıklama dinleyici ekleme
         holder.cardView.setOnClickListener(v -> {
-            soundService.commonButtonEffect();
+            sounds.play(AppSound.COMMON_BUTTON);
             Intent intent = new Intent(context, IbadetDetailActivity.class);
             intent.putExtra("baslik", ibadet.getBaslik());
             intent.putExtra("aciklama1", ibadet.getAciklama1());

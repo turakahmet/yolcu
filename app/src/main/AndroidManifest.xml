@@ -19,6 +19,8 @@
 
     <!-- Android 14+: kalıcı vakit bildirimi servisi (başka türe uymadığı için specialUse) -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <!-- Android 14+: ezan sesini çalan ön plan servisi -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
     <uses-feature
         android:name="android.hardware.sensor.accelerometer"
@@ -61,6 +63,10 @@
             android:name=".VakitApi.AlarmReceiver"
             android:exported="false" />
         <receiver android:name=".VakitApi.DailyPrayerWorkerReceiver" />
+        <!-- Namazda titreşimden sonra eski zil moduna dönüş -->
+        <receiver
+            android:name=".VakitApi.PrayerSilencer$RestoreReceiver"
+            android:exported="false" />
 
         <activity
             android:name=".main.MainActivity"
@@ -117,6 +123,9 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <!-- Uygulama güncellemesinden sonra alarmları yeniden kurmak için -->
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <!-- Saat/saat dilimi değişince geçmiş sayılıp atlanan vakitler yeniden kurulur -->
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
         <receiver
@@ -141,10 +150,11 @@
             android:enabled="true"
             android:exported="false" />
 
+        <!-- Vakit ezanı/duası: ses bitene kadar ön planda; ses kısma tuşu veya "Durdur" ile susar -->
         <service
-            android:name=".Service.PrayerSoundControlService"
-            android:enabled="true"
-            android:exported="false" />
+            android:name=".sound.PrayerAudioService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
 
         <activity
             android:name=".widget.WidgetSettingsActivity"

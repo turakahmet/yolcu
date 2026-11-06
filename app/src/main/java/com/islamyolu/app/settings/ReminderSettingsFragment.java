@@ -6,14 +6,18 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
-import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.islamyolu.app.R;
 import com.islamyolu.app.VakitApi.PrayerAlarmScheduler;
 import com.islamyolu.app.preferences.AppPreferences;
 import com.islamyolu.app.preferences.SettingsPreferences;
 
-/** Vakit öncesi uyarı süresi (5/10/20 dk) ve kerahat vakitleri. */
+/**
+ * Kerahat vakitleri (ana ekranda gösterim ve başlangıç bildirimi).
+ * Vakit öncesi uyarı süreleri burada DEĞİL, her vaktin kendi detayında ayarlanır; bu ekran yalnızca
+ * oraya yönlendirir (genel süre seçimi vakte özel ayarları ezdiği için kaldırıldı).
+ */
 public class ReminderSettingsFragment extends Fragment {
 
     private final NotificationPermissionGate permission = new NotificationPermissionGate(this, () -> { });
@@ -26,21 +30,8 @@ public class ReminderSettingsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         SettingsPreferences settings = AppPreferences.from(requireContext()).settings();
 
-        MaterialButtonToggleGroup group = view.findViewById(R.id.reminderMinutesGroup);
-        int checkedId = buttonFor(settings.getReminderMinutes());
-        if (checkedId != View.NO_ID) {
-            group.check(checkedId);
-        }
-        // check() dinleyiciden önce çağrıldı: yalnızca kullanıcı seçimi kaydedilir
-        group.addOnButtonCheckedListener((g, buttonId, isChecked) -> {
-            int minutes = minutesFor(buttonId);
-            if (!isChecked || minutes == 0 || minutes == settings.getReminderMinutes()) {
-                return;
-            }
-            settings.setReminderMinutes(minutes);
-            // Bugünün ve yarının alarmları yeni süreyle yeniden kurulur
-            PrayerAlarmScheduler.rescheduleAsync(requireContext(), null);
-        });
+        view.findViewById(R.id.rowReminderTimes).setOnClickListener(v ->
+                NavHostFragment.findNavController(this).navigate(R.id.toNotificationsFromReminders));
 
         SettingsRowView rowKerahat = view.findViewById(R.id.rowKerahat);
         rowKerahat.setChecked(settings.isSwitchOn(SettingsPreferences.KEY_KERAHAT));
@@ -51,25 +42,16 @@ public class ReminderSettingsFragment extends Fragment {
             }
             settings.setSwitch(SettingsPreferences.KEY_KERAHAT, checked);
         });
-    }
 
-    private static int buttonFor(int minutes) {
-        switch (minutes) {
-            case 5:
-                return R.id.reminder5;
-            case 10:
-                return R.id.reminder10;
-            case 20:
-                return R.id.reminder20;
-            default:
-                return View.NO_ID;
-        }
-    }
-
-    private static int minutesFor(int buttonId) {
-        if (buttonId == R.id.reminder5) return 5;
-        if (buttonId == R.id.reminder10) return 10;
-        if (buttonId == R.id.reminder20) return 20;
-        return 0;
+        SettingsRowView rowKerahatNotify = view.findViewById(R.id.rowKerahatNotify);
+        rowKerahatNotify.setChecked(settings.isKerahatNotifyOn());
+        rowKerahatNotify.setOnToggleListener((row, checked) -> {
+            if (checked && !permission.ensureGranted()) {
+                row.setChecked(false);
+                return;
+            }
+            settings.setKerahatNotify(checked);
+            PrayerAlarmScheduler.rescheduleAsync(requireContext(), null);
+        });
     }
 }

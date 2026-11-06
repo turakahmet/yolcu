@@ -16,6 +16,24 @@
             style="@style/Widget.Yolcu.Settings.SectionTitle"
             android:text="@string/settings_section_before_prayer" />
 
+        <!-- Süreler vakit başına ayarlanır (Bildirimler → vakit detayı); burada genel süre YOK, yalnızca yönlendirme -->
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Yolcu.Settings.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.islamyolu.app.settings.SettingsRowView
+                android:id="@+id/rowReminderTimes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:rowIcon="@drawable/baseline_access_time_filled_24"
+                app:rowSubtitle="@string/settings_reminder_times_subtitle"
+                app:rowTitle="@string/settings_reminder_times" />
+        </com.google.android.material.card.MaterialCardView>
+        <TextView
+            style="@style/Widget.Yolcu.Settings.SectionTitle"
+            android:text="@string/settings_section_kerahat" />
+
         <com.google.android.material.card.MaterialCardView
             style="@style/Widget.Yolcu.Settings.Card"
             android:layout_width="match_parent"
@@ -27,68 +45,24 @@
                 android:orientation="vertical">
 
                 <com.islamyolu.app.settings.SettingsRowView
-                    android:id="@+id/rowReminderInfo"
+                    android:id="@+id/rowKerahat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowIcon="@drawable/baseline_access_time_filled_24"
-                    app:rowSubtitle="@string/settings_reminder_subtitle"
-                    app:rowTitle="@string/settings_reminder_title"
-                    app:rowType="info" />
+                    app:rowDivider="true"
+                    app:rowIcon="@drawable/ic_settings_hourglass"
+                    app:rowSubtitle="@string/settings_kerahat_subtitle"
+                    app:rowTitle="@string/kerahat_vakti"
+                    app:rowType="toggle" />
 
-                <com.google.android.material.button.MaterialButtonToggleGroup
-                    android:id="@+id/reminderMinutesGroup"
+                <com.islamyolu.app.settings.SettingsRowView
+                    android:id="@+id/rowKerahatNotify"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/settings_row_padding_horizontal"
-                    android:layout_marginEnd="@dimen/settings_row_padding_horizontal"
-                    android:layout_marginBottom="@dimen/settings_row_padding_horizontal"
-                    app:selectionRequired="true"
-                    app:singleSelection="true">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/reminder5"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/settings_minutes_5" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/reminder10"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/settings_minutes_10" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/reminder20"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/settings_minutes_20" />
-                </com.google.android.material.button.MaterialButtonToggleGroup>
+                    app:rowIcon="@drawable/baseline_notifications_24"
+                    app:rowSubtitle="@string/settings_kerahat_notify_subtitle"
+                    app:rowTitle="@string/settings_kerahat_notify"
+                    app:rowType="toggle" />
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <TextView
-            style="@style/Widget.Yolcu.Settings.SectionTitle"
-            android:text="@string/settings_section_kerahat" />
-
-        <com.google.android.material.card.MaterialCardView
-            style="@style/Widget.Yolcu.Settings.Card"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.islamyolu.app.settings.SettingsRowView
-                android:id="@+id/rowKerahat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:rowIcon="@drawable/ic_settings_hourglass"
-                app:rowSubtitle="@string/settings_kerahat_subtitle"
-                app:rowTitle="@string/kerahat_vakti"
-                app:rowType="toggle" />
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     app:rowDivider="true"
                     app:rowTitle="@string/imsak_vakti"
-                    app:rowType="toggle" />
+                    app:rowType="toggleDetail" />
 
                 <com.islamyolu.app.settings.SettingsRowView
                     android:id="@+id/rowNotifySabah"
@@ -50,7 +50,7 @@
                     android:layout_height="wrap_content"
                     app:rowDivider="true"
                     app:rowTitle="@string/sabah_namazi"
-                    app:rowType="toggle" />
+                    app:rowType="toggleDetail" />
 
                 <com.islamyolu.app.settings.SettingsRowView
                     android:id="@+id/rowNotifyOgle"
@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     app:rowDivider="true"
                     app:rowTitle="@string/ogle_namazi"
-                    app:rowType="toggle" />
+                    app:rowType="toggleDetail" />
 
                 <com.islamyolu.app.settings.SettingsRowView
                     android:id="@+id/rowNotifyIkindi"
@@ -66,7 +66,7 @@
                     android:layout_height="wrap_content"
                     app:rowDivider="true"
                     app:rowTitle="@string/ikindi_namazi"
-                    app:rowType="toggle" />
+                    app:rowType="toggleDetail" />
 
                 <com.islamyolu.app.settings.SettingsRowView
                     android:id="@+id/rowNotifyAksam"
@@ -74,14 +74,14 @@
                     android:layout_height="wrap_content"
                     app:rowDivider="true"
                     app:rowTitle="@string/aksam_namazi"
-                    app:rowType="toggle" />
+                    app:rowType="toggleDetail" />
 
                 <com.islamyolu.app.settings.SettingsRowView
                     android:id="@+id/rowNotifyYatsi"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:rowTitle="@string/yatsi_namazi"
-                    app:rowType="toggle" />
+                    app:rowType="toggleDetail" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -117,5 +117,18 @@
                     app:rowTitle="@string/battery_optimization_button" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
+        <!-- Örnek vakit bildirimi: izin, kanal ve cihaz ayarlarının doğru olduğunu gösterir -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/testNotificationButton"
+            style="@style/Widget.Yolcu.Settings.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/settings_screen_padding"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="@dimen/settings_screen_padding"
+            android:text="@string/settings_test_notification"
+            app:icon="@drawable/ic_settings_send"
+            app:iconTint="@color/settings_secondary" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tek bir vaktin ayarları: bildirim, vakit öncesi uyarı ve süresi -->
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/settingsScroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/settings_screen_padding"
+        android:paddingBottom="@dimen/settings_screen_padding">
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Yolcu.Settings.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.islamyolu.app.settings.SettingsRowView
+                android:id="@+id/rowPrayerEnabled"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:rowIcon="@drawable/baseline_notifications_24"
+                app:rowSubtitle="@string/settings_prayer_enabled_subtitle"
+                app:rowTitle="@string/settings_prayer_enabled"
+                app:rowType="toggle" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Yolcu.Settings.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.islamyolu.app.settings.SettingsRowView
+                    android:id="@+id/rowReminderOn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:rowIcon="@drawable/baseline_access_time_filled_24"
+                    app:rowSubtitle="@string/settings_reminder_on_subtitle"
+                    app:rowTitle="@string/settings_section_before_prayer"
+                    app:rowType="toggle" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/reminderMinutesLayout"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/settings_row_padding_horizontal"
+                    android:layout_marginEnd="@dimen/settings_row_padding_horizontal"
+                    android:layout_marginBottom="@dimen/settings_row_padding_horizontal"
+                    android:hint="@string/settings_reminder_title"
+                    app:startIconDrawable="@drawable/ic_settings_hourglass"
+                    app:startIconTint="@color/settings_icon">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/reminderMinutesDropdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

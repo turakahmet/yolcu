@@ -46,7 +46,7 @@
     <string name="imsak_vakti">İmsak Vakti</string>
 
     <string name="namaz_vakit_notification_header">Namaz Vakti</string>
-    <string name="gunes_vakit_notification_body">Güneş Doğmasına ## dakika kaldı!</string>
+    <string name="gunes_vakit_notification_body">Güneş doğmasına ## dakika kaldı! Sabah namazını kaçırmayın.</string>
     <string name="ogle_vakit_notification_body">Öğle namazına ## dakika kaldı!</string>
     <string name="ikindi_vakit_notification_body">İkindi namazına ## dakika kaldı!</string>
     <string name="aksam_vakit_notification_body">Akşam namazına ## dakika kaldı!</string>
@@ -1182,8 +1182,6 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="settings_notifications_off">Namaz bildirimleri kapalı</string>
     <string name="settings_sound_summary_on">Ezan, bildirim ve titreşim ayarları</string>
     <string name="settings_sound_summary_off">Uygulama sesleri kapalı</string>
-    <string name="settings_reminders_summary">Vakitten %1$d dk önce uyarı</string>
-    <string name="settings_reminders_summary_kerahat">Vakitten %1$d dk önce uyarı · Kerahat açık</string>
     <string name="settings_footer">%1$s · v%2$s</string>
     <string name="settings_section_prayer_notifications">Namaz Bildirimleri</string>
     <string name="settings_section_general">Genel</string>
@@ -1192,15 +1190,11 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="settings_always_show_subtitle">Sıradaki vakte kalan süreyi bildirim panelinde gösterir</string>
     <string name="settings_notification_permission_denied">Bildirim izni verilmedi. İzni sistem ayarlarından açabilirsiniz.</string>
     <string name="settings_app_sounds_subtitle">Ezan ve uygulama içi sesler</string>
-    <string name="settings_vibrate_subtitle">Vakit girince telefonu titreşime alır</string>
+    <string name="settings_vibrate_subtitle">Vakit girince titreşime alır, %1$d dk sonra eski haline döndürür</string>
     <string name="settings_section_ezan">Ezan</string>
     <string name="settings_ezan_sound_label">Ezan bildirim sesi</string>
     <string name="settings_section_before_prayer">Vakit Öncesi Uyarı</string>
     <string name="settings_reminder_title">Hatırlatma süresi</string>
-    <string name="settings_reminder_subtitle">Bildirim vakitten bu kadar önce gelir</string>
-    <string name="settings_minutes_5">5 dk</string>
-    <string name="settings_minutes_10">10 dk</string>
-    <string name="settings_minutes_20">20 dk</string>
     <string name="settings_section_kerahat">Kerahat</string>
     <string name="settings_kerahat_subtitle">Kerahat vakitlerini ana ekranda gösterir</string>
     <string name="settings_section_prayer_city">Namaz Vakitleri (Diyanet)</string>
@@ -1209,4 +1203,43 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="settings_update_from_location">Konumdan güncelle</string>
     <string name="settings_contact_subtitle">Görüş, öneri ve hata bildirimi</string>
     <string name="settings_version_title">Sürüm</string>
+    <!-- Görev 2a/2b: test bildirimi, ses önizleme, vakit başına süre -->
+    <string name="settings_preview_play">Sesi dinle</string>
+    <string name="settings_preview_stop">Durdur</string>
+    <string name="settings_preview_time">%1$s / %2$s</string>
+    <string name="settings_test_notification">Bildirimi test et</string>
+    <string name="settings_test_notification_message">%1$s (deneme bildirimi)</string>
+    <string name="settings_test_notification_sent">Deneme bildirimi gönderildi. Bildirim panelini kontrol edin.</string>
+    <string name="settings_test_notification_channel_off">Namaz vakti bildirim kanalı kapalı. Açmadan vakit bildirimleri gelmez.</string>
+    <string name="settings_test_notification_app_off">Uygulamanın bildirimleri kapalı. Açmadan vakit bildirimleri gelmez.</string>
+    <string name="settings_prayer_enabled">Bu vaktin bildirimleri</string>
+    <string name="settings_prayer_enabled_subtitle">Vakit öncesi uyarı ve ezan sesi</string>
+    <string name="settings_reminder_on_subtitle">Kapalıysa yalnızca ezan sesi çalar</string>
+    <string name="settings_minutes_before">%1$d dakika önce</string>
+    <string name="settings_prayer_reminder_summary">%1$d dk önce uyarı</string>
+    <string name="settings_prayer_reminder_off">Vakit öncesi uyarı kapalı</string>
+    <!-- Görev 2c/2d: kerahat bildirimi, namazda titreşim -->
+    <string name="settings_silence_duration">Eski profile dönüş</string>
+    <string name="settings_silence_helper">Telefon zaten sessiz, titreşimde veya Rahatsız Etmeyin modundaysa dokunulmaz</string>
+    <string name="settings_minutes_after">%1$d dakika sonra</string>
+    <string name="settings_kerahat_notify">Kerahat bildirimi</string>
+    <string name="settings_kerahat_notify_subtitle">Öğle ve akşamdan 45 dk önce, kerahat başlarken bildirir</string>
+    <string name="kerahat_channel_name">Kerahat vakitleri</string>
+    <string name="kerahat_channel_description">Kerahat vaktinin başladığını bildirir</string>
+    <string name="kerahat_notification_title">Kerahat vakti girdi</string>
+    <string name="kerahat_notification_message">%1$s vaktine %2$d dakika kaldı; kerahat vakti başladı.</string>
+    <string name="settings_reminder_times">Vakit öncesi uyarı süreleri</string>
+    <string name="settings_reminder_times_subtitle">Her vaktin süresi Bildirimler\'de, vaktin kendi ayarından seçilir</string>
+    <string name="settings_reminders_summary_kerahat_notify">Kerahat bildirimi açık</string>
+    <string name="settings_reminders_summary_kerahat_shown">Kerahat ana ekranda gösterilir</string>
+    <string name="settings_reminders_summary_kerahat_off">Kerahat gösterimi kapalı</string>
+    <string name="settings_sabah_reminder_info">Sabah namazı güneş doğunca biter. Bildirim güneş doğmadan önce gönderilir.</string>
+    <string name="settings_sabah_reminder_summary">Güneş doğmadan %1$d dk önce uyarı</string>
+    <!-- Ezan çalma servisi -->
+    <string name="ezan_playback_channel_name">Ezan sesi</string>
+    <string name="ezan_playback_channel_description">Ezan okunurken gösterilir; buradan susturulabilir</string>
+    <string name="ezan_playing_title">Ezan okunuyor</string>
+    <string name="ezan_playing_text">Susturmak için ses kısma tuşuna basın veya Durdur\'a dokunun.</string>
+    <string name="ezan_stop">Durdur</string>
+    <string name="settings_ezan_helper">Medya ses seviyesini kullanır. Çalarken ses kısma tuşu ezanı ve duayı susturur.</string>
 </resources>

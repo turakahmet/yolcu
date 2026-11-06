@@ -11,6 +11,7 @@ import com.islamyolu.app.prayertimes.PrayerTimesRepository;
 import com.islamyolu.app.prayertimes.PrayerTimesValidator;
 import com.islamyolu.app.prayertimes.remote.PrayerTimesApiClient;
 import com.islamyolu.app.prayertimes.sync.PrayerTimesSyncScheduler;
+import com.islamyolu.app.sound.SoundManager;
 
 import java.time.Clock;
 
@@ -22,6 +23,7 @@ public class IslamYoluApplication extends Application {
 
     private volatile AppDatabase database;
     private volatile PrayerTimesRepository prayerTimesRepository;
+    private volatile SoundManager soundManager;
 
     @Override
     public void onCreate() {
@@ -44,6 +46,22 @@ public class IslamYoluApplication extends Application {
                 if (result == null) {
                     result = AppDatabase.create(this);
                     database = result;
+                }
+            }
+        }
+        return result;
+    }
+
+    /** Uygulamadaki tüm seslerin tek giriş noktası (efektler, ezan, önizleme). */
+    @NonNull
+    public SoundManager getSoundManager() {
+        SoundManager result = soundManager;
+        if (result == null) {
+            synchronized (this) {
+                result = soundManager;
+                if (result == null) {
+                    result = new SoundManager(this);
+                    soundManager = result;
                 }
             }
         }

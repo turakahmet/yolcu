@@ -18,6 +18,7 @@ import com.islamyolu.app.R;
 import com.islamyolu.app.preferences.AppPreferences;
 import com.islamyolu.app.preferences.SettingsPreferences;
 import com.islamyolu.app.prayertimes.CurrentPrayerTimes;
+import com.islamyolu.app.prayertimes.Kerahat;
 import com.islamyolu.app.prayertimes.PrayerClock;
 import com.islamyolu.app.prayertimes.PrayerSlot;
 import com.islamyolu.app.prayertimes.PrayerTimeline;
@@ -59,6 +60,11 @@ public final class PrayerAlarmScheduler {
     static final String EXTRA_NOTIFICATION_ID = "notificationId";
     /** Vaktin kesin anı (epoch ms): geç teslim edilen bildirimi ayıklamak için */
     static final String EXTRA_PRAYER_AT = "prayerAt";
+    /** true: kerahat başlangıç bildirimi (ayrı kanal) */
+    static final String EXTRA_KERAHAT = "kerahat";
+    /** Vakit anı alarmı (PrayerSoundReceiver): ezan sesi çalınsın mı, telefon titreşime alınsın mı */
+    public static final String EXTRA_PLAY_SOUND = "playSound";
+    public static final String EXTRA_SILENCE = "silence";
 
     private static final String BACKUP_WORK = "PrayerAlarmsBackup";
     private static final int RESCHEDULE_REQUEST_CODE = 7301;
@@ -104,6 +110,8 @@ public final class PrayerAlarmScheduler {
             return;
         }
         ensureBackupWork(app);
+        // Cihaz yeniden başladıysa bekleyen "eski zil moduna dön" alarmı silinmiştir
+        PrayerSilencer.ensureRestorePending(app);
 
         Instant now = Instant.now();
         CurrentPrayerTimes current = CurrentPrayerTimes.load(app, now);
@@ -120,6 +128,7 @@ public final class PrayerAlarmScheduler {
         for (LocalDate date : new LocalDate[]{today, today.plusDays(1)}) {
             for (Object[] prayer : PRAYERS) {
                 schedulePrayer(app, alarmManager, settings, current.timeline, date, now, prayer);
+                scheduleKerahat(app, alarmManager, settings, current.timeline, date, now, prayer);
             }
         }
         preferences.sentNotifications().pruneOlderThan(2);
@@ -140,11 +149,9 @@ public final class PrayerAlarmScheduler {
         int bodyRes = (Integer) prayer[3];
 
         String notificationId = notificationId(name, date);
-        PendingIntent notifyIntent = notificationIntent(context, notificationId);
-        PendingIntent soundIntent = soundIntent(context, name, date, settings);
         // Önce kaldır: bildirim kapatıldıysa veya şehir değiştiyse eski saat çalmasın
-        alarmManager.cancel(notifyIntent);
-        alarmManager.cancel(soundIntent);
+        alarmManager.cancel(notificationIntent(context, notificationId));
+        alarmManager.cancel(prayerMomentIntent(context, name, date, false, false));
         cancelLegacySound(context, alarmManager, name, date);
 
         Instant prayerAt = timeline.instantOf(date, slot);
@@ -152,28 +159,53 @@ public final class PrayerAlarmScheduler {
             return; // vakit oluşmuyor (kutup bölgesi) veya bu vakit kapalı
         }
 
-        int minutes = settings.getReminderMinutes();
+        // Vakte özel süre ve "vakit öncesi uyarı" (kapalıysa yalnızca ezan sesi çalar)
+        int minutes = settings.getReminderMinutes(switchKey);
         Instant notifyAt = prayerAt.minusSeconds(minutes * 60L);
-        if (notifyAt.isAfter(now)) {
+        if (settings.isReminderOn(switchKey) && notifyAt.isAfter(now)) {
             String message = context.getString(bodyRes).replace("##", String.valueOf(minutes));
             String title = context.getString(R.string.namaz_vakit_notification_header);
-            setAlarm(alarmManager, notifyAt, notificationIntent(context, notificationId, title, message, prayerAt));
+            setAlarm(alarmManager, notifyAt, notificationIntent(context, notificationId, title, message, prayerAt, false));
         }
 
-        boolean soundOff = settings.getEzanSoundType() == SettingsPreferences.EZAN_SOUND_OFF
-                && settings.getEzanDuaType() == SettingsPreferences.EZAN_DUA_OFF;
-        int soundMinutesBefore = slot == PrayerSlot.GUNES ? SABAH_EZANI_MINUTES_BEFORE_SUNRISE : 0;
-        Instant soundAt = prayerAt.minusSeconds(soundMinutesBefore * 60L);
-        if (!soundOff && soundAt.isAfter(now)) {
-            setAlarm(alarmManager, soundAt, soundIntent);
+        // Vakit anı: ezan sesi ve/veya titreşime alma tek alarmla (Doze'da ardışık alarmlar kısıtlanır).
+        // Sabah ezanı (Güneş anahtarı) güneşten 60 dk önce; imsak namaz vakti olmadığı için titreşime alınmaz.
+        boolean playSound = !(settings.getEzanSoundType() == SettingsPreferences.EZAN_SOUND_OFF
+                && settings.getEzanDuaType() == SettingsPreferences.EZAN_DUA_OFF);
+        boolean silence = settings.isVakitSoundModeOn() && slot != PrayerSlot.IMSAK;
+        int minutesBefore = slot == PrayerSlot.GUNES ? SABAH_EZANI_MINUTES_BEFORE_SUNRISE : 0;
+        Instant momentAt = prayerAt.minusSeconds(minutesBefore * 60L);
+        if ((playSound || silence) && momentAt.isAfter(now)) {
+            setAlarm(alarmManager, momentAt, prayerMomentIntent(context, name, date, playSound, silence));
         }
+    }
+
+    /** Öğle ve akşamdan {@link Kerahat#MINUTES} dk önce tek bildirim (güneş doğuşu kerahati hariç). */
+    private static void scheduleKerahat(Context context, AlarmManager alarmManager, SettingsPreferences settings,
+                                        PrayerTimeline timeline, LocalDate date, Instant now, Object[] prayer) {
+        PrayerSlot slot = (PrayerSlot) prayer[0];
+        if (!Kerahat.precedes(slot)) return;
+        String name = (String) prayer[2];
+        String notificationId = "Kerahat_" + notificationId(name, date);
+        alarmManager.cancel(notificationIntent(context, notificationId));
+
+        Instant prayerAt = timeline.instantOf(date, slot);
+        if (prayerAt == null || !settings.isKerahatNotifyOn()) return;
+        Instant startAt = prayerAt.minusSeconds(Kerahat.MINUTES * 60L);
+        if (!startAt.isAfter(now)) return;
+
+        String prayerName = context.getString(slot == PrayerSlot.OGLE ? R.string.ogle_namazi : R.string.aksam_namazi);
+        setAlarm(alarmManager, startAt, notificationIntent(context, notificationId,
+                context.getString(R.string.kerahat_notification_title),
+                context.getString(R.string.kerahat_notification_message, prayerName, Kerahat.MINUTES),
+                prayerAt, true));
     }
 
     /**
      * Doze'da da çalışan alarm. Android 12+ ve tam zamanlı alarm izni yoksa (kullanıcı kapatmış)
      * eskiden SecurityException ile hiç kurulmuyordu; artık birkaç dakika sapmalı alarmla kurulur.
      */
-    private static void setAlarm(AlarmManager alarmManager, Instant at, PendingIntent pendingIntent) {
+    static void setAlarm(AlarmManager alarmManager, Instant at, PendingIntent pendingIntent) {
         long triggerAt = at.toEpochMilli();
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
@@ -220,22 +252,29 @@ public final class PrayerAlarmScheduler {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
+    /** @param kerahat true ise kerahat kanalında gösterilir */
     private static PendingIntent notificationIntent(Context context, String notificationId,
-                                                    String title, String message, Instant prayerAt) {
+                                                    String title, String message, Instant prayerAt, boolean kerahat) {
         Intent intent = new Intent(context, AlarmReceiver.class).setAction(ACTION_PRAYER_ALARM)
                 .putExtra(EXTRA_TITLE, title)
                 .putExtra(EXTRA_MESSAGE, message)
                 .putExtra(EXTRA_NOTIFICATION_ID, notificationId)
-                .putExtra(EXTRA_PRAYER_AT, prayerAt.toEpochMilli());
+                .putExtra(EXTRA_PRAYER_AT, prayerAt.toEpochMilli())
+                .putExtra(EXTRA_KERAHAT, kerahat);
         return PendingIntent.getBroadcast(context, notificationId.hashCode(), intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
-    /** Ezan sesi; request code vaktin kendi tarihine göre (eskiden kurulum gününe göreydi, yarın çakışırdı). */
-    private static PendingIntent soundIntent(Context context, String name, LocalDate date, SettingsPreferences settings) {
+    /**
+     * Vakit anı alarmı (ezan sesi + titreşime alma); request code vaktin kendi tarihine göre.
+     * Hangi ezan/dua sesinin çalacağı burada YAZILMAZ, alıcı çalma anında güncel ayardan okur.
+     * İptal için bayraklar önemsizdir (Intent eşleşmesi extra'lara bakmaz).
+     */
+    private static PendingIntent prayerMomentIntent(Context context, String name, LocalDate date,
+                                                    boolean playSound, boolean silence) {
         Intent intent = new Intent(context, PrayerSoundReceiver.class).setAction(ACTION_PRAYER_ALARM)
-                .putExtra("ezanType", settings.getEzanSoundType())
-                .putExtra("duaType", settings.getEzanDuaType());
+                .putExtra(EXTRA_PLAY_SOUND, playSound)
+                .putExtra(EXTRA_SILENCE, silence);
         int requestCode = ("sound_" + name + "_" + date).hashCode();
         return PendingIntent.getBroadcast(context, requestCode, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);

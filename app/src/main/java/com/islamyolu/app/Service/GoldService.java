@@ -1,5 +1,8 @@
 package com.islamyolu.app.Service;
 
+import com.islamyolu.app.sound.AppSound;
+import com.islamyolu.app.sound.SoundManager;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -16,7 +19,7 @@ import java.util.Objects;
 public class GoldService {
     private static final int DEFAULT_GOLD = 1000;
     private final GamePreferences gamePrefs;
-    private SoundService soundService;
+    private SoundManager sounds;
 
 
     public GoldService(Context context) {
@@ -53,7 +56,7 @@ public class GoldService {
     }
 
     public void yetersizKaynakDialog(Context context) {
-        soundService = new SoundService(context);
+        sounds = SoundManager.from(context);
         Dialog mDialog = new Dialog(context);
         mDialog.setContentView(R.layout.yetersiz_kaynak_popup);
         Objects.requireNonNull(mDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -63,7 +66,7 @@ public class GoldService {
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                soundService.commonButtonEffect();
+                sounds.play(AppSound.COMMON_BUTTON);
                 mDialog.dismiss();
             }
         });

@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
  * Uygulamanın yerel tercihlerine (SharedPreferences) tek giriş noktası.
  * <pre>
  * AppPreferences prefs = AppPreferences.from(context);
- * prefs.settings().getReminderMinutes();
+ * prefs.settings().getReminderMinutes(SettingsPreferences.KEY_NOTIFY_OGLE);
  * prefs.location().getPrayerCitySelection();
  * </pre>
  * Dosya adları ve anahtarlar yalnızca bu pakette bilinir; başka sınıflar

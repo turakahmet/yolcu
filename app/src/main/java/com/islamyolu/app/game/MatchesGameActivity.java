@@ -29,7 +29,8 @@ import com.islamyolu.app.R;
 import com.islamyolu.app.Rozet.BadgeType;
 import com.islamyolu.app.Service.BadgeService;
 import com.islamyolu.app.Service.GoldService;
-import com.islamyolu.app.Service.SoundService;
+import com.islamyolu.app.sound.AppSound;
+import com.islamyolu.app.sound.SoundManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +50,7 @@ public class MatchesGameActivity extends AppCompatActivity {
     private EsmaHusna currentEsma = new EsmaHusna();
     private Dialog loadingDialog, mDialog;
     private GoldService goldService;
-    private SoundService soundService;
+    private SoundManager sounds;
     private BadgeService badgeService;
     private TextView goldAmountText, timerText, gold_status;
     private Button selectedEsmaButton; // Seçilen Esma butonunu tutar
@@ -120,7 +121,7 @@ public class MatchesGameActivity extends AppCompatActivity {
     }
 
     private void initializeServices() {
-        soundService = new SoundService(this);
+        sounds = SoundManager.from(this);
         badgeService = new BadgeService(this);
     }
 
@@ -229,7 +230,7 @@ public class MatchesGameActivity extends AppCompatActivity {
         // Kapat butonunu bul ve tıklama olayını ayarla
         Button closeButton = mDialog.findViewById(R.id.closeButtonEndGame);
         closeButton.setOnClickListener(view -> {
-            soundService.commonButtonEffect();
+            sounds.play(AppSound.COMMON_BUTTON);
             mDialog.dismiss();
             finish();
         });
@@ -240,13 +241,13 @@ public class MatchesGameActivity extends AppCompatActivity {
         if (Boolean.TRUE.equals(sureDoldumu) && Boolean.FALSE.equals(yarismaKazandiMi) && Boolean.FALSE.equals(cikisYapildi)) {
             hitpouptext.setText(getString(R.string.timeupLabel));
             imagePopUp.setImageResource(R.drawable.time_passing);
-            soundService.timeoutEffect();
+            sounds.play(AppSound.TIMEOUT);
         } else if (cikisYapildi) {
-            soundService.timeoutEffect();
+            sounds.play(AppSound.TIMEOUT);
             imagePopUp.setImageResource(R.drawable.leave);
         }
         if (Boolean.TRUE.equals(yarismaKazandiMi)) {
-            soundService.winGameEffect();
+            sounds.play(AppSound.WIN_GAME);
             imagePopUp.setImageResource(R.drawable.winner);
             hitpouptext.setText(getString(R.string.winnerLabel));
             validationRozet(yarismaKazandiMi);
@@ -332,7 +333,7 @@ public class MatchesGameActivity extends AppCompatActivity {
         String correctAnswer = currentEsma.getMeaningbyName(String.valueOf(selectedEsmaButton.getText()), esmaHusnas);
 
         if (selectedAnswer.equals(correctAnswer)) {
-            soundService.matchesSuccessButtonEffect();
+            sounds.play(AppSound.MATCH_SUCCESS);
             // Doğru cevap verildiğinde, her iki butonun arka planını yeşil yap
             selectedEsmaButton.setBackgroundColor(ContextCompat.getColor(this, R.color.correctAnswer));
             selectedAnswerButton.setBackgroundColor(ContextCompat.getColor(this, R.color.correctAnswer));
@@ -354,7 +355,7 @@ public class MatchesGameActivity extends AppCompatActivity {
             }
         } else {
             // Yanlış cevap verildiğinde, butonları eski haline döndür
-            soundService.matchesFailButtonEffect();
+            sounds.play(AppSound.MATCH_FAIL);
             selectedEsmaButton.setAlpha(1.0f); // Esma butonunu aktif yap
             selectedAnswerButton.setAlpha(1.0f);
             enableOtherButtons();

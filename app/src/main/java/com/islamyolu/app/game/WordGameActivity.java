@@ -40,7 +40,8 @@ import com.islamyolu.app.Rozet.BadgeType;
 import com.islamyolu.app.Service.APIService;
 import com.islamyolu.app.Service.BadgeService;
 import com.islamyolu.app.Service.GoldService;
-import com.islamyolu.app.Service.SoundService;
+import com.islamyolu.app.sound.AppSound;
+import com.islamyolu.app.sound.SoundManager;
 import com.islamyolu.app.Utils.APIClient;
 import com.shuhart.stepview.StepView;
 
@@ -74,7 +75,7 @@ public class WordGameActivity extends AppCompatActivity {
     private final int ADD_COIN = 30;
     private ConstraintLayout costCoinLayout, confirmButtonLayout;
     private GoldService goldService;
-    private SoundService soundService;
+    private SoundManager sounds;
     private BadgeService badgeService;
     private ImageView gifImageView;
     private TextView gifImageSuccessViewLabel;
@@ -125,7 +126,7 @@ public class WordGameActivity extends AppCompatActivity {
     }
 
     private void initializeServices() {
-        soundService = new SoundService(this);
+        sounds = SoundManager.from(this);
         badgeService = new BadgeService(this);
     }
 
@@ -151,14 +152,6 @@ public class WordGameActivity extends AppCompatActivity {
 
     private void saveGoldAmountText() {
         goldAmountText.setText(String.format(Locale.getDefault(), "%d", goldService.getGoldAmount()));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (soundService != null) {
-            soundService.cleanup();
-        }
     }
 
     private void fetchQuestions() {
@@ -251,7 +244,7 @@ public class WordGameActivity extends AppCompatActivity {
         // Kapat butonunu bul ve tıklama olayını ayarla
         Button closeButton = mDialog.findViewById(R.id.closeButtonEndGame);
         closeButton.setOnClickListener(view -> {
-            soundService.commonButtonEffect();
+            sounds.play(AppSound.COMMON_BUTTON);
             mDialog.dismiss();
             finish();
         });
@@ -262,14 +255,14 @@ public class WordGameActivity extends AppCompatActivity {
             hitpouptext.setText(getString(R.string.timeupLabel));
             correctAnswerEndGame.setText(getString(R.string.correctAnswerEndgameLabel) + "\n" + currentAnswer);
             imagePopUp.setImageResource(R.drawable.time_passing);
-            soundService.timeoutEffect();
+            sounds.play(AppSound.TIMEOUT);
         } else if (cikisYapildi) {
-            soundService.timeoutEffect();
+            sounds.play(AppSound.TIMEOUT);
             imagePopUp.setImageResource(R.drawable.leave);
         }
         int currentStep;
         if (Boolean.TRUE.equals(yarismaKazandiMi)) {
-            soundService.winGameEffect();
+            sounds.play(AppSound.WIN_GAME);
             imagePopUp.setImageResource(R.drawable.winner);
             hitpouptext.setText(getString(R.string.winnerLabel));
             currentStep = stepView.getCurrentStep() + 1;
@@ -510,7 +503,7 @@ public class WordGameActivity extends AppCompatActivity {
             sorudanAlinanPuan = ADD_COIN * kalanHarfSayisi;
             goldService.addGoldAmount(sorudanAlinanPuan);
             showAnimation(true);
-            soundService.successAnswer();
+            sounds.play(AppSound.SUCCESS);
             saveGoldAmountText();
             validationRozet(false);
             profit += sorudanAlinanPuan;
@@ -532,7 +525,7 @@ public class WordGameActivity extends AppCompatActivity {
             }
         } else {
             showAnimation(false);
-            soundService.wrongAnswer();
+            sounds.play(AppSound.FAILURE);
         }
     }
 
@@ -668,7 +661,7 @@ public class WordGameActivity extends AppCompatActivity {
         }
 
         if (goldService.getGoldAmount() < JOKER_LETTER) {
-            soundService.noUsedJokerEffect();
+            sounds.play(AppSound.NO_JOKER);
             letterJokerButton.setEnabled(false);
             costCoinLayout.setEnabled(false);
             goldService.yetersizKaynakDialog(this);
@@ -677,7 +670,7 @@ public class WordGameActivity extends AppCompatActivity {
 
         goldService.minusGoldAmount(JOKER_LETTER);
         saveGoldAmountText();
-        soundService.wgHintJokerEffect();
+        sounds.play(AppSound.HINT_JOKER);
         harfAlindimiRozet = true;
         jokerKullanmamaRozet = false;
 

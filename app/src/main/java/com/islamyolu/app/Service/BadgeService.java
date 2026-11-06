@@ -1,5 +1,8 @@
 package com.islamyolu.app.Service;
 
+import com.islamyolu.app.sound.AppSound;
+import com.islamyolu.app.sound.SoundManager;
+
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
@@ -21,7 +24,7 @@ import java.util.List;
 public class BadgeService {
 
     private final BadgePreferences badgePrefs;
-    private SoundService soundService;
+    private SoundManager sounds;
     private Context context;
     private List<Badge> badges;
 
@@ -29,7 +32,7 @@ public class BadgeService {
     public BadgeService(Context context) {
         this.context = context;
         badgePrefs = AppPreferences.from(context).badges();
-        soundService = new SoundService(context);
+        sounds = SoundManager.from(context);
         initializeBadges();
     }
 
@@ -59,7 +62,7 @@ public class BadgeService {
         for (Badge badge : badges) {
             if (badge.getBadgeType() == badgeType && !badgePrefs.isEarned(badge.getBadgeType().name())) {
                 badge.setEnabled(true);
-                soundService.successRozet();
+                sounds.play(AppSound.BADGE);
                 showToast("Tebrikler, " + badgeType.getLabel() + " rozetini kazandınız.");
                 badgePrefs.setEarned(badgeType.name());
                 break;
