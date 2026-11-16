@@ -3,12 +3,17 @@ package com.islamyolu.app.weather;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
+import com.islamyolu.app.Service.NetworkServiceUtil;
 import com.islamyolu.app.Service.WeatherApiService;
 import com.islamyolu.app.preferences.AppPreferences;
+import com.islamyolu.app.preferences.WeatherPreferences;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,19 +24,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class WeatherService {
     private static final String TAG = "WeatherService";
     private static final String BASE_URL = "https://api.open-meteo.com/v1/";
-    private static final long UPDATE_INTERVAL = 3600000; // 1 saat (milisaniye cinsinden)
     private final WeatherApiService weatherApi;
     private final Context context;
-//
-//    public interface WeatherApi {
-//        @GET("forecast")
-//        Call<WeatherData> getWeather(
-//                @Query("latitude") double latitude,
-//                @Query("longitude") double longitude,
-//                @Query("current_weather") boolean currentWeather,
-//                @Query("timezone") String timezone
-//        );
-//    }
 
     public WeatherService(Context context) {
         this.context = context;
@@ -43,117 +37,103 @@ public class WeatherService {
         weatherApi = retrofit.create(WeatherApiService.class);
     }
 
-    public void getWeatherData(double latitude, double longitude, WeatherCallback callback) {
-        Log.d(TAG, "Hava durumu verisi alınıyor: lat=" + latitude + ", lon=" + longitude);
+    /** Uygulama açılışında: veri bundan eskiyse internet varken yenilenir */
+    public static final long MAX_AGE_APP_MS = 15 * 60 * 1000L;
+    /** Widget güncellemesinde: saatte bir yeterli (widget dakikada bir çizilir, API'yi yormasın) */
+    public static final long MAX_AGE_WIDGET_MS = 60 * 60 * 1000L;
+    /** Kullanıcı yenile dediğinde */
+    public static final long MAX_AGE_FORCE = 0L;
 
-        long lastUpdate = getLastUpdateTime();
-        long currentTime = System.currentTimeMillis();
+    private static final String CURRENT_FIELDS =
+            "temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day";
+    private static final String DAILY_FIELDS = "weather_code,temperature_2m_max";
+    /** Bugün + 5 gün (tahmin satırında bugünden sonraki 5 gün gösterilir) */
+    private static final int FORECAST_DAYS = 6;
 
-//        // Son güncelleme zamanını kontrol et
-//        if (currentTime - lastUpdate < UPDATE_INTERVAL) {
-//            Log.d(TAG, "Son güncellemeden bu yana 1 saat geçmedi");
-//            // Mevcut veriyi callback ile dön
-//            callback.onSuccess(getCurrentWeatherData());
-//            return;
-//        }
-
-        // 1 saat geçmişse yeni veri al
-        weatherApi.getWeather(latitude, longitude, true, "auto")
-                .enqueue(new Callback<WeatherData>() {
-                    @Override
-                    public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            // Son güncelleme zamanını kaydet
-                            saveLastUpdateTime(currentTime);
-                            // Yeni veriyi kaydet
-                            saveWeatherData(response.body());
-                            Log.d(TAG, "Hava durumu verisi başarıyla alındı" + response.body().getWeatherDescription());
-                            callback.onSuccess(response.body());
-                        } else {
-                            Log.e(TAG, "Hava durumu verisi alınamadı: " + response.message());
-                            callback.onError("Veri alınamadı");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<WeatherData> call, Throwable t) {
-                        Log.e(TAG, "Hava durumu API hatası: " + t.getMessage());
-                        callback.onError("Bağlantı hatası");
-                    }
-                });
-    }
-
-    public void getDailyWeatherAndForecastByDate(double latitude, double longitude, WeatherCallback callback) {
-        Log.d(TAG, "Hava durumu verisi alınıyor: lat=" + latitude + ", lon=" + longitude);
-        // Tarih formatı
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        // Bugünün tarihi
-        LocalDate startDate = LocalDate.now().plusDays(1);
-        String startDateStr = startDate.format(formatter);
-        // 5 gün sonrası
-        LocalDate endDate = startDate.plusDays(4);
-        String endDateStr = endDate.format(formatter);
-
-        long lastUpdate = getLastUpdateTime();
-        long currentTime = System.currentTimeMillis();
-
-        // Son güncelleme zamanını kontrol et
-        if (currentTime - lastUpdate < UPDATE_INTERVAL) {
-            Log.d(TAG, "Son güncellemeden bu yana 1 saat geçmedi");
-            // Mevcut veriyi callback ile dön
-            callback.onSuccess(getCurrentWeatherData());
+    /**
+     * Hava durumunu çevrim dışı öncelikli yükler:
+     * <ul>
+     *   <li>Bu konumun kayıtlı verisi {@code maxAgeMs}'den yeniyse yalnızca o verilir.</li>
+     *   <li>Eskiyse önce kayıtlı veri hemen verilir, internet varsa sunucudan yenilenip
+     *       {@code onSuccess} bir kez daha çağrılır. Bu yüzden callback iki kez çağrılabilir.</li>
+     *   <li>İnternet yoksa veya istek başarısızsa son veri ekranda kalır; hiç veri yoksa
+     *       {@code onError}.</li>
+     * </ul>
+     * Kayıtlı veri çağıran thread'de, sunucu cevabı ana thread'de verilir.
+     */
+    public void load(double latitude, double longitude, long maxAgeMs, @NonNull WeatherCallback callback) {
+        String locationKey = locationKey(latitude, longitude);
+        WeatherData cached = getCached(locationKey);
+        long age = System.currentTimeMillis() - getLastUpdateTime();
+        if (cached != null) {
+            callback.onSuccess(cached);
+            if (age < maxAgeMs) {
+                return;
+            }
+        }
+        if (!NetworkServiceUtil.isConnected(context)) {
+            Log.d(TAG, "İnternet yok; son kayıtlı hava durumu kullanılıyor");
+            if (cached == null) {
+                callback.onError("İnternet yok, kayıtlı veri yok");
+            }
             return;
         }
-        weatherApi.getDailyWeatherAndForecastByDate(latitude, longitude, true, "weathercode,temperature_2m_max", startDateStr, endDateStr, "auto")
+        weatherApi.getForecast(latitude, longitude, CURRENT_FIELDS, DAILY_FIELDS, FORECAST_DAYS, "auto")
                 .enqueue(new Callback<WeatherData>() {
                     @Override
-                    public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            // Son güncelleme zamanını kaydet
-                            saveLastUpdateTime(currentTime);
-                            WeatherData data = response.body();
-
-                            saveWeatherData(data);
-                            Log.d(TAG, "Hava durumu listesi başarıyla alındı");
+                    public void onResponse(@NonNull Call<WeatherData> call, @NonNull Response<WeatherData> response) {
+                        WeatherData data = response.body();
+                        if (response.isSuccessful() && data != null && data.getCurrentWeather() != null) {
+                            AppPreferences.from(context).weather().save(new Gson().toJson(data),
+                                    System.currentTimeMillis(), locationKey);
                             callback.onSuccess(data);
                         } else {
-                            Log.e(TAG, "Hava durumu verisi alınamadı: " + response.message());
-                            callback.onError("Veri alınamadı");
+                            Log.e(TAG, "Hava durumu alınamadı: HTTP " + response.code());
+                            if (cached == null) {
+                                callback.onError("Veri alınamadı");
+                            }
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<WeatherData> call, Throwable t) {
-                        Log.e(TAG, "Hava durumu API hatası: " + t.getMessage());
-                        callback.onError("Bağlantı hatası");
+                    public void onFailure(@NonNull Call<WeatherData> call, @NonNull Throwable t) {
+                        Log.e(TAG, "Hava durumu API hatası: " + t.getMessage(), t);
+                        if (cached == null) {
+                            callback.onError("Bağlantı hatası");
+                        }
                     }
                 });
     }
 
-    // Son güncelleme zamanını SharedPreferences'a kaydet
-    private void saveLastUpdateTime(long time) {
-        AppPreferences.from(context).weather().setLastUpdate(time);
+    /** Konum anahtarı: ~1 km hassasiyet yeterli (aynı şehirde küçük kaymalar yeni istek açmasın) */
+    @NonNull
+    private static String locationKey(double latitude, double longitude) {
+        return String.format(Locale.ROOT, "%.2f,%.2f", latitude, longitude);
     }
 
-    // Son güncelleme zamanını SharedPreferences'dan al
+    /** Bu konuma ait, yeni biçimde (hissedilen/nem/rüzgar alanlı istekle) kaydedilmiş veri; yoksa null */
+    @Nullable
+    private WeatherData getCached(@NonNull String locationKey) {
+        WeatherPreferences prefs = AppPreferences.from(context).weather();
+        if (!locationKey.equals(prefs.getLocationKey())) {
+            return null;
+        }
+        String json = prefs.getDataJson();
+        if (json == null) {
+            return null;
+        }
+        try {
+            WeatherData data = new Gson().fromJson(json, WeatherData.class);
+            return data != null && data.getCurrentWeather() != null ? data : null;
+        } catch (JsonParseException e) {
+            Log.w(TAG, "Kayıtlı hava durumu okunamadı; yeniden indirilecek", e);
+            return null;
+        }
+    }
+
+    /** Son başarılı güncelleme zamanı (epoch ms) */
     private long getLastUpdateTime() {
         return AppPreferences.from(context).weather().getLastUpdate();
-    }
-
-    // Hava durumu verisini SharedPreferences'a kaydet
-    private void saveWeatherData(WeatherData weatherData) {
-        String json = new Gson().toJson(weatherData);
-        AppPreferences.from(context).weather().setDataJson(json);
-    }
-
-    // Kaydedilmiş hava durumu verisini al
-    private WeatherData getCurrentWeatherData() {
-        String json = AppPreferences.from(context).weather().getDataJson();
-        if (json != null) {
-            Gson gson = new Gson();
-            return gson.fromJson(json, WeatherData.class);
-        }
-        return null;
     }
 
     public interface WeatherCallback {

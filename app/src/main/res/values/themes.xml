@@ -1,6 +1,8 @@
 <resources>
     <!-- Base application theme. -->
     <style name="Theme.Yolcu" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Uygulama zemini renk sisteminden (açık/koyu) -->
+        <item name="android:windowBackground">@color/color_background</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">#9CCC65</item>
         <item name="colorPrimaryVariant">#43A047</item>

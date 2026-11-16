@@ -1,17 +1,18 @@
 package com.islamyolu.app.main;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.islamyolu.app.R;
+import com.islamyolu.app.theme.SystemBars;
 
 /**
  * Ayarlar kabuğu: yeşil başlık + başlık ekranları arasında gezinme (settings_navigation).
@@ -23,7 +24,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Android 15+ (targetSdk 35+) kenardan kenara zorunlu; eski sürümlerde de aynı görünüm
-        EdgeToEdge.enable(this);
+        SystemBars.enable(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
@@ -39,22 +40,21 @@ public class SettingsActivity extends AppCompatActivity {
         // Geri oku: alt ekrandan ana menüye, ana menüden uygulamaya döner
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        applyInsets();
+        // Ana ekrandaki zil doğrudan Bildirimler'i açar; geri dönünce Ayarlar ana menüsü görünür
+        if (savedInstanceState == null && getIntent().getBooleanExtra(EXTRA_OPEN_NOTIFICATIONS, false)) {
+            navController.navigate(R.id.toNotifications);
+        }
+
+        // Başlık durum çubuğunun altına uzanır; içerik gezinme çubuğu/kesik alanla çakışmaz
+        SystemBars.padHeader(findViewById(R.id.settingsHeader));
+        SystemBars.padContent(findViewById(R.id.settingsNavHost));
     }
 
-    /** Başlık durum çubuğunun altına uzanır; içerik gezinme çubuğu/kesik alanla çakışmaz. */
-    private void applyInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.settingsHeader), (view, windowInsets) -> {
-            Insets bars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()
-                    | WindowInsetsCompat.Type.displayCutout());
-            view.setPadding(bars.left, bars.top, bars.right, view.getPaddingBottom());
-            return windowInsets;
-        });
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.settingsNavHost), (view, windowInsets) -> {
-            Insets bars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()
-                    | WindowInsetsCompat.Type.displayCutout());
-            view.setPadding(bars.left, 0, bars.right, bars.bottom);
-            return windowInsets;
-        });
+    private static final String EXTRA_OPEN_NOTIFICATIONS = "openNotifications";
+
+    /** Ayarlar'ı Bildirimler ekranında açar. */
+    @NonNull
+    public static Intent notificationsIntent(@NonNull Context context) {
+        return new Intent(context, SettingsActivity.class).putExtra(EXTRA_OPEN_NOTIFICATIONS, true);
     }
 }

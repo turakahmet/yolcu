@@ -7,32 +7,21 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface WeatherApiService {
-    @GET("forecast")
-    Call<WeatherData> getWeather(
-            @Query("latitude") double latitude,
-            @Query("longitude") double longitude,
-            @Query("current_weather") boolean currentWeather,
-            @Query("timezone") String timezone
-    );
 
+    /**
+     * Anlık durum ve günlük tahmin tek istekte (Open-Meteo, ücretsiz, anahtarsız).
+     *
+     * @param current      ör. "temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day"
+     * @param daily        ör. "weather_code,temperature_2m_max"
+     * @param forecastDays bugün dahil gün sayısı
+     */
     @GET("forecast")
-    Call<WeatherData> getDailyWeatherForecastByDate(
+    Call<WeatherData> getForecast(
             @Query("latitude") double latitude,
             @Query("longitude") double longitude,
-            @Query("daily") String dailyFields,  // Örnek: "weathercode,temperature_2m_max"
-            @Query("start_date") String startDate,  // Format: YYYY-MM-DD
-            @Query("end_date") String endDate,      // Format: YYYY-MM-DD
-            @Query("timezone") String timezone
-    );
-
-    @GET("forecast")
-    Call<WeatherData> getDailyWeatherAndForecastByDate(
-            @Query("latitude") double latitude,
-            @Query("longitude") double longitude,
-            @Query("current_weather") boolean currentWeather,
-            @Query("daily") String dailyFields,  // Örnek: "weathercode,temperature_2m_max"
-            @Query("start_date") String startDate,  // Format: YYYY-MM-DD
-            @Query("end_date") String endDate,      // Format: YYYY-MM-DD
+            @Query("current") String current,
+            @Query("daily") String daily,
+            @Query("forecast_days") int forecastDays,
             @Query("timezone") String timezone
     );
 }

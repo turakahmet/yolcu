@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hava durumu kartındaki tek günlük tahmin hücresi (gün, ikon, en yüksek sıcaklık); koyu yeşil kart üstünde -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/forecast_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textColor="@color/color_on_header_secondary"
+        android:textSize="@dimen/home_weather_day_text" />
+
+    <ImageView
+        android:id="@+id/forecast_icon"
+        android:layout_width="@dimen/home_weather_day_icon"
+        android:layout_height="@dimen/home_weather_day_icon"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:importantForAccessibility="no" />
+
+    <TextView
+        android:id="@+id/forecast_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/weather_temp_placeholder"
+        android:maxLines="1"
+        android:textColor="@color/color_on_header"
+        android:textSize="@dimen/home_weather_day_text"
+        android:textStyle="bold" />
+</LinearLayout>

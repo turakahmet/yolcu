@@ -1,5 +1,7 @@
 package com.islamyolu.app.weather;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -14,21 +16,34 @@ public class WeatherData {
     @SerializedName("timezone")
     private String timezone;
 
-    @SerializedName("current_weather")
+    /** Yeni API "current"; eski önbellekte "current_weather" */
+    @SerializedName(value = "current", alternate = {"current_weather"})
     private CurrentWeather currentWeather;
 
     @SerializedName("daily")
     private DailyWeatherForecast daily;
 
     public static class CurrentWeather {
-        @SerializedName("temperature")
+        @SerializedName(value = "temperature_2m", alternate = {"temperature"})
         private double temperature;
 
-        @SerializedName("weathercode")
+        @SerializedName(value = "weather_code", alternate = {"weathercode"})
         private int weatherCode;
 
         @SerializedName("is_day")
         private int isDay;
+
+        /** Hissedilen sıcaklık (°C); eski önbellekte yok */
+        @SerializedName("apparent_temperature")
+        private Double apparentTemperature;
+
+        /** Bağıl nem (%) */
+        @SerializedName("relative_humidity_2m")
+        private Integer humidity;
+
+        /** Rüzgar hızı (km/sa, 10 m) */
+        @SerializedName("wind_speed_10m")
+        private Double windSpeed;
 
         public double getTemperature() {
             return temperature;
@@ -41,6 +56,21 @@ public class WeatherData {
         public boolean isDay() {
             return isDay == 1;
         }
+
+        @Nullable
+        public Double getApparentTemperature() {
+            return apparentTemperature;
+        }
+
+        @Nullable
+        public Integer getHumidity() {
+            return humidity;
+        }
+
+        @Nullable
+        public Double getWindSpeed() {
+            return windSpeed;
+        }
     }
 
     // Günlük tahminler
@@ -48,7 +78,7 @@ public class WeatherData {
         @SerializedName("time")
         private List<String> dates;
 
-        @SerializedName("weathercode")
+        @SerializedName(value = "weather_code", alternate = {"weathercode"})
         private List<Integer> weatherCodes;
 
         @SerializedName("temperature_2m_max")

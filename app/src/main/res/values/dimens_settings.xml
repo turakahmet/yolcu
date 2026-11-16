@@ -14,4 +14,51 @@
     <dimen name="settings_header_art">88dp</dimen>
     <!-- Geniş ekranda kartlar ekranın tamamına yayılmasın -->
     <dimen name="settings_content_max_width">640dp</dimen>
+    <!-- Ana Sayfa üst başlığı ve kartları (dar pencere; 380dp ve üzeri için values-w380dp) -->
+    <dimen name="home_header_compact_padding">8dp</dimen>
+    <dimen name="app_header_corner_radius">28dp</dimen>
+    <dimen name="home_countdown_text">28sp</dimen>
+    <dimen name="home_countdown_box_value_height">38dp</dimen>
+    <dimen name="home_countdown_label_text">16sp</dimen>
+    <!-- Sayaç üstündeki kerahat uyarısı (vakit etiketinden küçük) ve ortalı vakit ikonu -->
+    <dimen name="home_countdown_kerahat_text">12sp</dimen>
+    <dimen name="home_countdown_icon">22dp</dimen>
+    <dimen name="home_weather_padding">8dp</dimen>
+    <dimen name="home_weather_day_text">11sp</dimen>
+    <dimen name="home_weather_day_icon">26dp</dimen>
+    <dimen name="home_panel_margin">12dp</dimen>
+    <dimen name="home_countdown_top_padding">4dp</dimen>
+    <!-- Sabitlenmiş vakit şeridinin üstündeki küçük boşluk (her genişlikte aynı) -->
+    <dimen name="home_strip_pinned_gap">6dp</dimen>
+    <!-- Sayaç ile şerit arasındaki cami boşluğunun en az değeri -->
+    <dimen name="home_strip_spacer_min">8dp</dimen>
+    <dimen name="home_weather_gap">6dp</dimen>
+    <dimen name="home_weather_icon">44dp</dimen>
+    <dimen name="home_weather_temp_text">26sp</dimen>
+    <dimen name="home_weather_desc_text">12sp</dimen>
+    <dimen name="home_weather_city_max">96dp</dimen>
+    <dimen name="home_weather_city_text">14sp</dimen>
+    <dimen name="home_weather_stat_icon">20dp</dimen>
+    <dimen name="home_weather_stat_value">13sp</dimen>
+    <dimen name="home_name_icon">36dp</dimen>
+    <dimen name="home_name_text">16sp</dimen>
+    <dimen name="home_hadith_logo">108dp</dimen>
+    <dimen name="home_hadith_title_text">17sp</dimen>
+    <dimen name="home_hadith_text">15sp</dimen>
+    <dimen name="home_shortcut_height">124dp</dimen>
+    <dimen name="home_shortcut_text">18sp</dimen>
+    <!-- Kısayol panelinin iç boşluğu; kart kenar boşluğu (4dp) ile birlikte hava kartı iç boşluğuna eşit -->
+    <dimen name="home_shortcut_panel_padding">4dp</dimen>
+    <!-- Kısayol kartı gölgesi: panel iç boşluğu + kart kenar boşluğu gölgeye yer bırakır -->
+    <dimen name="home_shortcut_elevation">6dp</dimen>
+    <!-- Ana Sayfa rozet kartı -->
+    <dimen name="home_badge_icon">72dp</dimen>
+    <dimen name="home_badge_text">14sp</dimen>
+    <dimen name="home_badge_padding">16dp</dimen>
+    <!-- Motifli cam panel köşe motifi (yükseklik; genişlik görsel oranından) ve tarih paneli -->
+    <dimen name="home_glass_corner">96dp</dimen>
+    <dimen name="home_glass_corner_small">46dp</dimen>
+    <dimen name="home_date_icon">26dp</dimen>
+    <dimen name="home_date_text">14sp</dimen>
+    <dimen name="home_date_sub_text">13sp</dimen>
 </resources>

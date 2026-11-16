@@ -1,94 +1,507 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_home_page"
     android:fillViewport="true"
     tools:context=".main.Dashboard">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:paddingStart="10dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/havaCardView"
+        <!-- Tarih paneli (motifli cam panel): solda miladi tarih + gün adı, sağda hicri tarih.
+             İki yarı eşit genişlikte; dar pencerede yazılar alt satıra kayar (kesilmez). -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/datePanel"
+            style="@style/HomeGlassPanel"
             android:layout_width="0dp"
-            android:layout_height="180dp"
-            android:layout_margin="5dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/verticalLinearLayout"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_weight="0.25">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/weatherPanel"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="10dp">
-
-                <ProgressBar
-                    android:id="@+id/loadingWeatherIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:indeterminate="true"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <TextView
-                    android:id="@+id/weatherKonumAlert"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/konum_verisi_bekliyor"
-                    android:layout_margin="3dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/loadingWeatherIcon" />
-
-                <ImageButton
-                    android:id="@+id/wheatherRefresh"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/image_button_selector"
-                    android:layout_margin="3dp"
-                    android:src="@drawable/baseline_refresh_24_gray"
-                    android:contentDescription="@string/weatherRefresh"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/weatherKonumAlert" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toTopOf="parent">
 
             <FrameLayout
-                android:id="@+id/weatherFrame"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_glass_panel">
 
-
-                <!-- Arka plan resmi -->
                 <ImageView
-                    android:id="@+id/weatherBackground"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:contentDescription="@string/app_logo_description"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/dashboard_weather_1" />
+                    style="@style/HomeGlassCorner.BottomStart"
+                    android:layout_height="@dimen/home_glass_corner_small"
+                    android:importantForAccessibility="no" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#80000000" />
+                <ImageView
+                    style="@style/HomeGlassCorner.BottomEnd"
+                    android:layout_height="@dimen/home_glass_corner_small"
+                    android:importantForAccessibility="no" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:gravity="center_vertical"
+                    android:minHeight="56dp"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/home_weather_padding"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="@dimen/home_weather_padding"
+                    android:paddingBottom="10dp">
+
+                    <LinearLayout
+                        android:id="@+id/date_gregorian"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/home_date_icon"
+                            android:layout_height="@dimen/home_date_icon"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/baseline_calendar_month_24"
+                            app:tint="@color/color_highlight" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/date_gregorian_text"
+                                style="@style/HomeDateTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                tools:text="12 Kasım 2026" />
+
+                            <TextView
+                                android:id="@+id/date_weekday_text"
+                                style="@style/HomeDateSubtitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                tools:text="Perşembe" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@color/color_countdown_line" />
+
+                    <LinearLayout
+                        android:id="@+id/date_hijri"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/home_date_icon"
+                            android:layout_height="@dimen/home_date_icon"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/baseline_mosque_24"
+                            app:tint="@color/color_highlight" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/date_hijri_text"
+                                style="@style/HomeDateTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                tools:text="2 Cemaziyelahir 1448" />
+
+                            <TextView
+                                style="@style/HomeDateSubtitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/home_date_hijri_label" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Hava durumu kartı: yeşil cam panel (köşe motifsiz); bugün + hissedilen/nem/rüzgar, altta 5 günlük
+             tahmin. Her pencere genişliğinde yan yana kalır; dar pencerede yazı/ikon/boşluk küçülür
+             (values ve values-w380dp ölçüleri). -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/havaCardView"
+            style="@style/HomeGlassPanel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/datePanel">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_glass_panel"
+                android:minHeight="88dp">
+
+                <!-- Şehir seçilmemişken: bilgi + yenile -->
+                <LinearLayout
+                    android:id="@+id/weatherPanel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
-                    android:padding="3dp">
+                    android:padding="12dp"
+                    android:visibility="gone">
+
+                    <ProgressBar
+                        android:id="@+id/loadingWeatherIcon"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:indeterminate="true"
+                        android:indeterminateTint="@color/color_on_header" />
+
+                    <TextView
+                        android:id="@+id/weatherKonumAlert"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="@string/konum_verisi_bekliyor"
+                        android:textAppearance="@style/TextAppearance.Yolcu.Body"
+                        android:textColor="@color/color_on_header_secondary" />
+
+                    <ImageButton
+                        android:id="@+id/wheatherRefresh"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/weatherRefresh"
+                        android:src="@drawable/baseline_refresh_24"
+                        app:tint="@color/color_on_header" />
+                </LinearLayout>
+
+                <!-- Üstte bugün (şehir, büyük ikon, sıcaklık, durum) ve hissedilen / nem / rüzgar;
+                     altta iç cam satırda 5 günlük tahmin -->
+                <LinearLayout
+                    android:id="@+id/weatherFrame"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/home_weather_padding"
+                    android:paddingTop="6dp"
+                    android:paddingEnd="@dimen/home_weather_padding"
+                    android:paddingBottom="@dimen/home_weather_padding">
+
+                    <!-- Bugün + değerler her ekranda yan yana. Sığmazsa (dar pencere, büyük ekran ölçeği)
+                         WeatherStatsLayout yazı ve ikonları aynı oranda küçültür; çok büyük erişilebilirlik
+                         yazısında değerler bugünün altına iner. -->
+                    <LinearLayout
+                        android:id="@+id/weather_top_row"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <!-- Bugün -->
+                        <LinearLayout
+                            android:id="@+id/weather_today"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/weather_city_layout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:contentDescription="@string/home_change_city_cd"
+                                android:gravity="center_vertical"
+                                android:minHeight="48dp"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:importantForAccessibility="no"
+                                    android:src="@drawable/baseline_location_on_24"
+                                    app:tint="@color/color_on_header" />
+
+                                <TextView
+                                    android:id="@+id/weather_city"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="2dp"
+                                    android:maxWidth="@dimen/home_weather_city_max"
+                                    android:maxLines="2"
+                                    android:text="@string/empty_text"
+                                    android:textColor="@color/color_on_header"
+                                    android:textSize="@dimen/home_weather_city_text"
+                                    android:textStyle="bold" />
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:importantForAccessibility="no"
+                                    android:src="@drawable/baseline_keyboard_arrow_down_24"
+                                    app:tint="@color/color_on_header" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:id="@+id/weather_icon"
+                                    android:layout_width="@dimen/home_weather_icon"
+                                    android:layout_height="@dimen/home_weather_icon"
+                                    android:importantForAccessibility="no" />
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="6dp"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/weather_temp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:maxLines="1"
+                                        android:text="@string/weather_temp_placeholder"
+                                        android:textColor="@color/color_on_header"
+                                        android:textSize="@dimen/home_weather_temp_text"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/weather_desc"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:maxWidth="@dimen/home_weather_city_max"
+                                        android:text="@string/baglaniyor_etiket"
+                                        android:textColor="@color/color_on_header_secondary"
+                                        android:textSize="@dimen/home_weather_desc_text" />
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/weather_stats_divider"
+                            android:layout_width="1dp"
+                            android:layout_height="56dp"
+                            android:layout_marginStart="@dimen/home_weather_gap"
+                            android:background="@color/color_header_glass_stroke" />
+
+                        <!-- Hissedilen / Nem / Rüzgar: kalan genişliği eşit paylaşır -->
+                        <LinearLayout
+                            android:id="@+id/weather_stats_row"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:baselineAligned="false"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <include
+                                android:id="@+id/weather_stat_feels"
+                                layout="@layout/item_weather_stat" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="40dp"
+                                android:background="@color/color_header_glass_stroke" />
+
+                            <include
+                                android:id="@+id/weather_stat_humidity"
+                                layout="@layout/item_weather_stat" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="40dp"
+                                android:background="@color/color_header_glass_stroke" />
+
+                            <include
+                                android:id="@+id/weather_stat_wind"
+                                layout="@layout/item_weather_stat" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- 5 günlük tahmin: iç cam satır, günler ince çizgiyle ayrılır -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_home_weather_days"
+                        android:baselineAligned="false"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp">
+
+                        <include
+                            android:id="@+id/weather_day_cell_1"
+                            layout="@layout/item_weather_forecast_day" />
+
+                        <View style="@style/HomeWeatherDayDivider" />
+
+                        <include
+                            android:id="@+id/weather_day_cell_2"
+                            layout="@layout/item_weather_forecast_day" />
+
+                        <View style="@style/HomeWeatherDayDivider" />
+
+                        <include
+                            android:id="@+id/weather_day_cell_3"
+                            layout="@layout/item_weather_forecast_day" />
+
+                        <View style="@style/HomeWeatherDayDivider" />
+
+                        <include
+                            android:id="@+id/weather_day_cell_4"
+                            layout="@layout/item_weather_forecast_day" />
+
+                        <View style="@style/HomeWeatherDayDivider" />
+
+                        <include
+                            android:id="@+id/weather_day_cell_5"
+                            layout="@layout/item_weather_forecast_day" />
+                    </LinearLayout>
+                </LinearLayout>
+            </FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- İsim kartları hava durumunun altında yan yana (cam görünüm, item_home_name_card) -->
+        <LinearLayout
+            android:id="@+id/verticalLinearLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/havaCardView">
+
+            <include
+                android:id="@+id/erkekCardView"
+                layout="@layout/item_home_name_card" />
+
+            <include
+                android:id="@+id/kizCardView"
+                layout="@layout/item_home_name_card" />
+        </LinearLayout>
+
+        <!-- Hadis-i Şerif kartı (motifli cam panel): sağ üst ve sol alt köşede altın motif;
+             başlık + kaynak, metin, altta yenile/paylaş ve devamı -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/duaCardView"
+            style="@style/HomeGlassPanel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            app:rippleColor="@color/color_header_glass_stroke"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/verticalLinearLayout">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_glass_panel">
+
+            <ImageView
+                style="@style/HomeGlassCorner.TopEnd"
+                android:importantForAccessibility="no" />
+
+            <ImageView
+                style="@style/HomeGlassCorner.BottomStart"
+                android:importantForAccessibility="no" />
+
+            <!-- Solda büyük hadis görseli (sol üstte sabit; kart açılınca kaymaz), sağda başlık, kaynak, metin ve düğmeler -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingTop="@dimen/home_weather_padding"
+                android:paddingEnd="@dimen/home_weather_padding"
+                android:paddingBottom="4dp">
+
+                <ImageView
+                    android:id="@+id/hadisLogo"
+                    android:layout_width="@dimen/home_hadith_logo"
+                    android:layout_height="@dimen/home_hadith_logo"
+                    android:layout_gravity="top"
+                    android:adjustViewBounds="true"
+                    android:importantForAccessibility="no"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/hadis_logo" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/hadisHeader"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:accessibilityHeading="true"
+                        android:text="@string/hadis_header"
+                        android:textColor="@color/color_highlight"
+                        android:textSize="@dimen/home_hadith_title_text"
+                        android:textStyle="bold"
+                        tools:targetApi="p" />
+
+                    <TextView
+                        android:id="@+id/hadisBilgi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/color_on_header_secondary"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/hadisMetin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:ellipsize="end"
+                        android:lineSpacingMultiplier="1.15"
+                        android:maxLines="5"
+                        android:textColor="@color/color_on_header"
+                        android:textSize="@dimen/home_hadith_text" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -96,695 +509,161 @@
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
-                        <ImageView
-                            android:id="@+id/weather_icon"
-                            android:layout_width="90dp"
-                            android:layout_height="90dp"
-                            android:layout_margin="5dp"
-                            android:contentDescription="@string/app_logo_description"
-                            android:src="@drawable/rain_light" />
+                        <ImageButton
+                            android:id="@+id/hadisYenile"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/home_hadith_refresh_cd"
+                            android:src="@drawable/rounded_sync_24"
+                            android:visibility="gone"
+                            app:tint="@color/color_on_header_secondary" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <ImageButton
+                            android:id="@+id/hadisPaylas"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/home_hadith_share_cd"
+                            android:src="@drawable/baseline_share_24"
+                            android:visibility="gone"
+                            app:tint="@color/color_on_header_secondary" />
+
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/dahaFazla"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center_horizontal"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/location_desc"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:shadowColor="#000000"
-                                android:shadowDx="2"
-                                android:shadowDy="2"
-                                android:shadowRadius="18"
-                                android:textColor="#D3D3D3"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/weather_temp"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:shadowColor="#000000"
-                                android:shadowDx="2"
-                                android:shadowDy="2"
-                                android:shadowRadius="18"
-                                android:text="@string/tempatura_default"
-                                android:textColor="#D3D3D3"
-                                android:textSize="30sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/weather_desc"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:shadowColor="#000000"
-                                android:shadowDx="2"
-                                android:shadowDy="2"
-                                android:shadowRadius="18"
-                                android:text="@string/baglaniyor_etiket"
-                                android:textColor="#D3D3D3"
-                                android:textSize="13sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-
+                            android:gravity="center"
+                            android:minHeight="48dp"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="4dp"
+                            android:text="@string/devamhadis"
+                            android:textColor="@color/color_highlight"
+                            android:textSize="14sp"
+                            android:textStyle="bold|italic" />
                     </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/weather_day_1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/pzt"
-                                android:textColor="#D3D3D3"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <ImageView
-                                android:id="@+id/weather_1"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:contentDescription="@string/app_logo_description"
-                                android:src="@drawable/rain_light" />
-
-                            <TextView
-                                android:id="@+id/weather_temp_1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/tempatura_default"
-                                android:textColor="#D3D3D3"
-                                android:textSize="13sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/weather_day_2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/sal"
-                                android:textColor="#D3D3D3"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <ImageView
-                                android:id="@+id/weather_2"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:contentDescription="@string/app_logo_description"
-                                android:src="@drawable/day_clear" />
-
-                            <TextView
-                                android:id="@+id/weather_temp_2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/tempatura_default"
-                                android:textColor="#D3D3D3"
-                                android:textSize="13sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/weather_day_3"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/car"
-                                android:textColor="#D3D3D3"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <ImageView
-                                android:id="@+id/weather_3"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:contentDescription="@string/app_logo_description"
-                                android:src="@drawable/cloudy" />
-
-                            <TextView
-                                android:id="@+id/weather_temp_3"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/tempatura_default"
-                                android:textColor="#D3D3D3"
-                                android:textSize="13sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/weather_day_4"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/per"
-                                android:textColor="#D3D3D3"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <ImageView
-                                android:id="@+id/weather_4"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:contentDescription="@string/app_logo_description"
-                                android:src="@drawable/thunderstorm_heavy" />
-
-                            <TextView
-                                android:id="@+id/weather_temp_4"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/tempatura_default"
-                                android:textColor="#D3D3D3"
-                                android:textSize="13sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/weather_day_5"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/cum"
-                                android:textColor="#D3D3D3"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <ImageView
-                                android:id="@+id/weather_5"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:contentDescription="@string/app_logo_description"
-                                android:src="@drawable/snow_light" />
-
-                            <TextView
-                                android:id="@+id/weather_temp_5"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/tempatura_default"
-                                android:textColor="#D3D3D3"
-                                android:textSize="13sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
                 </LinearLayout>
+            </LinearLayout>
             </FrameLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
-        <LinearLayout
-            android:id="@+id/verticalLinearLayout"
-            android:layout_width="0dp"
-            android:layout_height="180dp"
-            android:layout_margin="5dp"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/havaCardView"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_weight="0.25"
-            app:layout_constraintWidth_percent="0.4">
-
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/erkekCardView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="3dp"
-                android:layout_weight="1"
-                app:cardBackgroundColor="#B2DFDB"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="8dp">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/erkekBebekLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textColor="@color/black"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/eBabyRefresh"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/erkekBebekIcon" />
-
-                    <ImageView
-                        android:id="@+id/erkekBebekIcon"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_marginTop="5dp"
-                        android:contentDescription="@string/ebabyicon"
-                        android:src="@drawable/e_baby"
-                        app:layout_constraintEnd_toStartOf="@+id/eBabyRefresh"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageButton
-                        android:id="@+id/eBabyRefresh"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/image_button_selector"
-                        android:contentDescription="@string/nameRefresh"
-                        android:padding="3dp"
-                        android:src="@drawable/rounded_sync_24"
-                        app:layout_constraintEnd_toEndOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/kizCardView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                app:cardBackgroundColor="#F8BBD0"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="8dp">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/kizBebekLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textColor="@color/black"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/kBabyRefresh"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/kizBebekIcon" />
-
-                    <ImageView
-                        android:id="@+id/kizBebekIcon"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_marginTop="5dp"
-                        android:contentDescription="@string/kbabyicon"
-                        android:src="@drawable/k_baby"
-                        app:layout_constraintEnd_toStartOf="@+id/kBabyRefresh"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageButton
-                        android:id="@+id/kBabyRefresh"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/image_button_selector"
-                        android:padding="3dp"
-                        android:src="@drawable/rounded_sync_24"
-                        android:contentDescription="@string/nameRefresh"
-                        app:layout_constraintEnd_toEndOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
-
-        </LinearLayout>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/duaCardView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            app:cardBackgroundColor="@color/card_dashboard_color"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/havaCardView"
-            app:layout_constraintVertical_weight="0.25">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/hadisLogo"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:contentDescription="@string/hadislogo"
-                    android:src="@drawable/hadis_logo"
-                    android:layout_marginTop="30dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageButton
-                    android:id="@+id/hadisYenile"
-                    android:layout_width="33dp"
-                    android:layout_height="33dp"
-                    android:layout_margin="5dp"
-                    android:background="@android:color/transparent"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    android:src="@drawable/refresh_button"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:ignore="ContentDescription" />
-
-                <ImageButton
-                    android:id="@+id/hadisPaylas"
-                    android:layout_width="33dp"
-                    android:layout_height="33dp"
-                    android:layout_margin="5dp"
-                    android:background="@android:color/transparent"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    android:src="@drawable/share"
-                    android:layout_marginTop="10dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/hadisYenile"
-                    tools:ignore="ContentDescription" />
-
-
-                <TextView
-                    android:id="@+id/hadisHeader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/hadis_header"
-                    android:textColor="#EF5350"
-                    android:textSize="18sp"
-                    android:textStyle="bold|italic"
-                    app:layout_constraintStart_toEndOf="@+id/hadisLogo"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/hadisBilgi"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:alpha="0.5"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/hadisLogo"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/hadisHeader" />
-
-                <LinearLayout
-                    android:id="@+id/hadisLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toEndOf="@id/hadisLogo"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/hadisBilgi"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/hadisMetin"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="start"
-                        android:maxLines="5"
-                        android:ellipsize="end"
-                        android:text="@string/privacy_info"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/dahaFazla"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/devamhadis"
-                        android:layout_gravity="end"
-                        android:layout_margin="5dp"
-                        android:textStyle="italic"
-                        android:textSize="14sp" />
-                </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
-
-        <LinearLayout
+        <!-- Kısayol paneli (İbadet / Takvim / Yarışma): dışta cam panel, içinde görselli kartlar
+             (hava kartındaki tahmin satırı gibi iç katman; item_home_shortcut_card) -->
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/linearLayout3"
             android:layout_width="0dp"
-            android:layout_height="150dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@id/linearLayout4"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            app:cardBackgroundColor="@color/color_header_glass"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/color_header_glass_stroke"
+            app:strokeWidth="1dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/duaCardView"
-            app:layout_constraintVertical_weight="0.25">
+            app:layout_constraintTop_toBottomOf="@+id/duaCardView">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/ibadetCardView"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                app:cardBackgroundColor="#424242"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="8dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/home_shortcut_height"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:padding="@dimen/home_shortcut_panel_padding">
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                <include
+                    android:id="@+id/ibadetCardView"
+                    layout="@layout/item_home_shortcut_card" />
 
-                    <!-- Arka plan resmi -->
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:contentDescription="@string/app_logo_description"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/d_ibadet" />
+                <include
+                    android:id="@+id/takvimCardView"
+                    layout="@layout/item_home_shortcut_card" />
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="#80000000" />
+                <include
+                    android:id="@+id/yarismaCardView"
+                    layout="@layout/item_home_shortcut_card" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:shadowColor="#000000"
-                        android:shadowDx="2"
-                        android:shadowDy="2"
-                        android:shadowRadius="18"
-                        android:text="@string/dashboard_ibadet_label"
-                        android:textColor="#FFFFFF"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-                </FrameLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/takvimCardView"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                app:cardBackgroundColor="#424242"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="8dp">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <!-- Arka plan resmi -->
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:contentDescription="@string/app_logo_description"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/d_takvim" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="#80000000" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:shadowColor="#000000"
-                        android:shadowDx="2"
-                        android:shadowDy="2"
-                        android:shadowRadius="18"
-                        android:text="@string/dashboard_takvim_label"
-                        android:textColor="#FFFFFF"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-                </FrameLayout>
-            </androidx.cardview.widget.CardView>
-
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/yarismaCardView"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                app:cardBackgroundColor="#424242"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="8dp">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <!-- Arka plan resmi -->
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:contentDescription="@string/app_logo_description"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/d_yarisma" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="#80000000" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:shadowColor="#000000"
-                        android:shadowDx="2"
-                        android:shadowDy="2"
-                        android:shadowRadius="18"
-                        android:text="@string/dashboard_yarisma_label"
-                        android:textColor="#FFFFFF"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-                </FrameLayout>
-            </androidx.cardview.widget.CardView>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearLayout4"
+        <!-- Rozet kartı (cam görünüm): henüz kazanılmamış rastgele bir rozet. Tüm rozetler
+             kazanıldıysa Dashboard kartı gizler. Yükseklik içeriğe göre; metinler kesilmez. -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/rozetBasari"
             android:layout_width="0dp"
-            android:layout_height="180dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            app:cardBackgroundColor="@color/color_header_glass"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/color_header_glass_stroke"
+            app:strokeWidth="1dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
-            app:layout_constraintVertical_weight="0.25">
+            <!-- Dikey düzen: madalya üstte ortada, altında ortalanmış bilgi, ad ve açıklama -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/home_badge_padding"
+                android:paddingTop="@dimen/home_badge_padding"
+                android:paddingEnd="@dimen/home_badge_padding"
+                android:paddingBottom="@dimen/home_badge_padding">
 
+                <!-- Kazanılmamış rozet soluk gösterilir -->
+                <ImageView
+                    android:id="@+id/badgeIcon"
+                    android:layout_width="@dimen/home_badge_icon"
+                    android:layout_height="@dimen/home_badge_icon"
+                    android:alpha="0.55"
+                    android:contentDescription="@string/badge_icon"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/medal" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/rozetBasari"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                app:cardBackgroundColor="@color/card_dashboard_color"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="8dp">
+                <TextView
+                    android:id="@+id/badgeInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="@string/badgeInfo"
+                    android:textColor="@color/color_on_header_secondary"
+                    android:textSize="12sp"
+                    android:textStyle="italic" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <TextView
+                    android:id="@+id/badgeName"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:gravity="center"
+                    android:textColor="@color/color_highlight"
+                    android:textSize="@dimen/home_hadith_title_text"
+                    android:textStyle="bold"
+                    tools:text="@string/test_rozeti" />
 
-                    <ImageView
-                        android:id="@+id/badgeIcon"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_margin="5dp"
-                        android:alpha="0.5"
-                        android:contentDescription="@string/badge_icon"
-                        android:src="@drawable/medal"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/badgeInfo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:alpha="0.5"
-                        android:text="@string/badgeInfo"
-                        android:textSize="13sp"
-                        android:textStyle="bold|italic"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/badgeIcon"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/badgeName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:alpha="0.7"
-                        android:text="@string/test_rozeti"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toEndOf="@id/badgeIcon"
-                        app:layout_constraintTop_toBottomOf="@id/badgeInfo" />
-
-                    <TextView
-                        android:id="@+id/badgeDescription"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:alpha="0.7"
-                        android:text="@string/testYazisi"
-                        android:textSize="18sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/badgeIcon"
-                        app:layout_constraintTop_toBottomOf="@id/badgeName"
-                        tools:ignore="TooManyViews" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/badgeDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="1.1"
+                    android:textColor="@color/color_on_header"
+                    android:textSize="@dimen/home_badge_text"
+                    tools:ignore="TooManyViews"
+                    tools:text="@string/testYazisi" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

@@ -14,6 +14,7 @@ import com.islamyolu.app.R;
 import com.islamyolu.app.prayertimes.PrayerCitySelection;
 import com.islamyolu.app.preferences.AppPreferences;
 import com.islamyolu.app.preferences.SettingsPreferences;
+import com.islamyolu.app.theme.AppThemeManager;
 
 /**
  * Ayarlar ana menüsü: 8 başlık. Açıklamalar güncel ayarlardan üretilir ve alt ekrandan dönünce
@@ -27,6 +28,7 @@ public class SettingsHomeFragment extends Fragment {
     private SettingsRowView rowSound;
     private SettingsRowView rowReminders;
     private SettingsRowView rowLocation;
+    private SettingsRowView rowApp;
 
     public SettingsHomeFragment() {
         super(R.layout.fragment_settings_home);
@@ -44,10 +46,11 @@ public class SettingsHomeFragment extends Fragment {
         navigateOnClick(rowReminders, R.id.toReminders);
         navigateOnClick(rowLocation, R.id.toLocation);
         navigateOnClick(view.findViewById(R.id.rowAbout), R.id.toAbout);
+        rowApp = view.findViewById(R.id.rowApp);
+        navigateOnClick(rowApp, R.id.toApp);
 
         // Sonraki görevlerde açılacak başlıklar
         view.findViewById(R.id.rowAccount).setEnabled(false);
-        view.findViewById(R.id.rowApp).setEnabled(false);
         view.findViewById(R.id.rowData).setEnabled(false);
 
         TextView footer = view.findViewById(R.id.settingsFooter);
@@ -63,6 +66,9 @@ public class SettingsHomeFragment extends Fragment {
     private void bindSummaries() {
         AppPreferences preferences = AppPreferences.from(requireContext());
         SettingsPreferences settings = preferences.settings();
+
+        rowApp.setSubtitle(getString(R.string.settings_app_summary,
+                getString(AppThemeManager.getMode(requireContext()).labelRes)));
 
         int active = 0;
         if (settings.isAllNotificationsOn()) {

@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/nav_dashboard"
         android:name="com.islamyolu.app.main.Dashboard"
-        android:label="@string/menu_anasayfa"
+        android:label="@string/app_name"
         tools:layout="@layout/fragment_dashboard">
         <action
             android:id="@+id/action_dashboardFragment_to_homeFragment"
@@ -75,5 +75,11 @@
         android:label="@string/menu_basari"
         tools:layout="@layout/fragment_rozet" />
 
+
+    <!-- Sol menüdeki Ayarlar -->
+    <activity
+        android:id="@+id/nav_settings"
+        android:name="com.islamyolu.app.main.SettingsActivity"
+        android:label="@string/action_settings" />
 
 </navigation>

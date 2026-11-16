@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Uygulama Ayarları: tema seçimi (Sistem / Açık / Koyu); genel tercihler sonraki adımlarda eklenir -->
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/settingsScroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/settings_screen_padding">
+
+        <TextView
+            style="@style/Widget.Yolcu.Settings.SectionTitle"
+            android:text="@string/settings_section_appearance" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.Yolcu.Settings.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.islamyolu.app.settings.SettingsRowView
+                    android:id="@+id/rowTheme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:rowIcon="@drawable/ic_settings_theme"
+                    app:rowSubtitle="@string/settings_theme_subtitle"
+                    app:rowTitle="@string/settings_theme_title"
+                    app:rowType="info" />
+
+                <!-- saveEnabled=false: seçim her açılışta tercihten okunur -->
+                <RadioGroup
+                    android:id="@+id/themeGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/settings_row_padding_horizontal"
+                    android:paddingEnd="@dimen/settings_row_padding_horizontal"
+                    android:paddingBottom="8dp">
+
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/themeSystem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:saveEnabled="false"
+                        android:text="@string/theme_system"
+                        android:textAppearance="@style/TextAppearance.Yolcu.Body" />
+
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/themeLight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:saveEnabled="false"
+                        android:text="@string/theme_light"
+                        android:textAppearance="@style/TextAppearance.Yolcu.Body" />
+
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/themeDark"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:saveEnabled="false"
+                        android:text="@string/theme_dark"
+                        android:textAppearance="@style/TextAppearance.Yolcu.Body" />
+                </RadioGroup>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

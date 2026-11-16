@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 380dp ve üzeri pencere: Ana Sayfa sayacı ve hava durumu kartı daha geniş ölçülerle -->
+<resources>
+    <dimen name="home_countdown_text">36sp</dimen>
+    <dimen name="home_countdown_box_value_height">46dp</dimen>
+    <dimen name="home_countdown_label_text">18sp</dimen>
+    <dimen name="home_countdown_kerahat_text">13sp</dimen>
+    <dimen name="home_countdown_icon">26dp</dimen>
+    <dimen name="home_weather_padding">12dp</dimen>
+    <dimen name="home_weather_day_text">12sp</dimen>
+    <dimen name="home_weather_day_icon">32dp</dimen>
+    <dimen name="home_panel_margin">16dp</dimen>
+    <dimen name="home_countdown_top_padding">12dp</dimen>
+    <dimen name="home_weather_gap">10dp</dimen>
+    <dimen name="home_weather_icon">56dp</dimen>
+    <dimen name="home_weather_temp_text">32sp</dimen>
+    <dimen name="home_weather_desc_text">13sp</dimen>
+    <dimen name="home_weather_city_max">130dp</dimen>
+    <dimen name="home_weather_city_text">16sp</dimen>
+    <dimen name="home_weather_stat_icon">24dp</dimen>
+    <dimen name="home_weather_stat_value">15sp</dimen>
+    <dimen name="home_name_icon">42dp</dimen>
+    <dimen name="home_name_text">18sp</dimen>
+    <dimen name="home_hadith_logo">132dp</dimen>
+    <dimen name="home_hadith_title_text">19sp</dimen>
+    <dimen name="home_hadith_text">16sp</dimen>
+    <dimen name="home_shortcut_height">150dp</dimen>
+    <dimen name="home_shortcut_text">20sp</dimen>
+    <dimen name="home_shortcut_panel_padding">8dp</dimen>
+    <dimen name="home_badge_icon">88dp</dimen>
+    <dimen name="home_badge_text">15sp</dimen>
+    <dimen name="home_badge_padding">20dp</dimen>
+    <dimen name="home_glass_corner">112dp</dimen>
+    <dimen name="home_glass_corner_small">54dp</dimen>
+    <dimen name="home_date_icon">30dp</dimen>
+    <dimen name="home_date_text">15sp</dimen>
+    <dimen name="home_date_sub_text">14sp</dimen>
+</resources>

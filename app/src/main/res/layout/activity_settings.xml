@@ -14,7 +14,7 @@
         android:id="@+id/settingsHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_settings_header"
+        android:background="@drawable/bg_app_header"
         android:minHeight="@dimen/settings_header_height"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +29,7 @@
             android:alpha="0.22"
             android:importantForAccessibility="no"
             android:src="@drawable/baseline_mosque_24"
-            app:tint="@color/settings_accent" />
+            app:tint="@color/color_accent" />
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/settingsToolbar"

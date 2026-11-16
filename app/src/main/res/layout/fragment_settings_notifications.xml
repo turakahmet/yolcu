@@ -129,6 +129,6 @@
             android:layout_marginEnd="@dimen/settings_screen_padding"
             android:text="@string/settings_test_notification"
             app:icon="@drawable/ic_settings_send"
-            app:iconTint="@color/settings_secondary" />
+            app:iconTint="@color/color_secondary" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

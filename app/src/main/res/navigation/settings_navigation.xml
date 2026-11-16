@@ -26,7 +26,16 @@
         <action
             android:id="@+id/toAbout"
             app:destination="@id/settingsAbout" />
+        <action
+            android:id="@+id/toApp"
+            app:destination="@id/settingsApp" />
     </fragment>
+
+    <fragment
+        android:id="@+id/settingsApp"
+        android:name="com.islamyolu.app.settings.AppSettingsFragment"
+        android:label="@string/settings_app_title"
+        tools:layout="@layout/fragment_settings_app" />
 
     <fragment
         android:id="@+id/settingsNotifications"

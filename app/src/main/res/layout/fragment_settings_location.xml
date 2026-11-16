@@ -62,7 +62,7 @@
                     android:layout_marginBottom="@dimen/settings_row_padding_horizontal"
                     android:text="@string/settings_update_from_location"
                     app:icon="@drawable/baseline_near_me_24"
-                    app:iconTint="@color/settings_secondary" />
+                    app:iconTint="@color/color_secondary" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

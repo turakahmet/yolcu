@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ana Sayfa kısayol kartı (İbadet / Takvim / Yarışma): cam kısayol panelinin içindeki iç katman;
+     arka plan görseli + koyu örtü + ortada başlık.
+     Görsel ve başlığı Dashboard.setupShortcutCard verir. Yükseklik satırdan (home_shortcut_height) gelir;
+     görsel kırpılarak doldurduğu için karta sabit yükseklik gerekir. Başlık sığmazsa iki satıra iner. -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_margin="4dp"
+    android:layout_weight="1"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/color_countdown_box"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="@dimen/home_shortcut_elevation"
+    app:rippleColor="@color/color_header_glass_stroke"
+    app:strokeColor="@color/color_shortcut_stroke"
+    app:strokeWidth="1dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/shortcut_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color_shortcut_scrim" />
+
+        <TextView
+            android:id="@+id/shortcut_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:maxLines="2"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
+            android:shadowColor="@color/color_header_text_shadow"
+            android:shadowDx="1"
+            android:shadowDy="3"
+            android:shadowRadius="12"
+            android:textColor="@color/color_on_header"
+            android:textSize="@dimen/home_shortcut_text"
+            android:textStyle="bold" />
+    </FrameLayout>
+</com.google.android.material.card.MaterialCardView>

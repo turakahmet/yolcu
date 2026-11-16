@@ -54,5 +54,9 @@
             android:id="@+id/nav_rozet"
             android:icon="@drawable/baseline_local_activity_24"
             android:title="@string/menu_basari" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_tune"
+            android:title="@string/action_settings" />
     </group>
 </menu>

@@ -10,6 +10,7 @@ public final class WeatherPreferences {
 
     private static final String KEY_LAST_UPDATE = "last_update";
     private static final String KEY_DATA = "weather_data";
+    private static final String KEY_LOCATION = "weather_location";
 
     private final SharedPreferences prefs;
 
@@ -39,5 +40,20 @@ public final class WeatherPreferences {
 
     public void setDataJson(@NonNull String json) {
         prefs.edit().putString(KEY_DATA, json).apply();
+    }
+
+    /** Kayıtlı verinin konumu ("enlem,boylam"); eski kayıtlarda yok (null). */
+    @Nullable
+    public String getLocationKey() {
+        return prefs.getString(KEY_LOCATION, null);
+    }
+
+    /** Veri, zaman ve konum birlikte yazılır: yarım kalmış önbellek oluşmaz. */
+    public void save(@NonNull String json, long epochMillis, @NonNull String locationKey) {
+        prefs.edit()
+                .putString(KEY_DATA, json)
+                .putLong(KEY_LAST_UPDATE, epochMillis)
+                .putString(KEY_LOCATION, locationKey)
+                .apply();
     }
 }

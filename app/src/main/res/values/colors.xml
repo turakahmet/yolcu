@@ -4,10 +4,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="current_namaz_time">#FFA726</color>
-    <color name="remain_namaz_time_1">#8BC34A</color>
-    <color name="remain_namaz_time_2">#FFA726</color>
-    <color name="remain_namaz_time_3">#F44336</color>
-    <color name="remain_kerahat_time">#FFA726</color>
     <color name="colorPrimary">#9CCC65</color>
     <color name="infoGameText">#2E2E2E</color>
     <color name="wrongAnswer">#EF5350</color>
@@ -42,7 +38,6 @@
 
     <color name="icon_color">#424242</color>
     <color name="widget_icon_color">#212121</color>
-    <color name="themePrayerBarColor">@color/white</color>
     <color name="current_prayer_widget_label">#D3D3D3</color>
 
     <color name="card_dashboard_color">#D3D3D3</color>
@@ -55,4 +50,64 @@
     <color name="step_done">#43A047</color>
     <color name="step_current">#FBC02D</color>
     <color name="step_pending">#BDBDBD</color>
+
+    <!-- ===== Uygulama renk sistemi (açık tema). Koyu karşılıkları values-night/colors.xml =====
+         Yeni ve güncellenen ekranlar yalnızca bu anlamsal renkleri kullanır; sabit renk yazılmaz. -->
+    <color name="color_primary">#0F3D2E</color>
+    <color name="color_secondary">#2E7D32</color>
+    <color name="color_on_secondary">#FFFFFF</color>
+    <color name="color_accent">#A5D66A</color>
+    <color name="color_background">#F8F6EE</color>
+    <color name="color_surface">#FFFFFF</color>
+    <color name="color_surface_variant">#E8F5E9</color>
+    <color name="color_text_primary">#26332C</color>
+    <color name="color_text_secondary">#6B7280</color>
+    <color name="color_border">#E5E7EB</color>
+    <color name="color_highlight">#FBC02D</color>
+    <color name="color_icon">#2E7D32</color>
+    <color name="color_error">#D6554A</color>
+    <!-- Yeşil başlık geçişi (açık ve koyu temada koyu yeşil kalır) -->
+    <color name="color_header_start">#0F3D2E</color>
+    <color name="color_header_end">#2E7D32</color>
+    <!-- Ana Sayfa başlık fotoğrafı üzerindeki karartma (yazı okunurluğu) -->
+    <color name="color_header_photo_scrim">#0D000000</color>
+    <!-- Fotoğraf üstündeki büyük sayaç ve etiketin gölgesi -->
+    <color name="color_header_text_shadow">#B3000000</color>
+    <!-- Gezinme çubuğu zemini (3 tuşlu gezinmede içerik altından okunur kalsın) -->
+    <color name="color_nav_bar_scrim">#E6F8F6EE</color>
+    <!-- Yeşil başlık üzerindeki öğeler (başlık her iki temada koyu yeşil olduğundan tek tanım) -->
+    <color name="color_on_header">#FFFFFF</color>
+    <color name="color_on_header_secondary">#D9FFFFFF</color>
+    <color name="color_header_glass">#1FFFFFFF</color>
+    <color name="color_header_glass_stroke">#33FFFFFF</color>
+    <!-- Motifli cam panel (hadis, tarih): yeşil tonlu yarı saydam dolgu, açık kenar, altın köşe motifi -->
+    <color name="color_glass_panel_start">#663D8067</color>
+    <color name="color_glass_panel_center">#55416D5A</color>
+    <color name="color_glass_panel_end">#77416A56</color>
+    <color name="color_glass_panel_stroke">#88D5E8C8</color>
+    <color name="color_islamic_corner">#D6B35D</color>
+    <!-- Vakit şeridinde sıradaki vakit (altın dolgu) ve üstündeki koyu yazı -->
+    <color name="color_prayer_active_start">#FFE08A</color>
+    <color name="color_prayer_active_end">#E9B23C</color>
+    <color name="color_prayer_active_stroke">#FFF3C4</color>
+    <color name="color_on_prayer_active">#1F3A1E</color>
+    <!-- Geri sayım uyarı renkleri (başlık üzerinde okunacak tonlar) -->
+    <color name="color_countdown_soon">#FBC02D</color>
+    <color name="color_countdown_urgent">#FF8A80</color>
+    <color name="color_countdown_kerahat">#FFB74D</color>
+
+    <!-- Ana Sayfa zemini: iki temada da aynı yeşil manzara (başlık fotoğrafı bu renge solar) -->
+    <color name="color_home_bg_top">#0F3B2B</color>
+    <color name="color_home_bg_mid">#1A4A35</color>
+    <color name="color_home_bg_bottom">#2F5E40</color>
+    <!-- Ana Sayfa geri sayım: kutu zemini ve etiketin iki yanındaki çizgi -->
+    <color name="color_countdown_box">#4D0B2A1E</color>
+    <color name="color_countdown_line">#99FFE08A</color>
+    <!-- Ana Sayfa isim kartı başlık vurgusu (cam kart üstünde, iki temada aynı) -->
+    <color name="color_name_boy_accent">#A8D8FF</color>
+    <color name="color_name_girl_accent">#FFBFDA</color>
+    <!-- Ana Sayfa kısayol kartı görseli üstündeki koyu örtü (başlık okunur kalsın) -->
+    <color name="color_shortcut_scrim">#80000000</color>
+    <!-- Kısayol kartının belirgin kenarı (cam çizgisinden daha açık) -->
+    <color name="color_shortcut_stroke">#66FFFFFF</color>
 </resources>

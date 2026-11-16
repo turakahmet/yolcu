@@ -58,7 +58,7 @@
                     android:layout_marginBottom="@dimen/settings_row_padding_horizontal"
                     android:hint="@string/settings_reminder_title"
                     app:startIconDrawable="@drawable/ic_settings_hourglass"
-                    app:startIconTint="@color/settings_icon">
+                    app:startIconTint="@color/color_icon">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/reminderMinutesDropdown"

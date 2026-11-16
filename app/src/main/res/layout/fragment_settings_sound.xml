@@ -55,7 +55,7 @@
                     android:hint="@string/settings_silence_duration"
                     app:helperText="@string/settings_silence_helper"
                     app:startIconDrawable="@drawable/ic_settings_hourglass"
-                    app:startIconTint="@color/settings_icon">
+                    app:startIconTint="@color/color_icon">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/silenceMinutesDropdown"
@@ -89,7 +89,7 @@
                     android:hint="@string/settings_ezan_sound_label"
                     app:helperText="@string/settings_ezan_helper"
                     app:startIconDrawable="@drawable/ic_settings_music"
-                    app:startIconTint="@color/settings_icon">
+                    app:startIconTint="@color/color_icon">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/ezanSoundDropdown"
@@ -112,7 +112,7 @@
                     android:hint="@string/ezan_duasi_etiket"
                     app:helperText="@string/medya_ses_seviyesini_etiket"
                     app:startIconDrawable="@drawable/baseline_menu_book_24"
-                    app:startIconTint="@color/settings_icon">
+                    app:startIconTint="@color/color_icon">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/ezanDuaDropdown"

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="lineColor">#FFFFFF</color>
+    <color name="themeTextColor">@color/black</color>
+    <color name="themeTextColor_s">@color/white</color>
+    <color name="monthly_row_gray">#424242</color>
+    <color name="monthly_row_orange">#FFCC80</color>
+    <color name="monthly_row_bg">#4D3C1F</color>
+    <color name="monthly_row_text">#FFCC80</color>
+    <color name="icon_color">@android:color/white</color>
+    <color name="widget_icon_color">#D3D3D3</color>
+    <color name="widget_text_color">#D3D3D3</color>
+    <color name="widget_background">#80000000</color>
+    <color name="current_prayer_widget">#D3D3D3</color>
+    <color name="current_prayer_widget_label">#212121</color>
+    <color name="card_dashboard_color">#212121</color>
+
+    <!-- ===== Uygulama renk sistemi (koyu tema) ===== -->
+    <color name="color_primary">#A5D66A</color>
+    <color name="color_secondary">#81C784</color>
+    <color name="color_on_secondary">#10251A</color>
+    <color name="color_accent">#B8E986</color>
+    <color name="color_background">#121A16</color>
+    <color name="color_surface">#202B25</color>
+    <color name="color_surface_variant">#29382F</color>
+    <color name="color_text_primary">#F1F5F2</color>
+    <color name="color_text_secondary">#B0BDB4</color>
+    <color name="color_border">#39483F</color>
+    <color name="color_highlight">#FBC02D</color>
+    <color name="color_icon">#A5D66A</color>
+    <color name="color_error">#EF8A80</color>
+    <color name="color_header_start">#0B2A1F</color>
+    <color name="color_header_end">#1E4D2E</color>
+    <!-- Koyu temada başlık fotoğrafı biraz daha karartılır -->
+    <color name="color_header_photo_scrim">#33000000</color>
+    <!-- Gezinme çubuğu zemini (3 tuşlu gezinmede içerik altından okunur kalsın) -->
+    <color name="color_nav_bar_scrim">#E6121A16</color>
+</resources>

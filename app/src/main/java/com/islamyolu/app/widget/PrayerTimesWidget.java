@@ -18,7 +18,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.islamyolu.app.R;
-import com.islamyolu.app.Service.NetworkServiceUtil;
 import com.islamyolu.app.preferences.AppPreferences;
 import com.islamyolu.app.VakitApi.City;
 import com.islamyolu.app.prayertimes.CurrentPrayerTimes;
@@ -86,13 +85,14 @@ public class PrayerTimesWidget extends AppWidgetProvider {
                     || Intent.ACTION_TIME_CHANGED.equals(action) || Intent.ACTION_TIMEZONE_CHANGED.equals(action)) {
                 // Saat/saat dilimi değişince kronometre tabanı yeniden hesaplanmalı (kronometre
                 // cihazın açık kalma süresine göre sayar, duvar saatine göre değil)
-                updateWidgets(context, allWidgetIds(context));
+                updateWidgets(context, allWidgetIds(context), WeatherService.MAX_AGE_WIDGET_MS);
             } else if (ACTION_REFRESH_WEATHER.equals(action)) {
                 Log.d(TAG, "Weather refresh button clicked");
                 int widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                         AppWidgetManager.INVALID_APPWIDGET_ID);
                 if (widgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-                    updateWidgets(context, new int[]{widgetId});
+                    // Kullanıcı yenile dedi: önbellek beklenmeden sunucudan istenir
+                    updateWidgets(context, new int[]{widgetId}, WeatherService.MAX_AGE_FORCE);
                 }
             }
         }
@@ -100,14 +100,14 @@ public class PrayerTimesWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        updateWidgets(context, appWidgetIds);
+        updateWidgets(context, appWidgetIds, WeatherService.MAX_AGE_WIDGET_MS);
     }
 
     /** Kullanıcı widget'ı büyütüp küçültünce uygun düzen seçilir. */
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
                                           int appWidgetId, Bundle newOptions) {
-        updateWidgets(context, new int[]{appWidgetId});
+        updateWidgets(context, new int[]{appWidgetId}, WeatherService.MAX_AGE_WIDGET_MS);
     }
 
     private static int[] allWidgetIds(Context context) {
@@ -115,8 +115,12 @@ public class PrayerTimesWidget extends AppWidgetProvider {
                 .getAppWidgetIds(new ComponentName(context, PrayerTimesWidget.class));
     }
 
-    /** Vakitleri bir kez Room'dan okur, tüm widget'ları çizer ve bir sonraki güncellemeyi planlar. */
-    private void updateWidgets(Context context, int[] appWidgetIds) {
+    /**
+     * Vakitleri bir kez Room'dan okur, tüm widget'ları çizer ve bir sonraki güncellemeyi planlar.
+     * Hava durumu her çizimde kayıtlı veriden yazılır; {@code weatherMaxAgeMs}'den eskiyse ve
+     * internet varsa ayrıca yenilenir.
+     */
+    private void updateWidgets(Context context, int[] appWidgetIds, long weatherMaxAgeMs) {
         if (appWidgetIds == null || appWidgetIds.length == 0) {
             return;
         }
@@ -133,7 +137,8 @@ public class PrayerTimesWidget extends AppWidgetProvider {
                     RemoteViews views = buildViews(app, appWidgetId, current, now, full);
                     manager.updateAppWidget(appWidgetId, views);
                     if (full && weatherLocation != null) {
-                        updateWeatherInfo(app, weatherLocation.getLatitude(), weatherLocation.getLongitude(), manager, appWidgetId);
+                        updateWeatherInfo(app, weatherLocation.getLatitude(), weatherLocation.getLongitude(),
+                                weatherMaxAgeMs, manager, appWidgetId);
                     }
                 }
                 scheduleUpdateAt(app, nextRedrawAt(current, now));
@@ -444,18 +449,12 @@ public class PrayerTimesWidget extends AppWidgetProvider {
      * geri sayım dahil) cevap gelince yeniden uygulanıyordu; cevap vakit geçtikten sonra gelirse
      * widget geçmiş vakte sayıp eksiye düşüyor ve bir sonraki çizime kadar öyle kalıyordu.
      */
-    private void updateWeatherInfo(Context context, double latitude, double longitude,
+    private void updateWeatherInfo(Context context, double latitude, double longitude, long maxAgeMs,
                                    AppWidgetManager appWidgetManager, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.prayer_times_widget);
-        if (!isNetworkAvailable(context)) {
-            Log.w(TAG, "İnternet bağlantısı yok");
-            showRefreshButton(views, context, appWidgetId);
-            appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views);
-            return;
-        }
-
+        // İnternet yoksa son kayıtlı veri gösterilir; hiç veri yoksa onError -> yenile düğmesi
         WeatherService weatherService = new WeatherService(context);
-        weatherService.getDailyWeatherAndForecastByDate(latitude, longitude, new WeatherService.WeatherCallback() {
+        weatherService.load(latitude, longitude, maxAgeMs, new WeatherService.WeatherCallback() {
             @Override
             public void onSuccess(WeatherData weatherData) {
                 if (weatherData != null && weatherData.getCurrentWeather() != null) {
@@ -521,11 +520,6 @@ public class PrayerTimesWidget extends AppWidgetProvider {
         // Refresh butonuna tıklama özelliği ekle
         views.setOnClickPendingIntent(R.id.weather_refresh_icon, refreshPendingIntent);
         Log.d(TAG, "Refresh button shown and click listener set");
-    }
-
-    // İnternet bağlantısı kontrolü için yardımcı metod
-    private boolean isNetworkAvailable(Context context) {
-        return NetworkServiceUtil.isConnected(context);
     }
 }
 

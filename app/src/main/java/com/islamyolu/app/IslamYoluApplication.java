@@ -12,6 +12,7 @@ import com.islamyolu.app.prayertimes.PrayerTimesValidator;
 import com.islamyolu.app.prayertimes.remote.PrayerTimesApiClient;
 import com.islamyolu.app.prayertimes.sync.PrayerTimesSyncScheduler;
 import com.islamyolu.app.sound.SoundManager;
+import com.islamyolu.app.theme.AppThemeManager;
 
 import java.time.Clock;
 
@@ -28,6 +29,8 @@ public class IslamYoluApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        // Kullanıcının tema seçimi (Sistem/Açık/Koyu) ilk ekran çizilmeden uygulanır
+        AppThemeManager.applySaved(this);
         // Haftalık vakit senkronizasyonu + açılışta tek seferlik kontrol (veri yeterliyse indirmez)
         PrayerTimesSyncScheduler.onAppStart(this);
     }

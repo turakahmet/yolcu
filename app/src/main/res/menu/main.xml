@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Üst çubuk: zil → Ayarlar / Bildirimler (Ayarlar'ın tamamı sol menüde) -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:id="@+id/action_notifications"
+        android:icon="@drawable/baseline_notifications_24"
+        android:title="@string/home_notifications"
+        app:iconTint="@color/color_highlight"
+        app:showAsAction="always" />
 </menu>

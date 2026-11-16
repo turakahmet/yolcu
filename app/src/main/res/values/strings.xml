@@ -19,7 +19,6 @@
     <string name="ikindi">İkindi</string>
     <string name="aksam">Akşam</string>
     <string name="yatsi">Yatsı</string>
-    <string name="konum">Konum</string>
     <string name="refresh_img">yenileme simgesi</string>
     <string name="defaultUserName">Kullanıcı Adınız Giriniz</string>
     <string name="imsak">İmsak</string>
@@ -548,20 +547,17 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="profil_resmi" translatable="false">Profil resmi</string>
     <string name="rozet_icon" translatable="false">Rozet ikon</string>
     <string name="loading_data" translatable="false">yükleniyor…</string>
-    <string name="baglaniyor_etiket" translatable="false">Bağlanıyor…</string>
+    <string name="baglaniyor_etiket">Bağlanıyor…</string>
     <string name="wdiget_test_city" translatable="false">ANKARA</string>
     <string name="widget_settings_title" translatable="false">Widget Ayarları</string>
     <string name="transparency_value" translatable="false">Şeffaflık: %0</string>
     <string name="test_rozeti" translatable="false">Test Rozeti</string>
     <string name="compassHardwareInfo" translatable="false">Kıble Bulucu özelliğini kullanabilmek için cihazınızda pusula (compass) sensörü bulunması gerekmektedir. Ancak cihazınız bu özelliği desteklemiyor. Diğer tüm özellikleri kullanmaya devam edebilirsiniz.</string>
     <string name="compassHardwareInfoHeader" translatable="false">Kıble Bulucu Desteklenmiyor</string>
-    <string name="ebabyicon" translatable="false">erkekbabyIcon</string>
-    <string name="kbabyicon" translatable="false">kızbabyIcon</string>
-    <string name="badgeInfo" translatable="false">Henüz bu rozeti kazanmadın</string>
-    <string name="nameRefresh" translatable="false">isim yenile icon</string>
+    <string name="badgeInfo">Henüz bu rozeti kazanmadın</string>
     <string name="isimtagAnlam" translatable="false">"Anlamı: "</string>
     <string name="isim_aciklama" translatable="false">%1$s\n%2$s%3$s</string>
-    <string name="konum_verisi_bekliyor" translatable="false">Konum verisi bekliyor</string>
+    <string name="konum_verisi_bekliyor">Hava durumu için şehir seçin</string>
     <string name="devamhadis" translatable="false">devamı…</string>
     <string name="dahaazhadis" translatable="false">Daha az</string>
     <string name="pzt" translatable="false">Pzt</string>
@@ -569,11 +565,10 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="car" translatable="false">Car</string>
     <string name="per" translatable="false">Per</string>
     <string name="cum" translatable="false">Cum</string>
-    <string name="dashboard_ibadet_label" translatable="false">İbadet</string>
-    <string name="dashboard_takvim_label" translatable="false">Takvim</string>
-    <string name="dashboard_yarisma_label" translatable="false">Yarışma</string>
-    <string name="hadislogo" translatable="false">hadisLogo</string>
-    <string name="weatherRefresh" translatable="false">hava durum yenile buton</string>
+    <string name="dashboard_ibadet_label">İbadet</string>
+    <string name="dashboard_takvim_label">Takvim</string>
+    <string name="dashboard_yarisma_label">Yarışma</string>
+    <string name="weatherRefresh">Hava durumunu yenile</string>
     <string name="hadis_header" translatable="false">Hadis-i Şerif</string>
     <string name="hadis_format" translatable="false">%1$s\n%2$s</string>
     <string name="yarisma_kuran" translatable="false">Kur’an Yolculuğu</string>
@@ -840,7 +835,7 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
         <item>Necati#Kurtuluş, selamet</item>
         <item>Necib#Soylu, değerli, seçkin</item>
         <item>Mahmud#Övülmüş, beğenilmiş (Muhammed isminin kökeni)</item>
-        <item>İskender–Güçlü, kuvvetli (Zülkarneyn\'in ismi olarak da bilinir,Kehf 83–98)</item>
+        <item>İskender#Güçlü, kuvvetli (Zülkarneyn\'in ismi olarak da bilinir, Kehf 83–98)</item>
         <item>Derviş#Allah\'a yönelmiş, dünyevi arzulardan uzak duran</item>
         <item>Mustafa#Seçilmiş, güzide (Peygamber Efendimizin sıfatı)</item>
         <item>Muttalip#İsteyen, arayan (Peygamber Efendimizin dedesinin ismi)</item>
@@ -1242,4 +1237,41 @@ Kisve-i Şerif, İslam kültüründe Kâbe ile özdeşleşmiş önemli bir sembo
     <string name="ezan_playing_text">Susturmak için ses kısma tuşuna basın veya Durdur\'a dokunun.</string>
     <string name="ezan_stop">Durdur</string>
     <string name="settings_ezan_helper">Medya ses seviyesini kullanır. Çalarken ses kısma tuşu ezanı ve duayı susturur.</string>
+    <!-- Görev 3a: tema -->
+    <string name="theme_system">Sistem varsayılanı</string>
+    <string name="theme_light">Açık tema</string>
+    <string name="theme_dark">Koyu tema</string>
+    <string name="settings_section_appearance">Görünüm</string>
+    <string name="settings_theme_title">Tema</string>
+    <string name="settings_theme_subtitle">Sistem varsayılanı seçiliyse telefonun açık/koyu ayarına uyar</string>
+    <string name="settings_app_summary">Tema: %1$s</string>
+    <!-- Görev 3b: ana ekran başlığı -->
+    <string name="home_notifications">Bildirim ayarları</string>
+    <string name="home_countdown_cd">Sıradaki vakte kalan süre. Aylık vakit takvimini açar</string>
+    <string name="home_change_city_cd">Vakit şehrini değiştir</string>
+<!-- Ana ekran: hava durumu kartı -->
+    <string name="weather_temp_placeholder" translatable="false">—°</string>
+    <string name="weather_unavailable">%1$s için hava durumu alınamadı.</string>
+    <string name="weather_temp_format" translatable="false">%1$.1f°</string>
+    <string name="weather_temp_whole_format" translatable="false">%1$d°</string>
+    <!-- Ana Sayfa geri sayım kutuları -->
+    <string name="countdown_box_empty" translatable="false">--</string>
+    <string name="countdown_separator" translatable="false">:</string>
+    <string name="countdown_unit_hours">SAAT</string>
+    <string name="countdown_unit_minutes">DAKİKA</string>
+    <string name="countdown_unit_seconds">SANİYE</string>
+    <!-- Hava kartı: ek değerler -->
+    <string name="weather_feels_like">Hissedilen</string>
+    <string name="weather_humidity">Nem</string>
+    <string name="weather_wind">Rüzgar</string>
+    <string name="weather_humidity_format">%%%1$d</string>
+    <string name="weather_wind_format">%1$.0f km/sa</string>
+    <string name="home_name_boy_title">Erkek ismi</string>
+    <string name="home_name_girl_title">Kız ismi</string>
+    <string name="home_name_boy_refresh_cd">Başka erkek ismi göster</string>
+    <string name="home_name_girl_refresh_cd">Başka kız ismi göster</string>
+    <string name="home_hadith_refresh_cd">Başka hadis göster</string>
+    <string name="home_date_hijri_label">Hicri takvim</string>
+    <string name="home_hadith_share_cd">Hadisi paylaş</string>
+    <string name="home_takvim_needs_location">Takvim için konum ayarı yapmalısınız.</string>
 </resources>

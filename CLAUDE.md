@@ -214,37 +214,7 @@ Yalnızca dikey ekran için tasarım yapma.
 
 Uygulama genelinde açık ve koyu tema desteği zorunludur.
 
-Açık tema:
-
-- Arka plan: #F8F6EE
-- Surface: #FFFFFF
-- Primary: #0F3D2E
-- Secondary: #2E7D32
-- Accent: #A5D66A
-- Ana metin: #26332C
-- İkincil metin: #6B7280
-- Border: #E5E7EB
-
-Koyu tema için ayrı değerler oluştur:
-
-- Background: #121A16
-- Surface: #202B25
-- Surface Variant: #29382F
-- Primary: #A5D66A
-- Secondary: #81C784
-- Accent: #B8E986
-- Ana metin: #F1F5F2
-- İkincil metin: #B0BDB4
-- Border: #39483F
-
 Renkler merkezi olarak yönetilmeli.
-
-Aşağıdaki dosyaları kullan:
-
-- res/values/colors.xml
-- res/values-night/colors.xml
-- res/values/styles.xml
-- res/values-night/styles.xml
 
 Tema değişiminde aşağıdaki bileşenlerin tamamını kontrol et:
 

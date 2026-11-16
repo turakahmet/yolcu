@@ -89,7 +89,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:rowIcon="@drawable/ic_settings_tune"
-                app:rowSubtitle="@string/settings_coming_soon"
                 app:rowTitle="@string/settings_app_title" />
         </com.google.android.material.card.MaterialCardView>
 
@@ -129,7 +128,7 @@
             android:layout_marginTop="12dp"
             android:importantForAccessibility="no"
             android:src="@drawable/baseline_mosque_24"
-            app:tint="@color/settings_icon" />
+            app:tint="@color/color_icon" />
 
         <TextView
             android:id="@+id/settingsFooter"

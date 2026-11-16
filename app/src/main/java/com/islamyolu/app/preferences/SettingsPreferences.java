@@ -39,6 +39,7 @@ public final class SettingsPreferences {
     private static final String KEY_EZAN_SOUND = "spinner_ezan_sound";
     private static final String KEY_EZAN_DUA = "spinner_ezan_dua";
     private static final String KEY_VAKIT_SOUND_MODE = "vakit_sound_mode_enabled";
+    private static final String KEY_THEME_MODE = "appThemeMode";
     private static final String KEY_KERAHAT_NOTIFY = "kerahatNotify";
     private static final String KEY_SILENCE_MINUTES = "vakitSilenceMinutes";
     private static final String KEY_SAVED_RINGER_MODE = "vakitSavedRingerMode";
@@ -153,6 +154,16 @@ public final class SettingsPreferences {
 
     public void setEzanDuaType(int type) {
         prefs.edit().putInt(KEY_EZAN_DUA, type).apply();
+    }
+
+    // --- Tema (AppThemeManager yönetir: 0 Sistem, 1 Açık, 2 Koyu) ---
+
+    public int getThemeMode() {
+        return prefs.getInt(KEY_THEME_MODE, 0);
+    }
+
+    public void setThemeMode(int mode) {
+        prefs.edit().putInt(KEY_THEME_MODE, mode).apply();
     }
 
     // --- Kerahat bildirimi ---

@@ -38,6 +38,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
 import com.islamyolu.app.R;
+import com.islamyolu.app.theme.SystemBars;
 import com.islamyolu.app.Service.AddressResolver;
 import com.islamyolu.app.Service.BadgeService;
 import com.islamyolu.app.Service.GoldService;
@@ -67,9 +68,13 @@ import java.util.concurrent.Executors;
 public class MainActivity extends AppCompatActivity implements ProfilePictureDialogFragment.ProfilePictureDialogListener {
 
     private AppBarConfiguration mAppBarConfiguration;
+    /** Ana Sayfa'da büyük, diğer ekranlarda ince başlık */
+    private HomeHeader homeHeader;
     private ActivityMainBinding binding;
-    private TextView imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, locationTextView, usernameTextView, kalanSureTextView, toolbarKalanSureLabel, total_user_gold, total_rozet;
-    private LinearLayout imsakTimeLayout, gunesTimeLayout, ogleTimeLayout, ikindiTimeLayout, aksamTimeLayout, yatsiTimeLayout, locationRefreshLayout, remain_time_layout;
+    private TextView imsakTime, gunesTime, ogleTime, ikindiTime, aksamTime, yatsiTime, usernameTextView, kalanSureTextView, toolbarKalanSureLabel, total_user_gold, total_rozet;
+    private LinearLayout imsakTimeLayout, gunesTimeLayout, ogleTimeLayout, ikindiTimeLayout, aksamTimeLayout, yatsiTimeLayout, locationRefreshLayout;
+    /** Geri sayım alanı: dokununca aylık vakit takvimi */
+    private View remain_time_layout;
 
     /** İzin, konum açık/kapalı ve konum alma merkezi LocationAccess'te */
     private final LocationAccess locationAccess = LocationAccess.register(this, new LocationAccess.Options(),
@@ -108,10 +113,14 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Android 15+ kenardan kenara zorunlu: yeşil başlık durum çubuğunun arkasına uzanır
+        SystemBars.enable(this);
         super.onCreate(savedInstanceState);
         // Binding işlemi
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        SystemBars.padHeader(findViewById(R.id.app_bar));
+        SystemBars.padContent(findViewById(R.id.nav_host_fragment_content_main));
 
         // Tercihler ve servisler
         AppPreferences preferences = AppPreferences.from(this);
@@ -127,7 +136,6 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         initialGoldAmount();
 
         // Namaz vakitleri Room'dan LiveData ile gelir (§5); şehir seçilmemiş/veri bitmişse durum mesajı gösterilir (§6)
-        setupCityClick();
         prayerTimesViewModel = new ViewModelProvider(this).get(PrayerTimesViewModel.class);
         prayerTimesViewModel.getState().observe(this, state -> {
             prayerState = state;
@@ -183,11 +191,6 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         prayerTimesViewModel.refresh(MAIN_SCREEN_DAYS_AHEAD);
     }
 
-    /** Şehir adına dokununca Diyanet şehir seçimi açılır. */
-    private void setupCityClick() {
-        findViewById(R.id.location_layout).setOnClickListener(v -> openCitySelection());
-    }
-
     private void openCitySelection() {
         startActivity(new Intent(this, CitySelectionActivity.class));
     }
@@ -205,6 +208,11 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        // Büyük başlık yalnızca Ana Sayfa'da; diğer ekranlarda ince çubuk
+        homeHeader = new HomeHeader(this, binding.appBarMain.toolbar);
+        navController.addOnDestinationChangedListener((controller, destination, arguments) ->
+                homeHeader.setExpanded(destination.getId() == R.id.nav_dashboard));
 
 
         // NavigationView'in header'ından View'leri bulma
@@ -285,7 +293,6 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         ikindiTime = findViewById(R.id.ikindi_time);
         aksamTime = findViewById(R.id.aksam_time);
         yatsiTime = findViewById(R.id.yatsi_time);
-        locationTextView = findViewById(R.id.location_time);
         refreshButton = findViewById(R.id.refresh_button);
 
         imsakTimeLayout = findViewById(R.id.imsak_layout);
@@ -313,10 +320,14 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
         panelViews.layouts.put(PrayerSlot.AKSAM, aksamTimeLayout);
         panelViews.layouts.put(PrayerSlot.YATSI, yatsiTimeLayout);
         panelViews.remainingLabel = toolbarKalanSureLabel;
+        panelViews.kerahatLabel = findViewById(R.id.home_countdown_kerahat);
         panelViews.remainingTime = kalanSureTextView;
-        panelViews.remainingLayout = remain_time_layout;
-        panelViews.cityName = locationTextView;
         panelViews.refreshLayout = locationRefreshLayout;
+        // Ana Sayfa: saat / dakika / saniye kutuları ve sıradaki vaktin ikonu
+        panelViews.remainingHours = findViewById(R.id.home_countdown_hours).findViewById(R.id.countdown_box_value);
+        panelViews.remainingMinutes = findViewById(R.id.home_countdown_minutes).findViewById(R.id.countdown_box_value);
+        panelViews.remainingSeconds = findViewById(R.id.home_countdown_seconds).findViewById(R.id.countdown_box_value);
+        panelViews.nextIcon = findViewById(R.id.home_countdown_icon);
         prayerTimesPanel = new PrayerTimesPanel(this, panelViews, AppPreferences.from(this).settings(),
                 () -> prayerTimesViewModel.refresh(MAIN_SCREEN_DAYS_AHEAD));
     }
@@ -507,9 +518,9 @@ public class MainActivity extends AppCompatActivity implements ProfilePictureDia
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
+        if (item.getItemId() == R.id.action_notifications) {
+            // Zil: Ayarlar → Bildirimler (Ayarlar'ın tamamı sol menüde)
+            startActivity(SettingsActivity.notificationsIntent(this));
             return true;
         }
         return super.onOptionsItemSelected(item);

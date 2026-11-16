@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ana Sayfa isim kartı (erkek / kız): hava kartıyla aynı cam görünüm.
+     Başlık, ikon, vurgu rengi ve yenile açıklamasını Dashboard.setupNameCard verir.
+     Üstte ikon + başlık + yenile; isim altta kartın tüm genişliğini kullanır: dar ekranda
+     (ör. 360dp) uzun isimler (Abdülmutallib) kelime ortasından bölünmez, küçültülmez.
+     Yükseklik satırdan gelir (match_parent): iki kart her zaman aynı boyda. -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    android:layout_weight="1"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/color_header_glass"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="0dp"
+    app:rippleColor="@color/color_header_glass_stroke"
+    app:strokeColor="@color/color_header_glass_stroke"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="12dp"
+        android:paddingEnd="2dp"
+        android:paddingBottom="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/name_card_icon"
+                android:layout_width="@dimen/home_name_icon"
+                android:layout_height="@dimen/home_name_icon"
+                android:importantForAccessibility="no" />
+
+            <TextView
+                android:id="@+id/name_card_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:maxLines="2"
+                android:textSize="12sp" />
+
+            <ImageButton
+                android:id="@+id/name_card_refresh"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/rounded_sync_24"
+                app:tint="@color/color_on_header_secondary"
+                tools:ignore="ContentDescription" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/name_card_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:breakStrategy="balanced"
+            android:maxLines="2"
+            android:textColor="@color/color_on_header"
+            android:textSize="@dimen/home_name_text"
+            android:textStyle="bold" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

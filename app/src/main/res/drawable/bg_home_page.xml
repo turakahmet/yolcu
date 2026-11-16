@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ana Sayfa içerik zemini: başlık fotoğrafının alt rengiyle başlar, aşağı doğru açılır (iki temada aynı) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <gradient
+        android:angle="270"
+        android:centerColor="@color/color_home_bg_mid"
+        android:endColor="@color/color_home_bg_bottom"
+        android:startColor="@color/color_home_bg_top"
+        android:type="linear" />
+</shape>
